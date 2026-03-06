@@ -1438,5 +1438,197 @@
   "0001579428": {
     "ticker": "AXSM",
     "market_cap": 8214706176
+  },
+  "0001704287": {
+    "ticker": "BJDX",
+    "market_cap": null
+  },
+  "0002087087": {
+    "ticker": "BIII",
+    "market_cap": null
+  },
+  "0002030772": {
+    "ticker": null,
+    "market_cap": null
+  },
+  "0001015739": {
+    "ticker": "AWRE",
+    "market_cap": null
+  },
+  "0000765207": {
+    "ticker": "FNLC",
+    "market_cap": null
+  },
+  "0001095146": {
+    "ticker": "ABIT",
+    "market_cap": 20475048
+  },
+  "0001954360": {
+    "ticker": null,
+    "market_cap": null
+  },
+  "0002017636": {
+    "ticker": null,
+    "market_cap": null
+  },
+  "0001798749": {
+    "ticker": "JBIO",
+    "market_cap": 692866432
+  },
+  "0001851322": {
+    "ticker": null,
+    "market_cap": null
+  },
+  "0001327811": {
+    "ticker": "WDAY",
+    "market_cap": 40327680000
+  },
+  "0001941536": {
+    "ticker": "BAER",
+    "market_cap": 122472544
+  },
+  "0000775215": {
+    "ticker": "HBT",
+    "market_cap": 825716672
+  },
+  "0001554818": {
+    "ticker": "AUUD",
+    "market_cap": 2238918
+  },
+  "0002023730": {
+    "ticker": "GIG",
+    "market_cap": 353666656
+  },
+  "0001089872": {
+    "ticker": "GAIA",
+    "market_cap": 81143664
+  },
+  "0001810019": {
+    "ticker": "RXT",
+    "market_cap": 504235680
+  },
+  "0001723596": {
+    "ticker": "CLBK",
+    "market_cap": 1883899136
+  },
+  "0001681206": {
+    "ticker": "NODK",
+    "market_cap": 270846912
+  },
+  "0001698514": {
+    "ticker": "NESR",
+    "market_cap": 2102420608
+  },
+  "0001742313": {
+    "ticker": null,
+    "market_cap": null
+  },
+  "0002034269": {
+    "ticker": "CEPT",
+    "market_cap": 338214816
+  },
+  "0001325618": {
+    "ticker": "IRMD",
+    "market_cap": 1255832576
+  },
+  "0000708781": {
+    "ticker": "CASS",
+    "market_cap": 586175680
+  },
+  "0001911066": {
+    "ticker": null,
+    "market_cap": null
+  },
+  "0000854560": {
+    "ticker": "GSBC",
+    "market_cap": 686125632
+  },
+  "0001569455": {
+    "ticker": null,
+    "market_cap": null
+  },
+  "0000923139": {
+    "ticker": "FFIC",
+    "market_cap": 519850208
+  },
+  "0000859070": {
+    "ticker": "FCBC",
+    "market_cap": 725507584
+  },
+  "0000731122": {
+    "ticker": "CCFN",
+    "market_cap": 218748224
+  },
+  "0000810958": {
+    "ticker": "CZNC",
+    "market_cap": 397462784
+  },
+  "0001163370": {
+    "ticker": "NRIM",
+    "market_cap": 508788736
+  },
+  "0001331465": {
+    "ticker": null,
+    "market_cap": null
+  },
+  "0001884516": {
+    "ticker": "DTI",
+    "market_cap": 127067592
+  },
+  "0000712770": {
+    "ticker": "OLP",
+    "market_cap": 514072608
+  },
+  "0001371489": {
+    "ticker": "III",
+    "market_cap": 218325488
+  },
+  "0000717538": {
+    "ticker": "AROW",
+    "market_cap": 550096704
+  },
+  "0001270436": {
+    "ticker": "COHN",
+    "market_cap": 40310084
+  },
+  "0000767405": {
+    "ticker": "SBFG",
+    "market_cap": 126850312
+  },
+  "0000750686": {
+    "ticker": "CAC",
+    "market_cap": 777164288
+  },
+  "0001637880": {
+    "ticker": null,
+    "market_cap": null
+  },
+  "0001860424": {
+    "ticker": null,
+    "market_cap": null
+  },
+  "0000837010": {
+    "ticker": null,
+    "market_cap": null
+  },
+  "0000921557": {
+    "ticker": "RBCAA",
+    "market_cap": 1345788672
+  },
+  "0001423221": {
+    "ticker": "NX",
+    "market_cap": 797031232
+  },
+  "0000711404": {
+    "ticker": "COO",
+    "market_cap": 15002119168
+  },
+  "0000109657": {
+    "ticker": "GTBP",
+    "market_cap": 12507875
+  },
+  "0000315374": {
+    "ticker": "HURC",
+    "market_cap": 102869720
   }
 }

@@ -1,0 +1,65 @@
+[
+  {
+    "cik": "0001822523",
+    "company": "Advanced Flower Capital Inc.",
+    "ticker": "AFCG",
+    "market_cap": 49933900,
+    "score": 50,
+    "reasons": [
+      "Moderate debt: 49.9%",
+      "Strong cash: 25.8% of assets",
+      "Profitable"
+    ],
+    "metrics": {
+      "revenue": null,
+      "net_margin": null,
+      "debt_to_assets": 49.9135741376255,
+      "cash": 103610460,
+      "net_income": 35932397
+    },
+    "financial_score": 50,
+    "network_metrics": {
+      "systemic_importance": 0.0,
+      "contagion_risk": 0.0,
+      "network_value": 0,
+      "variance": 0.0
+    },
+    "mgf": {
+      "G0": 1.0,
+      "G1": 0.0,
+      "G2": 0.0
+    },
+    "enis_score": 30.0
+  },
+  {
+    "cik": "0001279704",
+    "company": "Cellectar Biosciences, Inc.",
+    "ticker": "CLRB",
+    "market_cap": 11363600,
+    "score": 35,
+    "reasons": [
+      "Moderate debt: 38.5%",
+      "Strong cash: 91.4% of assets"
+    ],
+    "metrics": {
+      "revenue": null,
+      "net_margin": null,
+      "debt_to_assets": 38.46009626974465,
+      "cash": 23288607,
+      "net_income": -44581446
+    },
+    "financial_score": 35,
+    "network_metrics": {
+      "systemic_importance": 0.0,
+      "contagion_risk": 0.0,
+      "network_value": 0,
+      "variance": 0.0
+    },
+    "mgf": {
+      "G0": 1.0,
+      "G1": 0.0,
+      "G2": 0.0
+    },
+    "enis_score": 21.0
+  }
+]

@@ -1,0 +1,2769 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "company": "Advanced Flower Capital Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001822523"
+    },
+    {
+      "company": "TScan Therapeutics, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001783328"
+    },
+    {
+      "company": "Cellectar Biosciences, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001279704"
+    },
+    {
+      "company": "ALTISOURCE PORTFOLIO SOLUTIONS S.A.",
+      "customer_concentration": 42,
+      "has_major_customers": true,
+      "id": "0001462418"
+    },
+    {
+      "company": "GRAN TIERRA ENERGY INC.",
+      "customer_concentration": 19,
+      "has_major_customers": false,
+      "id": "0001273441"
+    },
+    {
+      "company": "TaskUs, Inc.",
+      "customer_concentration": 87,
+      "has_major_customers": true,
+      "id": "0001829864"
+    },
+    {
+      "company": "CIMG Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001527613"
+    },
+    {
+      "company": "GMTech Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002000762"
+    },
+    {
+      "company": "NVIDIA CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001045810"
+    },
+    {
+      "company": "Apple Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000320193"
+    },
+    {
+      "company": "Alphabet Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001652044"
+    },
+    {
+      "company": "MICROSOFT CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000789019"
+    },
+    {
+      "company": "AMAZON COM INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001018724"
+    },
+    {
+      "company": "Meta Platforms, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001326801"
+    },
+    {
+      "company": "Broadcom Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001730168"
+    },
+    {
+      "company": "Tesla, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001318605"
+    },
+    {
+      "company": "BERKSHIRE HATHAWAY INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001067983"
+    },
+    {
+      "company": "Walmart Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000104169"
+    },
+    {
+      "company": "ELI LILLY & Co",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000059478"
+    },
+    {
+      "company": "JPMORGAN CHASE & CO",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000019617"
+    },
+    {
+      "company": "EXXON MOBIL CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000034088"
+    },
+    {
+      "company": "SPDR S&P 500 ETF TRUST",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000884394"
+    },
+    {
+      "company": "VISA INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001403161"
+    },
+    {
+      "company": "JOHNSON & JOHNSON",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000200406"
+    },
+    {
+      "company": "ASML HOLDING NV",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000937966"
+    },
+    {
+      "company": "MICRON TECHNOLOGY INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000723125"
+    },
+    {
+      "company": "Mastercard Inc",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001141391"
+    },
+    {
+      "company": "COSTCO WHOLESALE CORP /NEW",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000909832"
+    },
+    {
+      "company": "ORACLE CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001341439"
+    },
+    {
+      "company": "NETFLIX INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001065280"
+    },
+    {
+      "company": "AbbVie Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001551152"
+    },
+    {
+      "company": "PROCTER & GAMBLE Co",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000080424"
+    },
+    {
+      "company": "HOME DEPOT, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000354950"
+    },
+    {
+      "company": "CHEVRON CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000093410"
+    },
+    {
+      "company": "BANK OF AMERICA CORP /DE/",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000070858"
+    },
+    {
+      "company": "GENERAL ELECTRIC CO",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000040545"
+    },
+    {
+      "company": "COCA COLA CO",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000021344"
+    },
+    {
+      "company": "CATERPILLAR INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000018230"
+    },
+    {
+      "company": "Alibaba Group Holding Ltd",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001577552"
+    },
+    {
+      "company": "Palantir Technologies Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001321655"
+    },
+    {
+      "company": "NOVARTIS AG",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001114448"
+    },
+    {
+      "company": "ADVANCED MICRO DEVICES INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000002488"
+    },
+    {
+      "company": "ASTRAZENECA PLC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000901832"
+    },
+    {
+      "company": "HSBC HOLDINGS PLC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001089113"
+    },
+    {
+      "company": "TOYOTA MOTOR CORP/",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001094517"
+    },
+    {
+      "company": "CISCO SYSTEMS, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000858877"
+    },
+    {
+      "company": "Merck & Co., Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000310158"
+    },
+    {
+      "company": "APPLIED MATERIALS INC /DE",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000006951"
+    },
+    {
+      "company": "LAM RESEARCH CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000707549"
+    },
+    {
+      "company": "Philip Morris International Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001413329"
+    },
+    {
+      "company": "Contemporary Amperex Technology Co., Limited/ADR",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002070829"
+    },
+    {
+      "company": "RTX Corp",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000101829"
+    },
+    {
+      "company": "UNITEDHEALTH GROUP INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000731766"
+    },
+    {
+      "company": "MORGAN STANLEY",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000895421"
+    },
+    {
+      "company": "GOLDMAN SACHS GROUP INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000886982"
+    },
+    {
+      "company": "WELLS FARGO & COMPANY/MN",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000072971"
+    },
+    {
+      "company": "MCDONALDS CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000063908"
+    },
+    {
+      "company": "T-Mobile US, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001283699"
+    },
+    {
+      "company": "INVESCO QQQ TRUST, SERIES 1",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001067839"
+    },
+    {
+      "company": "LINDE PLC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001707925"
+    },
+    {
+      "company": "GE Vernova Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001996810"
+    },
+    {
+      "company": "Shell plc",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001306965"
+    },
+    {
+      "company": "SAP SE",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001000184"
+    },
+    {
+      "company": "ROYAL BANK OF CANADA",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001000275"
+    },
+    {
+      "company": "PEPSICO INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000077476"
+    },
+    {
+      "company": "INTEL CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000050863"
+    },
+    {
+      "company": "INTERNATIONAL BUSINESS MACHINES CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000051143"
+    },
+    {
+      "company": "AMERICAN EXPRESS CO",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000004962"
+    },
+    {
+      "company": "VERIZON COMMUNICATIONS INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000732712"
+    },
+    {
+      "company": "MITSUBISHI UFJ FINANCIAL GROUP INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000067088"
+    },
+    {
+      "company": "BHP Group Ltd",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000811809"
+    },
+    {
+      "company": "AMGEN INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000318154"
+    },
+    {
+      "company": "DEUTSCHE TELEKOM AG",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000946770"
+    },
+    {
+      "company": "ABBOTT LABORATORIES",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000001800"
+    },
+    {
+      "company": "KLA CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000319201"
+    },
+    {
+      "company": "AT&T INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000732717"
+    },
+    {
+      "company": "CITIGROUP INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000831001"
+    },
+    {
+      "company": "THERMO FISHER SCIENTIFIC INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000097745"
+    },
+    {
+      "company": "NEXTERA ENERGY INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000753308"
+    },
+    {
+      "company": "TEXAS INSTRUMENTS INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000097476"
+    },
+    {
+      "company": "Walt Disney Co",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001744489"
+    },
+    {
+      "company": "Salesforce, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001108524"
+    },
+    {
+      "company": "GILEAD SCIENCES, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000882095"
+    },
+    {
+      "company": "RIO TINTO LTD",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000887028"
+    },
+    {
+      "company": "Banco Santander, S.A.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000891478"
+    },
+    {
+      "company": "SOUTHERN COPPER CORP/",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001001838"
+    },
+    {
+      "company": "TJX COMPANIES INC /DE/",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000109198"
+    },
+    {
+      "company": "AMPHENOL CORP /DE/",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000820313"
+    },
+    {
+      "company": "INTUITIVE SURGICAL INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001035267"
+    },
+    {
+      "company": "BOEING CO",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000012927"
+    },
+    {
+      "company": "ANALOG DEVICES INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000006281"
+    },
+    {
+      "company": "SCHWAB CHARLES CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000316709"
+    },
+    {
+      "company": "TotalEnergies SE",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000879764"
+    },
+    {
+      "company": "DEERE & CO",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000315189"
+    },
+    {
+      "company": "Arista Networks, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001596532"
+    },
+    {
+      "company": "NOVO NORDISK A S",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000353278"
+    },
+    {
+      "company": "BlackRock, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002012383"
+    },
+    {
+      "company": "RIO TINTO PLC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000863064"
+    },
+    {
+      "company": "HONEYWELL INTERNATIONAL INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000773840"
+    },
+    {
+      "company": "TORONTO DOMINION BANK",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000947263"
+    },
+    {
+      "company": "HDFC BANK LTD",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001144967"
+    },
+    {
+      "company": "UNILEVER PLC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000217410"
+    },
+    {
+      "company": "SHOPIFY INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001594805"
+    },
+    {
+      "company": "Anheuser-Busch InBev SA/NV",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001668717"
+    },
+    {
+      "company": "UNION PACIFIC CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000100885"
+    },
+    {
+      "company": "PFIZER INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000078003"
+    },
+    {
+      "company": "Uber Technologies, Inc",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001543151"
+    },
+    {
+      "company": "LOCKHEED MARTIN CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000936468"
+    },
+    {
+      "company": "Maruwa Co., Ltd./ADR",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002093667"
+    },
+    {
+      "company": "Zijin Gold International Co Limited/ADR",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002093654"
+    },
+    {
+      "company": "SWCC Corp/ADR",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002107960"
+    },
+    {
+      "company": "Spartacus Acquisition Corp. II",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002097364"
+    },
+    {
+      "company": "Vine Hill Capital Investment Corp. II",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002086264"
+    },
+    {
+      "company": "Paltac Corporation/ADR",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002089174"
+    },
+    {
+      "company": "NHK Spring Co. Ltd/ADR",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002087500"
+    },
+    {
+      "company": "TOSEI CORP/ADR",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002089506"
+    },
+    {
+      "company": "CONDUIT HOLDINGS LTD/ADR",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002091663"
+    },
+    {
+      "company": "Muzero Acquisition Corp",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002093484"
+    },
+    {
+      "company": "Nagase & Co., Ltd./ADR",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002092248"
+    },
+    {
+      "company": "RF Acquisition Corp III",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002091712"
+    },
+    {
+      "company": "Odakyu Electric Railway Co., Ltd./ADR",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002108124"
+    },
+    {
+      "company": "Knowledge Atlas Technology Joint Stock Co Limited/ADR",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002109545"
+    },
+    {
+      "company": "GSR IV Acquisition Corp.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002072404"
+    },
+    {
+      "company": "Jiangsu Hengrui Pharmaceuticals Co., Ltd./ADR",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002071868"
+    },
+    {
+      "company": "TRG Latin America Acquisitions Corp.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002098780"
+    },
+    {
+      "company": "United Acquisition Corp. I",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002098669"
+    },
+    {
+      "company": "MOZAYYX Acquisition Corp.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002097376"
+    },
+    {
+      "company": "GigCapital9 Corp.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002098712"
+    },
+    {
+      "company": "Colombier Acquisition Corp. III",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002091024"
+    },
+    {
+      "company": "SUNEVISION HOLDINGS/ADR",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002089488"
+    },
+    {
+      "company": "Ottobock SE & Co. KGaA/ADR",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002094691"
+    },
+    {
+      "company": "Locksley Resources Limited/ADR",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002091585"
+    },
+    {
+      "company": "D. Boral Acquisition I Corp.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002095161"
+    },
+    {
+      "company": "Spring Valley Acquisition Corp. IV",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002098242"
+    },
+    {
+      "company": "Talon Capital Corp.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002073340"
+    },
+    {
+      "company": "StorageVault Canada Inc./ADR",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002074157"
+    },
+    {
+      "company": "Sienna Senior Living Inc./ADR",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002073972"
+    },
+    {
+      "company": "Mitsubishi Gas Chemical Company, Inc./ADR",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002079706"
+    },
+    {
+      "company": "LaFayette Acquisition Corp.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002079106"
+    },
+    {
+      "company": "Miluna Acquisition Corp",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002077033"
+    },
+    {
+      "company": "Viking Acquisition Corp I",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002080023"
+    },
+    {
+      "company": "Greatland Resources Limited/ADR",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002087843"
+    },
+    {
+      "company": "M Evo Global Acquisition Corp II",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002087361"
+    },
+    {
+      "company": "AUMOVIO SE",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002085236"
+    },
+    {
+      "company": "Insight Digital Partners II",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002079292"
+    },
+    {
+      "company": "GigCapital8 Corp.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002080019"
+    },
+    {
+      "company": "INDEPENDENT BANK CORP /MI/",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000039311"
+    },
+    {
+      "company": "Rithm Perpetual Life Residential Trust",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002081628"
+    },
+    {
+      "company": "Future Vision II Acquisition Corp.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002010653"
+    },
+    {
+      "company": "Immuneering Corp",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001790340"
+    },
+    {
+      "company": "PMV Pharmaceuticals, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001699382"
+    },
+    {
+      "company": "Altimmune, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001326190"
+    },
+    {
+      "company": "MIAMI INTERNATIONAL HOLDINGS, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001438472"
+    },
+    {
+      "company": "Via Transportation, Inc.",
+      "customer_concentration": 90,
+      "has_major_customers": true,
+      "id": "0001603015"
+    },
+    {
+      "company": "Atlantis Glory Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001673504"
+    },
+    {
+      "company": "Traeger, Inc.",
+      "customer_concentration": 50,
+      "has_major_customers": true,
+      "id": "0001857853"
+    },
+    {
+      "company": "Oxford Square Capital Corp.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001259429"
+    },
+    {
+      "company": "MARKETWISE, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001805651"
+    },
+    {
+      "company": "ARES INDUSTRIAL REAL ESTATE INCOME TRUST Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001625941"
+    },
+    {
+      "company": "Ares Real Estate Income Trust Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001327978"
+    },
+    {
+      "company": "NewLake Capital Partners, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001854964"
+    },
+    {
+      "company": "Granite Ridge Resources, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001928446"
+    },
+    {
+      "company": "Pattern Group Inc.",
+      "customer_concentration": 93,
+      "has_major_customers": true,
+      "id": "0001811935"
+    },
+    {
+      "company": "Chime Financial, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001795586"
+    },
+    {
+      "company": "STORE CAPITAL LLC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001538990"
+    },
+    {
+      "company": "BC Partners Lending Corp",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001726548"
+    },
+    {
+      "company": "Via Renewables, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001606268"
+    },
+    {
+      "company": "Inuvo, Inc.",
+      "customer_concentration": 10,
+      "has_major_customers": false,
+      "id": "0000829323"
+    },
+    {
+      "company": "CarParts.com, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001378950"
+    },
+    {
+      "company": "Stabilis Solutions, Inc.",
+      "customer_concentration": 10,
+      "has_major_customers": false,
+      "id": "0001043186"
+    },
+    {
+      "company": "PREFORMED LINE PRODUCTS CO",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000080035"
+    },
+    {
+      "company": "Ares Core Infrastructure Fund",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002031750"
+    },
+    {
+      "company": "North Haven Net REIT",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001999784"
+    },
+    {
+      "company": "SMITH MICRO SOFTWARE, INC.",
+      "customer_concentration": 18,
+      "has_major_customers": false,
+      "id": "0000948708"
+    },
+    {
+      "company": "Cherry Hill Mortgage Investment Corp",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001571776"
+    },
+    {
+      "company": "SANDRIDGE ENERGY INC",
+      "customer_concentration": 10,
+      "has_major_customers": false,
+      "id": "0001349436"
+    },
+    {
+      "company": "ADIAL PHARMACEUTICALS, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001513525"
+    },
+    {
+      "company": "MONROE CAPITAL Corp",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001512931"
+    },
+    {
+      "company": "Blue Owl Capital Corp II",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001655887"
+    },
+    {
+      "company": "Cryoport, Inc.",
+      "customer_concentration": 10,
+      "has_major_customers": false,
+      "id": "0001124524"
+    },
+    {
+      "company": "Atea Pharmaceuticals, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001593899"
+    },
+    {
+      "company": "LEXICON PHARMACEUTICALS, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001062822"
+    },
+    {
+      "company": "AA Mission Acquisition Corp. II",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002075336"
+    },
+    {
+      "company": "SOUTH PLAINS FINANCIAL, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001163668"
+    },
+    {
+      "company": "GRID DYNAMICS HOLDINGS, INC.",
+      "customer_concentration": 19,
+      "has_major_customers": false,
+      "id": "0001743725"
+    },
+    {
+      "company": "Bowman Consulting Group Ltd.",
+      "customer_concentration": 90,
+      "has_major_customers": true,
+      "id": "0001847590"
+    },
+    {
+      "company": "BridgeBio Oncology Therapeutics, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001869105"
+    },
+    {
+      "company": "Federal Home Loan Bank of San Francisco",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001316944"
+    },
+    {
+      "company": "Ranger Energy Services, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001699039"
+    },
+    {
+      "company": "FARMERS NATIONAL BANC CORP /OH/",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000709337"
+    },
+    {
+      "company": "Clarus Corp",
+      "customer_concentration": 58,
+      "has_major_customers": true,
+      "id": "0000913277"
+    },
+    {
+      "company": "Profound Medical Corp.",
+      "customer_concentration": 19,
+      "has_major_customers": false,
+      "id": "0001628808"
+    },
+    {
+      "company": "NextCure, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001661059"
+    },
+    {
+      "company": "Gevo, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001392380"
+    },
+    {
+      "company": "REGENXBIO Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001590877"
+    },
+    {
+      "company": "ContextLogic Holdings Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002064307"
+    },
+    {
+      "company": "Citizens Community Bancorp Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001367859"
+    },
+    {
+      "company": "Grove Collaborative Holdings, Inc.",
+      "customer_concentration": 41,
+      "has_major_customers": true,
+      "id": "0001841761"
+    },
+    {
+      "company": "Orion Properties Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001873923"
+    },
+    {
+      "company": "ArriVent BioPharma, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001868279"
+    },
+    {
+      "company": "Phio Pharmaceuticals Corp.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001533040"
+    },
+    {
+      "company": "Ambiq Micro, Inc.",
+      "customer_concentration": 92,
+      "has_major_customers": true,
+      "id": "0001500412"
+    },
+    {
+      "company": "New Mountain Guardian IV Income Fund, L.L.C.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001976719"
+    },
+    {
+      "company": "ALLIENT INC",
+      "customer_concentration": 55,
+      "has_major_customers": true,
+      "id": "0000046129"
+    },
+    {
+      "company": "ENTRAVISION COMMUNICATIONS CORP",
+      "customer_concentration": 61,
+      "has_major_customers": true,
+      "id": "0001109116"
+    },
+    {
+      "company": "Lineage Cell Therapeutics, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000876343"
+    },
+    {
+      "company": "Weave Communications, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001609151"
+    },
+    {
+      "company": "Metagenomi Therapeutics, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001785279"
+    },
+    {
+      "company": "WEBTOON Entertainment Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001997859"
+    },
+    {
+      "company": "aTYR PHARMA INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001339970"
+    },
+    {
+      "company": "Rumble Inc.",
+      "customer_concentration": 66,
+      "has_major_customers": true,
+      "id": "0001830081"
+    },
+    {
+      "company": "Nutex Health Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001479681"
+    },
+    {
+      "company": "ESS Tech, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001819438"
+    },
+    {
+      "company": "RAYONIER ADVANCED MATERIALS INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001597672"
+    },
+    {
+      "company": "Wheeler Real Estate Investment Trust, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001527541"
+    },
+    {
+      "company": "Contineum Therapeutics, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001855175"
+    },
+    {
+      "company": "Caribou Biosciences, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001619856"
+    },
+    {
+      "company": "NCS Multistage Holdings, Inc.",
+      "customer_concentration": 63,
+      "has_major_customers": true,
+      "id": "0001692427"
+    },
+    {
+      "company": "TriSalus Life Sciences, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001826667"
+    },
+    {
+      "company": "CEDAR REALTY TRUST, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000761648"
+    },
+    {
+      "company": "Camp4 Therapeutics Corp",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001736730"
+    },
+    {
+      "company": "Evommune, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002044725"
+    },
+    {
+      "company": "HAWTHORN BANCSHARES, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000893847"
+    },
+    {
+      "company": "A.K.A. BRANDS HOLDING CORP.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001865107"
+    },
+    {
+      "company": "BCP Investment Corp",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001372807"
+    },
+    {
+      "company": "EyePoint, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001314102"
+    },
+    {
+      "company": "Amalgamated Financial Corp.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001823608"
+    },
+    {
+      "company": "UBS Commercial Mortgage Trust 2019-C16",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001769322"
+    },
+    {
+      "company": "Mobile Infrastructure Corp",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001847874"
+    },
+    {
+      "company": "OLAPLEX HOLDINGS, INC.",
+      "customer_concentration": 54,
+      "has_major_customers": true,
+      "id": "0001868726"
+    },
+    {
+      "company": "RESEARCH FRONTIERS INC",
+      "customer_concentration": 15,
+      "has_major_customers": false,
+      "id": "0000793524"
+    },
+    {
+      "company": "Intrepid Potash, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001421461"
+    },
+    {
+      "company": "FOSTER L B CO",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000352825"
+    },
+    {
+      "company": "SOLITARIO RESOURCES CORP.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000917225"
+    },
+    {
+      "company": "PARK OHIO INDUSTRIES INC/OH",
+      "customer_concentration": 25,
+      "has_major_customers": true,
+      "id": "0001068148"
+    },
+    {
+      "company": "PARK OHIO HOLDINGS CORP",
+      "customer_concentration": 25,
+      "has_major_customers": true,
+      "id": "0000076282"
+    },
+    {
+      "company": "5C Lending Partners Corp.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001998387"
+    },
+    {
+      "company": "UWHARRIE CAPITAL CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000898171"
+    },
+    {
+      "company": "Carter Bankshares, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001829576"
+    },
+    {
+      "company": "Global Crossing Airlines Group Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001846084"
+    },
+    {
+      "company": "OFG BANCORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001030469"
+    },
+    {
+      "company": "NATIONAL RESEARCH CORP",
+      "customer_concentration": 40,
+      "has_major_customers": true,
+      "id": "0000070487"
+    },
+    {
+      "company": "Ranpak Holdings Corp.",
+      "customer_concentration": 80,
+      "has_major_customers": true,
+      "id": "0001712463"
+    },
+    {
+      "company": "RAND CAPITAL CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000081955"
+    },
+    {
+      "company": "JOHN WILEY & SONS, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000107140"
+    },
+    {
+      "company": "Virtuix Holdings Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001606242"
+    },
+    {
+      "company": "Guidewire Software, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001528396"
+    },
+    {
+      "company": "METHODE ELECTRONICS INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000065270"
+    },
+    {
+      "company": "SMITH & WESSON BRANDS, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001092796"
+    },
+    {
+      "company": "Keysight Technologies, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001601046"
+    },
+    {
+      "company": "CIENA CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000936395"
+    },
+    {
+      "company": "Quest Water Global, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001487091"
+    },
+    {
+      "company": "TORO CO",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000737758"
+    },
+    {
+      "company": "FERRELLGAS PARTNERS FINANCE CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001012493"
+    },
+    {
+      "company": "FERRELLGAS FINANCE CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000922360"
+    },
+    {
+      "company": "FERRELLGAS L P",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000922359"
+    },
+    {
+      "company": "FERRELLGAS PARTNERS L P",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000922358"
+    },
+    {
+      "company": "VILLAGE SUPER MARKET INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000103595"
+    },
+    {
+      "company": "CRACKER BARREL OLD COUNTRY STORE, INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001067294"
+    },
+    {
+      "company": "BROWN FORMAN CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000014693"
+    },
+    {
+      "company": "DAKTRONICS INC /SD/",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000915779"
+    },
+    {
+      "company": "HIGHWATER ETHANOL LLC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001371451"
+    },
+    {
+      "company": "MADRIGAL PHARMACEUTICALS, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001157601"
+    },
+    {
+      "company": "Full Truck Alliance Co. Ltd.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001838413"
+    },
+    {
+      "company": "SMITHFIELD FOODS INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000091388"
+    },
+    {
+      "company": "United States Oil Fund, LP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001327068"
+    },
+    {
+      "company": "American Healthcare REIT, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001632970"
+    },
+    {
+      "company": "Booz Allen Hamilton Holding Corp",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001443646"
+    },
+    {
+      "company": "Joby Aviation, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001819848"
+    },
+    {
+      "company": "AGREE REALTY CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000917251"
+    },
+    {
+      "company": "MOLSON COORS BEVERAGE CO",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000024545"
+    },
+    {
+      "company": "WINTRUST FINANCIAL CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001015328"
+    },
+    {
+      "company": "ImmunityBio, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001326110"
+    },
+    {
+      "company": "U-Haul Holding Co /NV/",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000004457"
+    },
+    {
+      "company": "Pro Medicus Ltd./ADR",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002013003"
+    },
+    {
+      "company": "Abivax S.A.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001956827"
+    },
+    {
+      "company": "BUNZL PLC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001072397"
+    },
+    {
+      "company": "CAVA GROUP, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001639438"
+    },
+    {
+      "company": "CAE INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001173382"
+    },
+    {
+      "company": "DILLARD'S, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000028917"
+    },
+    {
+      "company": "Tempus AI, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001717115"
+    },
+    {
+      "company": "FEDERAL REALTY INVESTMENT TRUST",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000034903"
+    },
+    {
+      "company": "InterDigital, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001405495"
+    },
+    {
+      "company": "CubeSmart",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001298675"
+    },
+    {
+      "company": "APTARGROUP, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000896622"
+    },
+    {
+      "company": "MASIMO CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000937556"
+    },
+    {
+      "company": "ELDORADO GOLD CORP /FI",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000918608"
+    },
+    {
+      "company": "ALEXANDRIA REAL ESTATE EQUITIES, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001035443"
+    },
+    {
+      "company": "TETRA TECH INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000831641"
+    },
+    {
+      "company": "Praxis Precision Medicines, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001689548"
+    },
+    {
+      "company": "Rockwool A/S/ADR",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001969729"
+    },
+    {
+      "company": "MINEBEA MITSUMI Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001034983"
+    },
+    {
+      "company": "HF Sinclair Corp",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001915657"
+    },
+    {
+      "company": "CHART INDUSTRIES INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000892553"
+    },
+    {
+      "company": "Enlight Renewable Energy Ltd.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001922641"
+    },
+    {
+      "company": "Brixmor Property Group Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001581068"
+    },
+    {
+      "company": "BIO-TECHNE Corp",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000842023"
+    },
+    {
+      "company": "ACUITY INC. (DE)",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001144215"
+    },
+    {
+      "company": "CONAGRA BRANDS INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000023217"
+    },
+    {
+      "company": "Jefferies Financial Group Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000096223"
+    },
+    {
+      "company": "Aurora Innovation, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001828108"
+    },
+    {
+      "company": "New Oriental Education & Technology Group Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001372920"
+    },
+    {
+      "company": "Liberty Live Holdings, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002078416"
+    },
+    {
+      "company": "Kinsale Capital Group, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001669162"
+    },
+    {
+      "company": "CareTrust REIT, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001590717"
+    },
+    {
+      "company": "VALMONT INDUSTRIES INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000102729"
+    },
+    {
+      "company": "Var Energi ASA/ADR",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001919275"
+    },
+    {
+      "company": "VICOR CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000751978"
+    },
+    {
+      "company": "DOCUSIGN, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001261333"
+    },
+    {
+      "company": "OLD NATIONAL BANCORP /IN/",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000707179"
+    },
+    {
+      "company": "COGNEX CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000851205"
+    },
+    {
+      "company": "AUTOLIV INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001034670"
+    },
+    {
+      "company": "POPULAR, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000763901"
+    },
+    {
+      "company": "Vaxcyte, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001649094"
+    },
+    {
+      "company": "SKYWORKS SOLUTIONS, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000004127"
+    },
+    {
+      "company": "OR Royalties Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001627272"
+    },
+    {
+      "company": "Rexford Industrial Realty, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001571283"
+    },
+    {
+      "company": "ARROWHEAD PHARMACEUTICALS, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000879407"
+    },
+    {
+      "company": "WESTERN ALLIANCE BANCORPORATION",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001212545"
+    },
+    {
+      "company": "Installed Building Products, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001580905"
+    },
+    {
+      "company": "MOSAIC CO",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001285785"
+    },
+    {
+      "company": "Virtu Financial, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001592386"
+    },
+    {
+      "company": "UMB FINANCIAL CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000101382"
+    },
+    {
+      "company": "Dutch Bros Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001866581"
+    },
+    {
+      "company": "Snap Inc",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001564408"
+    },
+    {
+      "company": "CHARLES RIVER LABORATORIES INTERNATIONAL, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001100682"
+    },
+    {
+      "company": "LITTELFUSE INC /DE",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000889331"
+    },
+    {
+      "company": "RYDER SYSTEM INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000085961"
+    },
+    {
+      "company": "CULLEN/FROST BANKERS, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000039263"
+    },
+    {
+      "company": "LEVI STRAUSS & CO",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000094845"
+    },
+    {
+      "company": "NATIONAL FUEL GAS CO",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000070145"
+    },
+    {
+      "company": "FIRST INDUSTRIAL REALTY TRUST INC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000921825"
+    },
+    {
+      "company": "NNN REIT, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000751364"
+    },
+    {
+      "company": "BITMINE IMMERSION TECHNOLOGIES, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001829311"
+    },
+    {
+      "company": "EASTMAN CHEMICAL CO",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000915389"
+    },
+    {
+      "company": "AFFILIATED MANAGERS GROUP, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001004434"
+    },
+    {
+      "company": "American Airlines Group Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000006201"
+    },
+    {
+      "company": "ENERGY CO OF PARANA",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001041792"
+    },
+    {
+      "company": "Vipshop Holdings Ltd",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001529192"
+    },
+    {
+      "company": "MIDDLEBY Corp",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000769520"
+    },
+    {
+      "company": "PROCORE TECHNOLOGIES, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001611052"
+    },
+    {
+      "company": "Element Solutions Inc",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001590714"
+    },
+    {
+      "company": "Ternium S.A.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001342874"
+    },
+    {
+      "company": "Zurn Elkay Water Solutions Corp",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001439288"
+    },
+    {
+      "company": "LKQ CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001065696"
+    },
+    {
+      "company": "FirstCash Holdings, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000840489"
+    },
+    {
+      "company": "COLUMBIA BANKING SYSTEM, INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000887343"
+    },
+    {
+      "company": "SANMINA CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000897723"
+    },
+    {
+      "company": "POOL CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000945841"
+    },
+    {
+      "company": "ZIONS BANCORPORATION, NATIONAL ASSOCIATION /UT/",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000109380"
+    },
+    {
+      "company": "Frontline plc",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000913290"
+    },
+    {
+      "company": "ICON PLC",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001060955"
+    },
+    {
+      "company": "Primo Brands Corp",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0002042694"
+    },
+    {
+      "company": "FEDERAL NATIONAL MORTGAGE ASSOCIATION FANNIE MAE",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000310522"
+    },
+    {
+      "company": "DARLING INGREDIENTS INC.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000916540"
+    },
+    {
+      "company": "NexGen Energy Ltd.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001698535"
+    },
+    {
+      "company": "SEMTECH CORP",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0000088941"
+    },
+    {
+      "company": "GDS Holdings Ltd",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001526125"
+    },
+    {
+      "company": "AXIS CAPITAL HOLDINGS LTD",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001214816"
+    },
+    {
+      "company": "Axsome Therapeutics, Inc.",
+      "customer_concentration": 0,
+      "has_major_customers": false,
+      "id": "0001579428"
+    }
+  ],
+  "edges": [
+    {
+      "relationship": "concentration_risk",
+      "source": "0001462418",
+      "target": "0001829864"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001462418",
+      "target": "0001603015"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001462418",
+      "target": "0001857853"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001462418",
+      "target": "0001811935"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001462418",
+      "target": "0001847590"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001462418",
+      "target": "0000913277"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001462418",
+      "target": "0001841761"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001462418",
+      "target": "0001500412"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001462418",
+      "target": "0000046129"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001462418",
+      "target": "0001109116"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001462418",
+      "target": "0001830081"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001462418",
+      "target": "0001692427"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001462418",
+      "target": "0001868726"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001462418",
+      "target": "0000070487"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001462418",
+      "target": "0001712463"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001829864",
+      "target": "0001603015"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001829864",
+      "target": "0001857853"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001829864",
+      "target": "0001811935"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001829864",
+      "target": "0001847590"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001829864",
+      "target": "0000913277"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001829864",
+      "target": "0001841761"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001829864",
+      "target": "0001500412"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001829864",
+      "target": "0000046129"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001829864",
+      "target": "0001109116"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001829864",
+      "target": "0001830081"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001829864",
+      "target": "0001692427"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001829864",
+      "target": "0001868726"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001829864",
+      "target": "0000070487"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001829864",
+      "target": "0001712463"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001603015",
+      "target": "0001857853"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001603015",
+      "target": "0001811935"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001603015",
+      "target": "0001847590"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001603015",
+      "target": "0000913277"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001603015",
+      "target": "0001841761"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001603015",
+      "target": "0001500412"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001603015",
+      "target": "0000046129"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001603015",
+      "target": "0001109116"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001603015",
+      "target": "0001830081"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001603015",
+      "target": "0001692427"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001603015",
+      "target": "0001868726"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001603015",
+      "target": "0000070487"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001603015",
+      "target": "0001712463"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001857853",
+      "target": "0001811935"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001857853",
+      "target": "0001847590"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001857853",
+      "target": "0000913277"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001857853",
+      "target": "0001841761"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001857853",
+      "target": "0001500412"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001857853",
+      "target": "0000046129"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001857853",
+      "target": "0001109116"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001857853",
+      "target": "0001830081"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001857853",
+      "target": "0001692427"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001857853",
+      "target": "0001868726"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001857853",
+      "target": "0000070487"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001857853",
+      "target": "0001712463"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001811935",
+      "target": "0001847590"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001811935",
+      "target": "0000913277"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001811935",
+      "target": "0001841761"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001811935",
+      "target": "0001500412"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001811935",
+      "target": "0000046129"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001811935",
+      "target": "0001109116"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001811935",
+      "target": "0001830081"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001811935",
+      "target": "0001692427"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001811935",
+      "target": "0001868726"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001811935",
+      "target": "0000070487"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001811935",
+      "target": "0001712463"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001847590",
+      "target": "0000913277"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001847590",
+      "target": "0001841761"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001847590",
+      "target": "0001500412"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001847590",
+      "target": "0000046129"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001847590",
+      "target": "0001109116"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001847590",
+      "target": "0001830081"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001847590",
+      "target": "0001692427"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001847590",
+      "target": "0001868726"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001847590",
+      "target": "0000070487"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001847590",
+      "target": "0001712463"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0000913277",
+      "target": "0001841761"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0000913277",
+      "target": "0001500412"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0000913277",
+      "target": "0000046129"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0000913277",
+      "target": "0001109116"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0000913277",
+      "target": "0001830081"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0000913277",
+      "target": "0001692427"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0000913277",
+      "target": "0001868726"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0000913277",
+      "target": "0000070487"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0000913277",
+      "target": "0001712463"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001841761",
+      "target": "0001500412"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001841761",
+      "target": "0000046129"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001841761",
+      "target": "0001109116"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001841761",
+      "target": "0001830081"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001841761",
+      "target": "0001692427"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001841761",
+      "target": "0001868726"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001841761",
+      "target": "0000070487"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001841761",
+      "target": "0001712463"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001500412",
+      "target": "0000046129"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001500412",
+      "target": "0001109116"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001500412",
+      "target": "0001830081"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001500412",
+      "target": "0001692427"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001500412",
+      "target": "0001868726"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001500412",
+      "target": "0000070487"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001500412",
+      "target": "0001712463"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0000046129",
+      "target": "0001109116"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0000046129",
+      "target": "0001830081"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0000046129",
+      "target": "0001692427"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0000046129",
+      "target": "0001868726"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0000046129",
+      "target": "0000070487"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0000046129",
+      "target": "0001712463"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001109116",
+      "target": "0001830081"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001109116",
+      "target": "0001692427"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001109116",
+      "target": "0001868726"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001109116",
+      "target": "0000070487"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001109116",
+      "target": "0001712463"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001830081",
+      "target": "0001692427"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001830081",
+      "target": "0001868726"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001830081",
+      "target": "0000070487"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001830081",
+      "target": "0001712463"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001692427",
+      "target": "0001868726"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001692427",
+      "target": "0000070487"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001692427",
+      "target": "0001712463"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001868726",
+      "target": "0000070487"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0001868726",
+      "target": "0001712463"
+    },
+    {
+      "relationship": "concentration_risk",
+      "source": "0000070487",
+      "target": "0001712463"
+    }
+  ]
+}

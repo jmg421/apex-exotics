@@ -1,0 +1,6 @@
+feedparser
+requests
+python-dotenv
+edgartools
+pytest
+networkx

@@ -1,0 +1,3331 @@
+{
+  "0001822523": {
+    "company": "Advanced Flower Capital Inc.",
+    "cik": "0001822523",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1822523/000162828026014392/0001628280-26-014392-index.htm"
+  },
+  "0001783328": {
+    "company": "TScan Therapeutics, Inc.",
+    "cik": "0001783328",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1783328/000119312526089884/0001193125-26-089884-index.htm"
+  },
+  "0001279704": {
+    "company": "Cellectar Biosciences, Inc.",
+    "cik": "0001279704",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1279704/000110465926023167/0001104659-26-023167-index.htm"
+  },
+  "0001462418": {
+    "company": "ALTISOURCE PORTFOLIO SOLUTIONS S.A.",
+    "cik": "0001462418",
+    "relationships": {
+      "customer_concentration": [
+        42
+      ],
+      "has_major_customers": true
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1462418/000146241826000019/0001462418-26-000019-index.htm"
+  },
+  "0001273441": {
+    "company": "GRAN TIERRA ENERGY INC.",
+    "cik": "0001273441",
+    "relationships": {
+      "customer_concentration": [
+        19
+      ],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1273441/000127344126000010/0001273441-26-000010-index.htm"
+  },
+  "0001829864": {
+    "company": "TaskUs, Inc.",
+    "cik": "0001829864",
+    "relationships": {
+      "customer_concentration": [
+        87,
+        71,
+        45,
+        26,
+        11
+      ],
+      "has_major_customers": true
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1829864/000182986426000012/0001829864-26-000012-index.htm"
+  },
+  "0001527613": {
+    "company": "CIMG Inc.",
+    "cik": "0001527613",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1527613/000149315226009024/0001493152-26-009024-index.htm"
+  },
+  "0002000762": {
+    "company": "GMTech Inc.",
+    "cik": "0002000762",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/2000762/000168316826001549/0001683168-26-001549-index.htm"
+  },
+  "0001045810": {
+    "company": "NVIDIA CORP",
+    "cik": "0001045810",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001045810&type=10-K&count=1"
+  },
+  "0000320193": {
+    "company": "Apple Inc.",
+    "cik": "0000320193",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000320193&type=10-K&count=1"
+  },
+  "0001652044": {
+    "company": "Alphabet Inc.",
+    "cik": "0001652044",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001652044&type=10-K&count=1"
+  },
+  "0000789019": {
+    "company": "MICROSOFT CORP",
+    "cik": "0000789019",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000789019&type=10-K&count=1"
+  },
+  "0001018724": {
+    "company": "AMAZON COM INC",
+    "cik": "0001018724",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001018724&type=10-K&count=1"
+  },
+  "0001326801": {
+    "company": "Meta Platforms, Inc.",
+    "cik": "0001326801",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001326801&type=10-K&count=1"
+  },
+  "0001730168": {
+    "company": "Broadcom Inc.",
+    "cik": "0001730168",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001730168&type=10-K&count=1"
+  },
+  "0001318605": {
+    "company": "Tesla, Inc.",
+    "cik": "0001318605",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001318605&type=10-K&count=1"
+  },
+  "0001067983": {
+    "company": "BERKSHIRE HATHAWAY INC",
+    "cik": "0001067983",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001067983&type=10-K&count=1"
+  },
+  "0000104169": {
+    "company": "Walmart Inc.",
+    "cik": "0000104169",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000104169&type=10-K&count=1"
+  },
+  "0000059478": {
+    "company": "ELI LILLY & Co",
+    "cik": "0000059478",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000059478&type=10-K&count=1"
+  },
+  "0000019617": {
+    "company": "JPMORGAN CHASE & CO",
+    "cik": "0000019617",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000019617&type=10-K&count=1"
+  },
+  "0000034088": {
+    "company": "EXXON MOBIL CORP",
+    "cik": "0000034088",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000034088&type=10-K&count=1"
+  },
+  "0000884394": {
+    "company": "SPDR S&P 500 ETF TRUST",
+    "cik": "0000884394",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000884394&type=10-K&count=1"
+  },
+  "0001403161": {
+    "company": "VISA INC.",
+    "cik": "0001403161",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001403161&type=10-K&count=1"
+  },
+  "0000200406": {
+    "company": "JOHNSON & JOHNSON",
+    "cik": "0000200406",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000200406&type=10-K&count=1"
+  },
+  "0000937966": {
+    "company": "ASML HOLDING NV",
+    "cik": "0000937966",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000937966&type=10-K&count=1"
+  },
+  "0000723125": {
+    "company": "MICRON TECHNOLOGY INC",
+    "cik": "0000723125",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000723125&type=10-K&count=1"
+  },
+  "0001141391": {
+    "company": "Mastercard Inc",
+    "cik": "0001141391",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001141391&type=10-K&count=1"
+  },
+  "0000909832": {
+    "company": "COSTCO WHOLESALE CORP /NEW",
+    "cik": "0000909832",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000909832&type=10-K&count=1"
+  },
+  "0001341439": {
+    "company": "ORACLE CORP",
+    "cik": "0001341439",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001341439&type=10-K&count=1"
+  },
+  "0001065280": {
+    "company": "NETFLIX INC",
+    "cik": "0001065280",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001065280&type=10-K&count=1"
+  },
+  "0001551152": {
+    "company": "AbbVie Inc.",
+    "cik": "0001551152",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001551152&type=10-K&count=1"
+  },
+  "0000080424": {
+    "company": "PROCTER & GAMBLE Co",
+    "cik": "0000080424",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000080424&type=10-K&count=1"
+  },
+  "0000354950": {
+    "company": "HOME DEPOT, INC.",
+    "cik": "0000354950",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000354950&type=10-K&count=1"
+  },
+  "0000093410": {
+    "company": "CHEVRON CORP",
+    "cik": "0000093410",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000093410&type=10-K&count=1"
+  },
+  "0000070858": {
+    "company": "BANK OF AMERICA CORP /DE/",
+    "cik": "0000070858",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000070858&type=10-K&count=1"
+  },
+  "0000040545": {
+    "company": "GENERAL ELECTRIC CO",
+    "cik": "0000040545",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000040545&type=10-K&count=1"
+  },
+  "0000021344": {
+    "company": "COCA COLA CO",
+    "cik": "0000021344",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000021344&type=10-K&count=1"
+  },
+  "0000018230": {
+    "company": "CATERPILLAR INC",
+    "cik": "0000018230",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000018230&type=10-K&count=1"
+  },
+  "0001577552": {
+    "company": "Alibaba Group Holding Ltd",
+    "cik": "0001577552",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001577552&type=10-K&count=1"
+  },
+  "0001321655": {
+    "company": "Palantir Technologies Inc.",
+    "cik": "0001321655",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001321655&type=10-K&count=1"
+  },
+  "0001114448": {
+    "company": "NOVARTIS AG",
+    "cik": "0001114448",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001114448&type=10-K&count=1"
+  },
+  "0000002488": {
+    "company": "ADVANCED MICRO DEVICES INC",
+    "cik": "0000002488",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000002488&type=10-K&count=1"
+  },
+  "0000901832": {
+    "company": "ASTRAZENECA PLC",
+    "cik": "0000901832",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000901832&type=10-K&count=1"
+  },
+  "0001089113": {
+    "company": "HSBC HOLDINGS PLC",
+    "cik": "0001089113",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001089113&type=10-K&count=1"
+  },
+  "0001094517": {
+    "company": "TOYOTA MOTOR CORP/",
+    "cik": "0001094517",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001094517&type=10-K&count=1"
+  },
+  "0000858877": {
+    "company": "CISCO SYSTEMS, INC.",
+    "cik": "0000858877",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000858877&type=10-K&count=1"
+  },
+  "0000310158": {
+    "company": "Merck & Co., Inc.",
+    "cik": "0000310158",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000310158&type=10-K&count=1"
+  },
+  "0000006951": {
+    "company": "APPLIED MATERIALS INC /DE",
+    "cik": "0000006951",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000006951&type=10-K&count=1"
+  },
+  "0000707549": {
+    "company": "LAM RESEARCH CORP",
+    "cik": "0000707549",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000707549&type=10-K&count=1"
+  },
+  "0001413329": {
+    "company": "Philip Morris International Inc.",
+    "cik": "0001413329",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001413329&type=10-K&count=1"
+  },
+  "0002070829": {
+    "company": "Contemporary Amperex Technology Co., Limited/ADR",
+    "cik": "0002070829",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002070829&type=10-K&count=1"
+  },
+  "0000101829": {
+    "company": "RTX Corp",
+    "cik": "0000101829",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000101829&type=10-K&count=1"
+  },
+  "0000731766": {
+    "company": "UNITEDHEALTH GROUP INC",
+    "cik": "0000731766",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000731766&type=10-K&count=1"
+  },
+  "0000895421": {
+    "company": "MORGAN STANLEY",
+    "cik": "0000895421",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000895421&type=10-K&count=1"
+  },
+  "0000886982": {
+    "company": "GOLDMAN SACHS GROUP INC",
+    "cik": "0000886982",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000886982&type=10-K&count=1"
+  },
+  "0000072971": {
+    "company": "WELLS FARGO & COMPANY/MN",
+    "cik": "0000072971",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000072971&type=10-K&count=1"
+  },
+  "0000063908": {
+    "company": "MCDONALDS CORP",
+    "cik": "0000063908",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000063908&type=10-K&count=1"
+  },
+  "0001283699": {
+    "company": "T-Mobile US, Inc.",
+    "cik": "0001283699",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001283699&type=10-K&count=1"
+  },
+  "0001067839": {
+    "company": "INVESCO QQQ TRUST, SERIES 1",
+    "cik": "0001067839",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001067839&type=10-K&count=1"
+  },
+  "0001707925": {
+    "company": "LINDE PLC",
+    "cik": "0001707925",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001707925&type=10-K&count=1"
+  },
+  "0001996810": {
+    "company": "GE Vernova Inc.",
+    "cik": "0001996810",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001996810&type=10-K&count=1"
+  },
+  "0001306965": {
+    "company": "Shell plc",
+    "cik": "0001306965",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001306965&type=10-K&count=1"
+  },
+  "0001000184": {
+    "company": "SAP SE",
+    "cik": "0001000184",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001000184&type=10-K&count=1"
+  },
+  "0001000275": {
+    "company": "ROYAL BANK OF CANADA",
+    "cik": "0001000275",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001000275&type=10-K&count=1"
+  },
+  "0000077476": {
+    "company": "PEPSICO INC",
+    "cik": "0000077476",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000077476&type=10-K&count=1"
+  },
+  "0000050863": {
+    "company": "INTEL CORP",
+    "cik": "0000050863",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000050863&type=10-K&count=1"
+  },
+  "0000051143": {
+    "company": "INTERNATIONAL BUSINESS MACHINES CORP",
+    "cik": "0000051143",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000051143&type=10-K&count=1"
+  },
+  "0000004962": {
+    "company": "AMERICAN EXPRESS CO",
+    "cik": "0000004962",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000004962&type=10-K&count=1"
+  },
+  "0000732712": {
+    "company": "VERIZON COMMUNICATIONS INC",
+    "cik": "0000732712",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000732712&type=10-K&count=1"
+  },
+  "0000067088": {
+    "company": "MITSUBISHI UFJ FINANCIAL GROUP INC",
+    "cik": "0000067088",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000067088&type=10-K&count=1"
+  },
+  "0000811809": {
+    "company": "BHP Group Ltd",
+    "cik": "0000811809",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000811809&type=10-K&count=1"
+  },
+  "0000318154": {
+    "company": "AMGEN INC",
+    "cik": "0000318154",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000318154&type=10-K&count=1"
+  },
+  "0000946770": {
+    "company": "DEUTSCHE TELEKOM AG",
+    "cik": "0000946770",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000946770&type=10-K&count=1"
+  },
+  "0000001800": {
+    "company": "ABBOTT LABORATORIES",
+    "cik": "0000001800",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000001800&type=10-K&count=1"
+  },
+  "0000319201": {
+    "company": "KLA CORP",
+    "cik": "0000319201",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000319201&type=10-K&count=1"
+  },
+  "0000732717": {
+    "company": "AT&T INC.",
+    "cik": "0000732717",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000732717&type=10-K&count=1"
+  },
+  "0000831001": {
+    "company": "CITIGROUP INC",
+    "cik": "0000831001",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000831001&type=10-K&count=1"
+  },
+  "0000097745": {
+    "company": "THERMO FISHER SCIENTIFIC INC.",
+    "cik": "0000097745",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000097745&type=10-K&count=1"
+  },
+  "0000753308": {
+    "company": "NEXTERA ENERGY INC",
+    "cik": "0000753308",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000753308&type=10-K&count=1"
+  },
+  "0000097476": {
+    "company": "TEXAS INSTRUMENTS INC",
+    "cik": "0000097476",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000097476&type=10-K&count=1"
+  },
+  "0001744489": {
+    "company": "Walt Disney Co",
+    "cik": "0001744489",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001744489&type=10-K&count=1"
+  },
+  "0001108524": {
+    "company": "Salesforce, Inc.",
+    "cik": "0001108524",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001108524&type=10-K&count=1"
+  },
+  "0000882095": {
+    "company": "GILEAD SCIENCES, INC.",
+    "cik": "0000882095",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000882095&type=10-K&count=1"
+  },
+  "0000887028": {
+    "company": "RIO TINTO LTD",
+    "cik": "0000887028",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000887028&type=10-K&count=1"
+  },
+  "0000891478": {
+    "company": "Banco Santander, S.A.",
+    "cik": "0000891478",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000891478&type=10-K&count=1"
+  },
+  "0001001838": {
+    "company": "SOUTHERN COPPER CORP/",
+    "cik": "0001001838",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001001838&type=10-K&count=1"
+  },
+  "0000109198": {
+    "company": "TJX COMPANIES INC /DE/",
+    "cik": "0000109198",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000109198&type=10-K&count=1"
+  },
+  "0000820313": {
+    "company": "AMPHENOL CORP /DE/",
+    "cik": "0000820313",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000820313&type=10-K&count=1"
+  },
+  "0001035267": {
+    "company": "INTUITIVE SURGICAL INC",
+    "cik": "0001035267",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001035267&type=10-K&count=1"
+  },
+  "0000012927": {
+    "company": "BOEING CO",
+    "cik": "0000012927",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000012927&type=10-K&count=1"
+  },
+  "0000006281": {
+    "company": "ANALOG DEVICES INC",
+    "cik": "0000006281",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000006281&type=10-K&count=1"
+  },
+  "0000316709": {
+    "company": "SCHWAB CHARLES CORP",
+    "cik": "0000316709",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000316709&type=10-K&count=1"
+  },
+  "0000879764": {
+    "company": "TotalEnergies SE",
+    "cik": "0000879764",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000879764&type=10-K&count=1"
+  },
+  "0000315189": {
+    "company": "DEERE & CO",
+    "cik": "0000315189",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000315189&type=10-K&count=1"
+  },
+  "0001596532": {
+    "company": "Arista Networks, Inc.",
+    "cik": "0001596532",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001596532&type=10-K&count=1"
+  },
+  "0000353278": {
+    "company": "NOVO NORDISK A S",
+    "cik": "0000353278",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000353278&type=10-K&count=1"
+  },
+  "0002012383": {
+    "company": "BlackRock, Inc.",
+    "cik": "0002012383",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002012383&type=10-K&count=1"
+  },
+  "0000863064": {
+    "company": "RIO TINTO PLC",
+    "cik": "0000863064",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000863064&type=10-K&count=1"
+  },
+  "0000773840": {
+    "company": "HONEYWELL INTERNATIONAL INC",
+    "cik": "0000773840",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000773840&type=10-K&count=1"
+  },
+  "0000947263": {
+    "company": "TORONTO DOMINION BANK",
+    "cik": "0000947263",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000947263&type=10-K&count=1"
+  },
+  "0001144967": {
+    "company": "HDFC BANK LTD",
+    "cik": "0001144967",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001144967&type=10-K&count=1"
+  },
+  "0000217410": {
+    "company": "UNILEVER PLC",
+    "cik": "0000217410",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000217410&type=10-K&count=1"
+  },
+  "0001594805": {
+    "company": "SHOPIFY INC.",
+    "cik": "0001594805",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001594805&type=10-K&count=1"
+  },
+  "0001668717": {
+    "company": "Anheuser-Busch InBev SA/NV",
+    "cik": "0001668717",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001668717&type=10-K&count=1"
+  },
+  "0000100885": {
+    "company": "UNION PACIFIC CORP",
+    "cik": "0000100885",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000100885&type=10-K&count=1"
+  },
+  "0000078003": {
+    "company": "PFIZER INC",
+    "cik": "0000078003",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000078003&type=10-K&count=1"
+  },
+  "0001543151": {
+    "company": "Uber Technologies, Inc",
+    "cik": "0001543151",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001543151&type=10-K&count=1"
+  },
+  "0000936468": {
+    "company": "LOCKHEED MARTIN CORP",
+    "cik": "0000936468",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000936468&type=10-K&count=1"
+  },
+  "0002093667": {
+    "company": "Maruwa Co., Ltd./ADR",
+    "cik": "0002093667",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002093667&type=10-K&count=1"
+  },
+  "0002093654": {
+    "company": "Zijin Gold International Co Limited/ADR",
+    "cik": "0002093654",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002093654&type=10-K&count=1"
+  },
+  "0002107960": {
+    "company": "SWCC Corp/ADR",
+    "cik": "0002107960",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002107960&type=10-K&count=1"
+  },
+  "0002097364": {
+    "company": "Spartacus Acquisition Corp. II",
+    "cik": "0002097364",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002097364&type=10-K&count=1"
+  },
+  "0002086264": {
+    "company": "Vine Hill Capital Investment Corp. II",
+    "cik": "0002086264",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002086264&type=10-K&count=1"
+  },
+  "0002089174": {
+    "company": "Paltac Corporation/ADR",
+    "cik": "0002089174",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002089174&type=10-K&count=1"
+  },
+  "0002087500": {
+    "company": "NHK Spring Co. Ltd/ADR",
+    "cik": "0002087500",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002087500&type=10-K&count=1"
+  },
+  "0002089506": {
+    "company": "TOSEI CORP/ADR",
+    "cik": "0002089506",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002089506&type=10-K&count=1"
+  },
+  "0002091663": {
+    "company": "CONDUIT HOLDINGS LTD/ADR",
+    "cik": "0002091663",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002091663&type=10-K&count=1"
+  },
+  "0002093484": {
+    "company": "Muzero Acquisition Corp",
+    "cik": "0002093484",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002093484&type=10-K&count=1"
+  },
+  "0002092248": {
+    "company": "Nagase & Co., Ltd./ADR",
+    "cik": "0002092248",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002092248&type=10-K&count=1"
+  },
+  "0002091712": {
+    "company": "RF Acquisition Corp III",
+    "cik": "0002091712",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002091712&type=10-K&count=1"
+  },
+  "0002108124": {
+    "company": "Odakyu Electric Railway Co., Ltd./ADR",
+    "cik": "0002108124",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002108124&type=10-K&count=1"
+  },
+  "0002109545": {
+    "company": "Knowledge Atlas Technology Joint Stock Co Limited/ADR",
+    "cik": "0002109545",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002109545&type=10-K&count=1"
+  },
+  "0002072404": {
+    "company": "GSR IV Acquisition Corp.",
+    "cik": "0002072404",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002072404&type=10-K&count=1"
+  },
+  "0002071868": {
+    "company": "Jiangsu Hengrui Pharmaceuticals Co., Ltd./ADR",
+    "cik": "0002071868",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002071868&type=10-K&count=1"
+  },
+  "0002098780": {
+    "company": "TRG Latin America Acquisitions Corp.",
+    "cik": "0002098780",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002098780&type=10-K&count=1"
+  },
+  "0002098669": {
+    "company": "United Acquisition Corp. I",
+    "cik": "0002098669",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002098669&type=10-K&count=1"
+  },
+  "0002097376": {
+    "company": "MOZAYYX Acquisition Corp.",
+    "cik": "0002097376",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002097376&type=10-K&count=1"
+  },
+  "0002098712": {
+    "company": "GigCapital9 Corp.",
+    "cik": "0002098712",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002098712&type=10-K&count=1"
+  },
+  "0002091024": {
+    "company": "Colombier Acquisition Corp. III",
+    "cik": "0002091024",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002091024&type=10-K&count=1"
+  },
+  "0002089488": {
+    "company": "SUNEVISION HOLDINGS/ADR",
+    "cik": "0002089488",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002089488&type=10-K&count=1"
+  },
+  "0002094691": {
+    "company": "Ottobock SE & Co. KGaA/ADR",
+    "cik": "0002094691",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002094691&type=10-K&count=1"
+  },
+  "0002091585": {
+    "company": "Locksley Resources Limited/ADR",
+    "cik": "0002091585",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002091585&type=10-K&count=1"
+  },
+  "0002095161": {
+    "company": "D. Boral Acquisition I Corp.",
+    "cik": "0002095161",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002095161&type=10-K&count=1"
+  },
+  "0002098242": {
+    "company": "Spring Valley Acquisition Corp. IV",
+    "cik": "0002098242",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002098242&type=10-K&count=1"
+  },
+  "0002073340": {
+    "company": "Talon Capital Corp.",
+    "cik": "0002073340",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002073340&type=10-K&count=1"
+  },
+  "0002074157": {
+    "company": "StorageVault Canada Inc./ADR",
+    "cik": "0002074157",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002074157&type=10-K&count=1"
+  },
+  "0002073972": {
+    "company": "Sienna Senior Living Inc./ADR",
+    "cik": "0002073972",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002073972&type=10-K&count=1"
+  },
+  "0002079706": {
+    "company": "Mitsubishi Gas Chemical Company, Inc./ADR",
+    "cik": "0002079706",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002079706&type=10-K&count=1"
+  },
+  "0002079106": {
+    "company": "LaFayette Acquisition Corp.",
+    "cik": "0002079106",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002079106&type=10-K&count=1"
+  },
+  "0002077033": {
+    "company": "Miluna Acquisition Corp",
+    "cik": "0002077033",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002077033&type=10-K&count=1"
+  },
+  "0002080023": {
+    "company": "Viking Acquisition Corp I",
+    "cik": "0002080023",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002080023&type=10-K&count=1"
+  },
+  "0002087843": {
+    "company": "Greatland Resources Limited/ADR",
+    "cik": "0002087843",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002087843&type=10-K&count=1"
+  },
+  "0002087361": {
+    "company": "M Evo Global Acquisition Corp II",
+    "cik": "0002087361",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002087361&type=10-K&count=1"
+  },
+  "0002085236": {
+    "company": "AUMOVIO SE",
+    "cik": "0002085236",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002085236&type=10-K&count=1"
+  },
+  "0002079292": {
+    "company": "Insight Digital Partners II",
+    "cik": "0002079292",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002079292&type=10-K&count=1"
+  },
+  "0002080019": {
+    "company": "GigCapital8 Corp.",
+    "cik": "0002080019",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002080019&type=10-K&count=1"
+  },
+  "0000039311": {
+    "company": "INDEPENDENT BANK CORP /MI/",
+    "cik": "0000039311",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/39311/000003931126000009/0000039311-26-000009-index.htm"
+  },
+  "0002081628": {
+    "company": "Rithm Perpetual Life Residential Trust",
+    "cik": "0002081628",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/2081628/000162828026015484/0001628280-26-015484-index.htm"
+  },
+  "0002010653": {
+    "company": "Future Vision II Acquisition Corp.",
+    "cik": "0002010653",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/2010653/000182912626001993/0001829126-26-001993-index.htm"
+  },
+  "0001790340": {
+    "company": "Immuneering Corp",
+    "cik": "0001790340",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1790340/000179034026000042/0001790340-26-000042-index.htm"
+  },
+  "0001699382": {
+    "company": "PMV Pharmaceuticals, Inc.",
+    "cik": "0001699382",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1699382/000119312526095014/0001193125-26-095014-index.htm"
+  },
+  "0001326190": {
+    "company": "Altimmune, Inc.",
+    "cik": "0001326190",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1326190/000132619026000018/0001326190-26-000018-index.htm"
+  },
+  "0001438472": {
+    "company": "MIAMI INTERNATIONAL HOLDINGS, INC.",
+    "cik": "0001438472",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1438472/000143847226000023/0001438472-26-000023-index.htm"
+  },
+  "0001603015": {
+    "company": "Via Transportation, Inc.",
+    "cik": "0001603015",
+    "relationships": {
+      "customer_concentration": [
+        90,
+        70,
+        65,
+        32
+      ],
+      "has_major_customers": true
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1603015/000160301526000008/0001603015-26-000008-index.htm"
+  },
+  "0001673504": {
+    "company": "Atlantis Glory Inc.",
+    "cik": "0001673504",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1673504/000149315226009051/0001493152-26-009051-index.htm"
+  },
+  "0001857853": {
+    "company": "Traeger, Inc.",
+    "cik": "0001857853",
+    "relationships": {
+      "customer_concentration": [
+        50,
+        10
+      ],
+      "has_major_customers": true
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1857853/000162828026015450/0001628280-26-015450-index.htm"
+  },
+  "0001259429": {
+    "company": "Oxford Square Capital Corp.",
+    "cik": "0001259429",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1259429/000121390026024280/0001213900-26-024280-index.htm"
+  },
+  "0001805651": {
+    "company": "MARKETWISE, INC.",
+    "cik": "0001805651",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1805651/000180565126000016/0001805651-26-000016-index.htm"
+  },
+  "0001625941": {
+    "company": "ARES INDUSTRIAL REAL ESTATE INCOME TRUST Inc.",
+    "cik": "0001625941",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1625941/000162828026015438/0001628280-26-015438-index.htm"
+  },
+  "0001327978": {
+    "company": "Ares Real Estate Income Trust Inc.",
+    "cik": "0001327978",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1327978/000162828026015437/0001628280-26-015437-index.htm"
+  },
+  "0001854964": {
+    "company": "NewLake Capital Partners, Inc.",
+    "cik": "0001854964",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1854964/000185496426000006/0001854964-26-000006-index.htm"
+  },
+  "0001928446": {
+    "company": "Granite Ridge Resources, Inc.",
+    "cik": "0001928446",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1928446/000192844626000007/0001928446-26-000007-index.htm"
+  },
+  "0001811935": {
+    "company": "Pattern Group Inc.",
+    "cik": "0001811935",
+    "relationships": {
+      "customer_concentration": [
+        93,
+        89,
+        53
+      ],
+      "has_major_customers": true
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1811935/000181193526000013/0001811935-26-000013-index.htm"
+  },
+  "0001795586": {
+    "company": "Chime Financial, Inc.",
+    "cik": "0001795586",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1795586/000179558626000013/0001795586-26-000013-index.htm"
+  },
+  "0001538990": {
+    "company": "STORE CAPITAL LLC",
+    "cik": "0001538990",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1538990/000119312526094474/0001193125-26-094474-index.htm"
+  },
+  "0001726548": {
+    "company": "BC Partners Lending Corp",
+    "cik": "0001726548",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1726548/000119312526094381/0001193125-26-094381-index.htm"
+  },
+  "0001606268": {
+    "company": "Via Renewables, Inc.",
+    "cik": "0001606268",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1606268/000160626826000013/0001606268-26-000013-index.htm"
+  },
+  "0000829323": {
+    "company": "Inuvo, Inc.",
+    "cik": "0000829323",
+    "relationships": {
+      "customer_concentration": [
+        10
+      ],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/829323/000165495426001943/0001654954-26-001943-index.htm"
+  },
+  "0001378950": {
+    "company": "CarParts.com, Inc.",
+    "cik": "0001378950",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1378950/000137895026000035/0001378950-26-000035-index.htm"
+  },
+  "0001043186": {
+    "company": "Stabilis Solutions, Inc.",
+    "cik": "0001043186",
+    "relationships": {
+      "customer_concentration": [
+        10
+      ],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1043186/000143774926007090/0001437749-26-007090-index.htm"
+  },
+  "0000080035": {
+    "company": "PREFORMED LINE PRODUCTS CO",
+    "cik": "0000080035",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/80035/000008003526000007/0000080035-26-000007-index.htm"
+  },
+  "0002031750": {
+    "company": "Ares Core Infrastructure Fund",
+    "cik": "0002031750",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/2031750/000203175026000015/0002031750-26-000015-index.htm"
+  },
+  "0001999784": {
+    "company": "North Haven Net REIT",
+    "cik": "0001999784",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1999784/000199978426000021/0001999784-26-000021-index.htm"
+  },
+  "0000948708": {
+    "company": "SMITH MICRO SOFTWARE, INC.",
+    "cik": "0000948708",
+    "relationships": {
+      "customer_concentration": [
+        18,
+        10
+      ],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/948708/000143774926007087/0001437749-26-007087-index.htm"
+  },
+  "0001571776": {
+    "company": "Cherry Hill Mortgage Investment Corp",
+    "cik": "0001571776",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1571776/000114036126008094/0001140361-26-008094-index.htm"
+  },
+  "0001349436": {
+    "company": "SANDRIDGE ENERGY INC",
+    "cik": "0001349436",
+    "relationships": {
+      "customer_concentration": [
+        10
+      ],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1349436/000162828026015318/0001628280-26-015318-index.htm"
+  },
+  "0001513525": {
+    "company": "ADIAL PHARMACEUTICALS, INC.",
+    "cik": "0001513525",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1513525/000121390026024175/0001213900-26-024175-index.htm"
+  },
+  "0001512931": {
+    "company": "MONROE CAPITAL Corp",
+    "cik": "0001512931",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1512931/000151293126000011/0001512931-26-000011-index.htm"
+  },
+  "0001655887": {
+    "company": "Blue Owl Capital Corp II",
+    "cik": "0001655887",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1655887/000165588726000010/0001655887-26-000010-index.htm"
+  },
+  "0001124524": {
+    "company": "Cryoport, Inc.",
+    "cik": "0001124524",
+    "relationships": {
+      "customer_concentration": [
+        10
+      ],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1124524/000110465926024180/0001104659-26-024180-index.htm"
+  },
+  "0001593899": {
+    "company": "Atea Pharmaceuticals, Inc.",
+    "cik": "0001593899",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1593899/000119312526094159/0001193125-26-094159-index.htm"
+  },
+  "0001062822": {
+    "company": "LEXICON PHARMACEUTICALS, INC.",
+    "cik": "0001062822",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1062822/000106282226000050/0001062822-26-000050-index.htm"
+  },
+  "0002075336": {
+    "company": "AA Mission Acquisition Corp. II",
+    "cik": "0002075336",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/2075336/000121390026024163/0001213900-26-024163-index.htm"
+  },
+  "0001163668": {
+    "company": "SOUTH PLAINS FINANCIAL, INC.",
+    "cik": "0001163668",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1163668/000114036126008087/0001140361-26-008087-index.htm"
+  },
+  "0001743725": {
+    "company": "GRID DYNAMICS HOLDINGS, INC.",
+    "cik": "0001743725",
+    "relationships": {
+      "customer_concentration": [
+        19
+      ],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1743725/000174372526000007/0001743725-26-000007-index.htm"
+  },
+  "0001847590": {
+    "company": "Bowman Consulting Group Ltd.",
+    "cik": "0001847590",
+    "relationships": {
+      "customer_concentration": [
+        90,
+        73,
+        27
+      ],
+      "has_major_customers": true
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1847590/000162828026015252/0001628280-26-015252-index.htm"
+  },
+  "0001869105": {
+    "company": "BridgeBio Oncology Therapeutics, Inc.",
+    "cik": "0001869105",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1869105/000119312526094112/0001193125-26-094112-index.htm"
+  },
+  "0001316944": {
+    "company": "Federal Home Loan Bank of San Francisco",
+    "cik": "0001316944",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1316944/000131694426000049/0001316944-26-000049-index.htm"
+  },
+  "0001699039": {
+    "company": "Ranger Energy Services, Inc.",
+    "cik": "0001699039",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1699039/000162828026015248/0001628280-26-015248-index.htm"
+  },
+  "0000709337": {
+    "company": "FARMERS NATIONAL BANC CORP /OH/",
+    "cik": "0000709337",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/709337/000143774926007084/0001437749-26-007084-index.htm"
+  },
+  "0000913277": {
+    "company": "Clarus Corp",
+    "cik": "0000913277",
+    "relationships": {
+      "customer_concentration": [
+        58,
+        54,
+        46
+      ],
+      "has_major_customers": true
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/913277/000110465926024159/0001104659-26-024159-index.htm"
+  },
+  "0001628808": {
+    "company": "Profound Medical Corp.",
+    "cik": "0001628808",
+    "relationships": {
+      "customer_concentration": [
+        19
+      ],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1628808/000110465926024153/0001104659-26-024153-index.htm"
+  },
+  "0001661059": {
+    "company": "NextCure, Inc.",
+    "cik": "0001661059",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1661059/000110465926024137/0001104659-26-024137-index.htm"
+  },
+  "0001392380": {
+    "company": "Gevo, Inc.",
+    "cik": "0001392380",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1392380/000139238026000006/0001392380-26-000006-index.htm"
+  },
+  "0001590877": {
+    "company": "REGENXBIO Inc.",
+    "cik": "0001590877",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1590877/000119312526094013/0001193125-26-094013-index.htm"
+  },
+  "0002064307": {
+    "company": "ContextLogic Holdings Inc.",
+    "cik": "0002064307",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/2064307/000119312526094012/0001193125-26-094012-index.htm"
+  },
+  "0001367859": {
+    "company": "Citizens Community Bancorp Inc.",
+    "cik": "0001367859",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1367859/000136785926000017/0001367859-26-000017-index.htm"
+  },
+  "0001841761": {
+    "company": "Grove Collaborative Holdings, Inc.",
+    "cik": "0001841761",
+    "relationships": {
+      "customer_concentration": [
+        41
+      ],
+      "has_major_customers": true
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1841761/000184176126000010/0001841761-26-000010-index.htm"
+  },
+  "0001873923": {
+    "company": "Orion Properties Inc.",
+    "cik": "0001873923",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1873923/000187392326000038/0001873923-26-000038-index.htm"
+  },
+  "0001868279": {
+    "company": "ArriVent BioPharma, Inc.",
+    "cik": "0001868279",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1868279/000110465926024127/0001104659-26-024127-index.htm"
+  },
+  "0001533040": {
+    "company": "Phio Pharmaceuticals Corp.",
+    "cik": "0001533040",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1533040/000143774926007078/0001437749-26-007078-index.htm"
+  },
+  "0001500412": {
+    "company": "Ambiq Micro, Inc.",
+    "cik": "0001500412",
+    "relationships": {
+      "customer_concentration": [
+        92,
+        50,
+        41,
+        21,
+        20
+      ],
+      "has_major_customers": true
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1500412/000119312526094004/0001193125-26-094004-index.htm"
+  },
+  "0001976719": {
+    "company": "New Mountain Guardian IV Income Fund, L.L.C.",
+    "cik": "0001976719",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1976719/000197671926000005/0001976719-26-000005-index.htm"
+  },
+  "0000046129": {
+    "company": "ALLIENT INC",
+    "cik": "0000046129",
+    "relationships": {
+      "customer_concentration": [
+        55,
+        10
+      ],
+      "has_major_customers": true
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/46129/000110465926024123/0001104659-26-024123-index.htm"
+  },
+  "0001109116": {
+    "company": "ENTRAVISION COMMUNICATIONS CORP",
+    "cik": "0001109116",
+    "relationships": {
+      "customer_concentration": [
+        61
+      ],
+      "has_major_customers": true
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1109116/000119312526093993/0001193125-26-093993-index.htm"
+  },
+  "0000876343": {
+    "company": "Lineage Cell Therapeutics, Inc.",
+    "cik": "0000876343",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/876343/000119312526093992/0001193125-26-093992-index.htm"
+  },
+  "0001609151": {
+    "company": "Weave Communications, Inc.",
+    "cik": "0001609151",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1609151/000160915126000016/0001609151-26-000016-index.htm"
+  },
+  "0001785279": {
+    "company": "Metagenomi Therapeutics, Inc.",
+    "cik": "0001785279",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1785279/000119312526093976/0001193125-26-093976-index.htm"
+  },
+  "0001997859": {
+    "company": "WEBTOON Entertainment Inc.",
+    "cik": "0001997859",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1997859/000199785926000028/0001997859-26-000028-index.htm"
+  },
+  "0001339970": {
+    "company": "aTYR PHARMA INC",
+    "cik": "0001339970",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1339970/000133997026000008/0001339970-26-000008-index.htm"
+  },
+  "0001830081": {
+    "company": "Rumble Inc.",
+    "cik": "0001830081",
+    "relationships": {
+      "customer_concentration": [
+        66,
+        16
+      ],
+      "has_major_customers": true
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1830081/000121390026024099/0001213900-26-024099-index.htm"
+  },
+  "0001479681": {
+    "company": "Nutex Health Inc.",
+    "cik": "0001479681",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1479681/000162828026015168/0001628280-26-015168-index.htm"
+  },
+  "0001819438": {
+    "company": "ESS Tech, Inc.",
+    "cik": "0001819438",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1819438/000181943826000012/0001819438-26-000012-index.htm"
+  },
+  "0001597672": {
+    "company": "RAYONIER ADVANCED MATERIALS INC.",
+    "cik": "0001597672",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1597672/000159767226000010/0001597672-26-000010-index.htm"
+  },
+  "0001527541": {
+    "company": "Wheeler Real Estate Investment Trust, Inc.",
+    "cik": "0001527541",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1527541/000152754126000050/0001527541-26-000050-index.htm"
+  },
+  "0001855175": {
+    "company": "Contineum Therapeutics, Inc.",
+    "cik": "0001855175",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1855175/000162828026015165/0001628280-26-015165-index.htm"
+  },
+  "0001619856": {
+    "company": "Caribou Biosciences, Inc.",
+    "cik": "0001619856",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1619856/000161985626000008/0001619856-26-000008-index.htm"
+  },
+  "0001692427": {
+    "company": "NCS Multistage Holdings, Inc.",
+    "cik": "0001692427",
+    "relationships": {
+      "customer_concentration": [
+        63,
+        60,
+        58,
+        26,
+        18
+      ],
+      "has_major_customers": true
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1692427/000143774926007065/0001437749-26-007065-index.htm"
+  },
+  "0001826667": {
+    "company": "TriSalus Life Sciences, Inc.",
+    "cik": "0001826667",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1826667/000162828026015163/0001628280-26-015163-index.htm"
+  },
+  "0000761648": {
+    "company": "CEDAR REALTY TRUST, INC.",
+    "cik": "0000761648",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/761648/000076164826000008/0000761648-26-000008-index.htm"
+  },
+  "0001736730": {
+    "company": "Camp4 Therapeutics Corp",
+    "cik": "0001736730",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1736730/000173673026000016/0001736730-26-000016-index.htm"
+  },
+  "0002044725": {
+    "company": "Evommune, Inc.",
+    "cik": "0002044725",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/2044725/000119312526093932/0001193125-26-093932-index.htm"
+  },
+  "0000893847": {
+    "company": "HAWTHORN BANCSHARES, INC.",
+    "cik": "0000893847",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/893847/000089384726000037/0000893847-26-000037-index.htm"
+  },
+  "0001865107": {
+    "company": "A.K.A. BRANDS HOLDING CORP.",
+    "cik": "0001865107",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1865107/000186510726000008/0001865107-26-000008-index.htm"
+  },
+  "0001372807": {
+    "company": "BCP Investment Corp",
+    "cik": "0001372807",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1372807/000119312526093918/0001193125-26-093918-index.htm"
+  },
+  "0001314102": {
+    "company": "EyePoint, Inc.",
+    "cik": "0001314102",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1314102/000119312526093917/0001193125-26-093917-index.htm"
+  },
+  "0001823608": {
+    "company": "Amalgamated Financial Corp.",
+    "cik": "0001823608",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1823608/000182360826000048/0001823608-26-000048-index.htm"
+  },
+  "0001769322": {
+    "company": "UBS Commercial Mortgage Trust 2019-C16",
+    "cik": "0001769322",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1769322/000188852426003882/0001888524-26-003882-index.htm"
+  },
+  "0001847874": {
+    "company": "Mobile Infrastructure Corp",
+    "cik": "0001847874",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1847874/000143774926007063/0001437749-26-007063-index.htm"
+  },
+  "0001868726": {
+    "company": "OLAPLEX HOLDINGS, INC.",
+    "cik": "0001868726",
+    "relationships": {
+      "customer_concentration": [
+        54,
+        52,
+        48,
+        39,
+        21
+      ],
+      "has_major_customers": true
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1868726/000186872626000009/0001868726-26-000009-index.htm"
+  },
+  "0000793524": {
+    "company": "RESEARCH FRONTIERS INC",
+    "cik": "0000793524",
+    "relationships": {
+      "customer_concentration": [
+        15
+      ],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/793524/000149315226008988/0001493152-26-008988-index.htm"
+  },
+  "0001421461": {
+    "company": "Intrepid Potash, Inc.",
+    "cik": "0001421461",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1421461/000142146126000008/0001421461-26-000008-index.htm"
+  },
+  "0000352825": {
+    "company": "FOSTER L B CO",
+    "cik": "0000352825",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/352825/000035282526000016/0000352825-26-000016-index.htm"
+  },
+  "0000917225": {
+    "company": "SOLITARIO RESOURCES CORP.",
+    "cik": "0000917225",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/917225/000165495426001934/0001654954-26-001934-index.htm"
+  },
+  "0001068148": {
+    "company": "PARK OHIO INDUSTRIES INC/OH",
+    "cik": "0001068148",
+    "relationships": {
+      "customer_concentration": [
+        25
+      ],
+      "has_major_customers": true
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1068148/000106814826000003/0001068148-26-000003-index.htm"
+  },
+  "0000076282": {
+    "company": "PARK OHIO HOLDINGS CORP",
+    "cik": "0000076282",
+    "relationships": {
+      "customer_concentration": [
+        25
+      ],
+      "has_major_customers": true
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/76282/000007628226000007/0000076282-26-000007-index.htm"
+  },
+  "0001998387": {
+    "company": "5C Lending Partners Corp.",
+    "cik": "0001998387",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1998387/000119312526093475/0001193125-26-093475-index.htm"
+  },
+  "0000898171": {
+    "company": "UWHARRIE CAPITAL CORP",
+    "cik": "0000898171",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/898171/000119312526093397/0001193125-26-093397-index.htm"
+  },
+  "0001829576": {
+    "company": "Carter Bankshares, Inc.",
+    "cik": "0001829576",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1829576/000182957626000018/0001829576-26-000018-index.htm"
+  },
+  "0001846084": {
+    "company": "Global Crossing Airlines Group Inc.",
+    "cik": "0001846084",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1846084/000119312526093148/0001193125-26-093148-index.htm"
+  },
+  "0001030469": {
+    "company": "OFG BANCORP",
+    "cik": "0001030469",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1030469/000103046926000019/0001030469-26-000019-index.htm"
+  },
+  "0000070487": {
+    "company": "NATIONAL RESEARCH CORP",
+    "cik": "0000070487",
+    "relationships": {
+      "customer_concentration": [
+        40,
+        38,
+        15
+      ],
+      "has_major_customers": true
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/70487/000143774926007002/0001437749-26-007002-index.htm"
+  },
+  "0001712463": {
+    "company": "Ranpak Holdings Corp.",
+    "cik": "0001712463",
+    "relationships": {
+      "customer_concentration": [
+        80,
+        45,
+        43,
+        40,
+        36
+      ],
+      "has_major_customers": true
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1712463/000162828026015027/0001628280-26-015027-index.htm"
+  },
+  "0000081955": {
+    "company": "RAND CAPITAL CORP",
+    "cik": "0000081955",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/81955/000119312526092669/0001193125-26-092669-index.htm"
+  },
+  "0000107140": {
+    "company": "JOHN WILEY & SONS, INC.",
+    "cik": "0000107140",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/107140/000010714026000012/0000107140-26-000012-index.htm"
+  },
+  "0001606242": {
+    "company": "Virtuix Holdings Inc.",
+    "cik": "0001606242",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1606242/000121390026024327/0001213900-26-024327-index.htm"
+  },
+  "0001528396": {
+    "company": "Guidewire Software, Inc.",
+    "cik": "0001528396",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1528396/000152839626000014/0001528396-26-000014-index.htm"
+  },
+  "0000065270": {
+    "company": "METHODE ELECTRONICS INC",
+    "cik": "0000065270",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/65270/000006527026000007/0000065270-26-000007-index.htm"
+  },
+  "0001092796": {
+    "company": "SMITH & WESSON BRANDS, INC.",
+    "cik": "0001092796",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1092796/000119312526093991/0001193125-26-093991-index.htm"
+  },
+  "0001601046": {
+    "company": "Keysight Technologies, Inc.",
+    "cik": "0001601046",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1601046/000160104626000008/0001601046-26-000008-index.htm"
+  },
+  "0000936395": {
+    "company": "CIENA CORP",
+    "cik": "0000936395",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/936395/000162828026015152/0001628280-26-015152-index.htm"
+  },
+  "0001487091": {
+    "company": "Quest Water Global, Inc.",
+    "cik": "0001487091",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1487091/000149315226008980/0001493152-26-008980-index.htm"
+  },
+  "0000737758": {
+    "company": "TORO CO",
+    "cik": "0000737758",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/737758/000073775826000009/0000737758-26-000009-index.htm"
+  },
+  "0001012493": {
+    "company": "FERRELLGAS PARTNERS FINANCE CORP",
+    "cik": "0001012493",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1012493/000110465926023787/0001104659-26-023787-index.htm"
+  },
+  "0000922360": {
+    "company": "FERRELLGAS FINANCE CORP",
+    "cik": "0000922360",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/922360/000110465926023787/0001104659-26-023787-index.htm"
+  },
+  "0000922359": {
+    "company": "FERRELLGAS L P",
+    "cik": "0000922359",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/922359/000110465926023787/0001104659-26-023787-index.htm"
+  },
+  "0000922358": {
+    "company": "FERRELLGAS PARTNERS L P",
+    "cik": "0000922358",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/922358/000110465926023787/0001104659-26-023787-index.htm"
+  },
+  "0000103595": {
+    "company": "VILLAGE SUPER MARKET INC",
+    "cik": "0000103595",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/103595/000010359526000003/0000103595-26-000003-index.htm"
+  },
+  "0001067294": {
+    "company": "CRACKER BARREL OLD COUNTRY STORE, INC",
+    "cik": "0001067294",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1067294/000110465926023455/0001104659-26-023455-index.htm"
+  },
+  "0000014693": {
+    "company": "BROWN FORMAN CORP",
+    "cik": "0000014693",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/14693/000001469326000010/0000014693-26-000010-index.htm"
+  },
+  "0000915779": {
+    "company": "DAKTRONICS INC /SD/",
+    "cik": "0000915779",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/915779/000162828026014553/0001628280-26-014553-index.htm"
+  },
+  "0001371451": {
+    "company": "HIGHWATER ETHANOL LLC",
+    "cik": "0001371451",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/1371451/000162828026014506/0001628280-26-014506-index.htm"
+  },
+  "0001157601": {
+    "company": "MADRIGAL PHARMACEUTICALS, INC.",
+    "cik": "0001157601",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001157601&type=10-K&count=1"
+  },
+  "0001838413": {
+    "company": "Full Truck Alliance Co. Ltd.",
+    "cik": "0001838413",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001838413&type=10-K&count=1"
+  },
+  "0000091388": {
+    "company": "SMITHFIELD FOODS INC",
+    "cik": "0000091388",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000091388&type=10-K&count=1"
+  },
+  "0001327068": {
+    "company": "United States Oil Fund, LP",
+    "cik": "0001327068",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001327068&type=10-K&count=1"
+  },
+  "0001632970": {
+    "company": "American Healthcare REIT, Inc.",
+    "cik": "0001632970",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001632970&type=10-K&count=1"
+  },
+  "0001443646": {
+    "company": "Booz Allen Hamilton Holding Corp",
+    "cik": "0001443646",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001443646&type=10-K&count=1"
+  },
+  "0001819848": {
+    "company": "Joby Aviation, Inc.",
+    "cik": "0001819848",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001819848&type=10-K&count=1"
+  },
+  "0000917251": {
+    "company": "AGREE REALTY CORP",
+    "cik": "0000917251",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000917251&type=10-K&count=1"
+  },
+  "0000024545": {
+    "company": "MOLSON COORS BEVERAGE CO",
+    "cik": "0000024545",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000024545&type=10-K&count=1"
+  },
+  "0001015328": {
+    "company": "WINTRUST FINANCIAL CORP",
+    "cik": "0001015328",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001015328&type=10-K&count=1"
+  },
+  "0001326110": {
+    "company": "ImmunityBio, Inc.",
+    "cik": "0001326110",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001326110&type=10-K&count=1"
+  },
+  "0000004457": {
+    "company": "U-Haul Holding Co /NV/",
+    "cik": "0000004457",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000004457&type=10-K&count=1"
+  },
+  "0002013003": {
+    "company": "Pro Medicus Ltd./ADR",
+    "cik": "0002013003",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002013003&type=10-K&count=1"
+  },
+  "0001956827": {
+    "company": "Abivax S.A.",
+    "cik": "0001956827",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001956827&type=10-K&count=1"
+  },
+  "0001072397": {
+    "company": "BUNZL PLC",
+    "cik": "0001072397",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001072397&type=10-K&count=1"
+  },
+  "0001639438": {
+    "company": "CAVA GROUP, INC.",
+    "cik": "0001639438",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001639438&type=10-K&count=1"
+  },
+  "0001173382": {
+    "company": "CAE INC",
+    "cik": "0001173382",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001173382&type=10-K&count=1"
+  },
+  "0000028917": {
+    "company": "DILLARD'S, INC.",
+    "cik": "0000028917",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000028917&type=10-K&count=1"
+  },
+  "0001717115": {
+    "company": "Tempus AI, Inc.",
+    "cik": "0001717115",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001717115&type=10-K&count=1"
+  },
+  "0000034903": {
+    "company": "FEDERAL REALTY INVESTMENT TRUST",
+    "cik": "0000034903",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000034903&type=10-K&count=1"
+  },
+  "0001405495": {
+    "company": "InterDigital, Inc.",
+    "cik": "0001405495",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001405495&type=10-K&count=1"
+  },
+  "0001298675": {
+    "company": "CubeSmart",
+    "cik": "0001298675",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001298675&type=10-K&count=1"
+  },
+  "0000896622": {
+    "company": "APTARGROUP, INC.",
+    "cik": "0000896622",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000896622&type=10-K&count=1"
+  },
+  "0000937556": {
+    "company": "MASIMO CORP",
+    "cik": "0000937556",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000937556&type=10-K&count=1"
+  },
+  "0000918608": {
+    "company": "ELDORADO GOLD CORP /FI",
+    "cik": "0000918608",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000918608&type=10-K&count=1"
+  },
+  "0001035443": {
+    "company": "ALEXANDRIA REAL ESTATE EQUITIES, INC.",
+    "cik": "0001035443",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001035443&type=10-K&count=1"
+  },
+  "0000831641": {
+    "company": "TETRA TECH INC",
+    "cik": "0000831641",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000831641&type=10-K&count=1"
+  },
+  "0001689548": {
+    "company": "Praxis Precision Medicines, Inc.",
+    "cik": "0001689548",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001689548&type=10-K&count=1"
+  },
+  "0001969729": {
+    "company": "Rockwool A/S/ADR",
+    "cik": "0001969729",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001969729&type=10-K&count=1"
+  },
+  "0001034983": {
+    "company": "MINEBEA MITSUMI Inc.",
+    "cik": "0001034983",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001034983&type=10-K&count=1"
+  },
+  "0001915657": {
+    "company": "HF Sinclair Corp",
+    "cik": "0001915657",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001915657&type=10-K&count=1"
+  },
+  "0000892553": {
+    "company": "CHART INDUSTRIES INC",
+    "cik": "0000892553",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000892553&type=10-K&count=1"
+  },
+  "0001922641": {
+    "company": "Enlight Renewable Energy Ltd.",
+    "cik": "0001922641",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001922641&type=10-K&count=1"
+  },
+  "0001581068": {
+    "company": "Brixmor Property Group Inc.",
+    "cik": "0001581068",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001581068&type=10-K&count=1"
+  },
+  "0000842023": {
+    "company": "BIO-TECHNE Corp",
+    "cik": "0000842023",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000842023&type=10-K&count=1"
+  },
+  "0001144215": {
+    "company": "ACUITY INC. (DE)",
+    "cik": "0001144215",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001144215&type=10-K&count=1"
+  },
+  "0000023217": {
+    "company": "CONAGRA BRANDS INC.",
+    "cik": "0000023217",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000023217&type=10-K&count=1"
+  },
+  "0000096223": {
+    "company": "Jefferies Financial Group Inc.",
+    "cik": "0000096223",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000096223&type=10-K&count=1"
+  },
+  "0001828108": {
+    "company": "Aurora Innovation, Inc.",
+    "cik": "0001828108",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001828108&type=10-K&count=1"
+  },
+  "0001372920": {
+    "company": "New Oriental Education & Technology Group Inc.",
+    "cik": "0001372920",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001372920&type=10-K&count=1"
+  },
+  "0002078416": {
+    "company": "Liberty Live Holdings, Inc.",
+    "cik": "0002078416",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002078416&type=10-K&count=1"
+  },
+  "0001669162": {
+    "company": "Kinsale Capital Group, Inc.",
+    "cik": "0001669162",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001669162&type=10-K&count=1"
+  },
+  "0001590717": {
+    "company": "CareTrust REIT, Inc.",
+    "cik": "0001590717",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001590717&type=10-K&count=1"
+  },
+  "0000102729": {
+    "company": "VALMONT INDUSTRIES INC",
+    "cik": "0000102729",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000102729&type=10-K&count=1"
+  },
+  "0001919275": {
+    "company": "Var Energi ASA/ADR",
+    "cik": "0001919275",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001919275&type=10-K&count=1"
+  },
+  "0000751978": {
+    "company": "VICOR CORP",
+    "cik": "0000751978",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000751978&type=10-K&count=1"
+  },
+  "0001261333": {
+    "company": "DOCUSIGN, INC.",
+    "cik": "0001261333",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001261333&type=10-K&count=1"
+  },
+  "0000707179": {
+    "company": "OLD NATIONAL BANCORP /IN/",
+    "cik": "0000707179",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000707179&type=10-K&count=1"
+  },
+  "0000851205": {
+    "company": "COGNEX CORP",
+    "cik": "0000851205",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000851205&type=10-K&count=1"
+  },
+  "0001034670": {
+    "company": "AUTOLIV INC",
+    "cik": "0001034670",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001034670&type=10-K&count=1"
+  },
+  "0000763901": {
+    "company": "POPULAR, INC.",
+    "cik": "0000763901",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000763901&type=10-K&count=1"
+  },
+  "0001649094": {
+    "company": "Vaxcyte, Inc.",
+    "cik": "0001649094",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001649094&type=10-K&count=1"
+  },
+  "0000004127": {
+    "company": "SKYWORKS SOLUTIONS, INC.",
+    "cik": "0000004127",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000004127&type=10-K&count=1"
+  },
+  "0001627272": {
+    "company": "OR Royalties Inc.",
+    "cik": "0001627272",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001627272&type=10-K&count=1"
+  },
+  "0001571283": {
+    "company": "Rexford Industrial Realty, Inc.",
+    "cik": "0001571283",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001571283&type=10-K&count=1"
+  },
+  "0000879407": {
+    "company": "ARROWHEAD PHARMACEUTICALS, INC.",
+    "cik": "0000879407",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000879407&type=10-K&count=1"
+  },
+  "0001212545": {
+    "company": "WESTERN ALLIANCE BANCORPORATION",
+    "cik": "0001212545",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001212545&type=10-K&count=1"
+  },
+  "0001580905": {
+    "company": "Installed Building Products, Inc.",
+    "cik": "0001580905",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001580905&type=10-K&count=1"
+  },
+  "0001285785": {
+    "company": "MOSAIC CO",
+    "cik": "0001285785",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001285785&type=10-K&count=1"
+  },
+  "0001592386": {
+    "company": "Virtu Financial, Inc.",
+    "cik": "0001592386",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001592386&type=10-K&count=1"
+  },
+  "0000101382": {
+    "company": "UMB FINANCIAL CORP",
+    "cik": "0000101382",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000101382&type=10-K&count=1"
+  },
+  "0001866581": {
+    "company": "Dutch Bros Inc.",
+    "cik": "0001866581",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001866581&type=10-K&count=1"
+  },
+  "0001564408": {
+    "company": "Snap Inc",
+    "cik": "0001564408",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001564408&type=10-K&count=1"
+  },
+  "0001100682": {
+    "company": "CHARLES RIVER LABORATORIES INTERNATIONAL, INC.",
+    "cik": "0001100682",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001100682&type=10-K&count=1"
+  },
+  "0000889331": {
+    "company": "LITTELFUSE INC /DE",
+    "cik": "0000889331",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000889331&type=10-K&count=1"
+  },
+  "0000085961": {
+    "company": "RYDER SYSTEM INC",
+    "cik": "0000085961",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000085961&type=10-K&count=1"
+  },
+  "0000039263": {
+    "company": "CULLEN/FROST BANKERS, INC.",
+    "cik": "0000039263",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000039263&type=10-K&count=1"
+  },
+  "0000094845": {
+    "company": "LEVI STRAUSS & CO",
+    "cik": "0000094845",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000094845&type=10-K&count=1"
+  },
+  "0000070145": {
+    "company": "NATIONAL FUEL GAS CO",
+    "cik": "0000070145",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000070145&type=10-K&count=1"
+  },
+  "0000921825": {
+    "company": "FIRST INDUSTRIAL REALTY TRUST INC",
+    "cik": "0000921825",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000921825&type=10-K&count=1"
+  },
+  "0000751364": {
+    "company": "NNN REIT, INC.",
+    "cik": "0000751364",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000751364&type=10-K&count=1"
+  },
+  "0001829311": {
+    "company": "BITMINE IMMERSION TECHNOLOGIES, INC.",
+    "cik": "0001829311",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001829311&type=10-K&count=1"
+  },
+  "0000915389": {
+    "company": "EASTMAN CHEMICAL CO",
+    "cik": "0000915389",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000915389&type=10-K&count=1"
+  },
+  "0001004434": {
+    "company": "AFFILIATED MANAGERS GROUP, INC.",
+    "cik": "0001004434",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001004434&type=10-K&count=1"
+  },
+  "0000006201": {
+    "company": "American Airlines Group Inc.",
+    "cik": "0000006201",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000006201&type=10-K&count=1"
+  },
+  "0001041792": {
+    "company": "ENERGY CO OF PARANA",
+    "cik": "0001041792",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001041792&type=10-K&count=1"
+  },
+  "0001529192": {
+    "company": "Vipshop Holdings Ltd",
+    "cik": "0001529192",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001529192&type=10-K&count=1"
+  },
+  "0000769520": {
+    "company": "MIDDLEBY Corp",
+    "cik": "0000769520",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000769520&type=10-K&count=1"
+  },
+  "0001611052": {
+    "company": "PROCORE TECHNOLOGIES, INC.",
+    "cik": "0001611052",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001611052&type=10-K&count=1"
+  },
+  "0001590714": {
+    "company": "Element Solutions Inc",
+    "cik": "0001590714",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001590714&type=10-K&count=1"
+  },
+  "0001342874": {
+    "company": "Ternium S.A.",
+    "cik": "0001342874",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001342874&type=10-K&count=1"
+  },
+  "0001439288": {
+    "company": "Zurn Elkay Water Solutions Corp",
+    "cik": "0001439288",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001439288&type=10-K&count=1"
+  },
+  "0001065696": {
+    "company": "LKQ CORP",
+    "cik": "0001065696",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001065696&type=10-K&count=1"
+  },
+  "0000840489": {
+    "company": "FirstCash Holdings, Inc.",
+    "cik": "0000840489",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000840489&type=10-K&count=1"
+  },
+  "0000887343": {
+    "company": "COLUMBIA BANKING SYSTEM, INC.",
+    "cik": "0000887343",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000887343&type=10-K&count=1"
+  },
+  "0000897723": {
+    "company": "SANMINA CORP",
+    "cik": "0000897723",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000897723&type=10-K&count=1"
+  },
+  "0000945841": {
+    "company": "POOL CORP",
+    "cik": "0000945841",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000945841&type=10-K&count=1"
+  },
+  "0000109380": {
+    "company": "ZIONS BANCORPORATION, NATIONAL ASSOCIATION /UT/",
+    "cik": "0000109380",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000109380&type=10-K&count=1"
+  },
+  "0000913290": {
+    "company": "Frontline plc",
+    "cik": "0000913290",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000913290&type=10-K&count=1"
+  },
+  "0001060955": {
+    "company": "ICON PLC",
+    "cik": "0001060955",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001060955&type=10-K&count=1"
+  },
+  "0002042694": {
+    "company": "Primo Brands Corp",
+    "cik": "0002042694",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002042694&type=10-K&count=1"
+  },
+  "0000310522": {
+    "company": "FEDERAL NATIONAL MORTGAGE ASSOCIATION FANNIE MAE",
+    "cik": "0000310522",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000310522&type=10-K&count=1"
+  },
+  "0000916540": {
+    "company": "DARLING INGREDIENTS INC.",
+    "cik": "0000916540",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000916540&type=10-K&count=1"
+  },
+  "0001698535": {
+    "company": "NexGen Energy Ltd.",
+    "cik": "0001698535",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001698535&type=10-K&count=1"
+  },
+  "0000088941": {
+    "company": "SEMTECH CORP",
+    "cik": "0000088941",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000088941&type=10-K&count=1"
+  },
+  "0001526125": {
+    "company": "GDS Holdings Ltd",
+    "cik": "0001526125",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001526125&type=10-K&count=1"
+  },
+  "0001214816": {
+    "company": "AXIS CAPITAL HOLDINGS LTD",
+    "cik": "0001214816",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001214816&type=10-K&count=1"
+  },
+  "0001579428": {
+    "company": "Axsome Therapeutics, Inc.",
+    "cik": "0001579428",
+    "relationships": {
+      "customer_concentration": [],
+      "has_major_customers": false
+    },
+    "filing_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001579428&type=10-K&count=1"
+  }
+}

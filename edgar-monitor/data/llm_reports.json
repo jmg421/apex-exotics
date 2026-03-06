@@ -1,0 +1,42 @@
+{
+  "0001822523": {
+    "recommendation": "AVOID",
+    "conviction": "HIGH",
+    "price_target": 35.9,
+    "full_text": "# ADVANCED FLOWER CAPITAL INC. (AFCG) RESEARCH NOTE\n\n## Business Assessment\n\nAdvanced Flower Capital appears to be a special purpose acquisition vehicle (SPAC), liquidating entity, or cannabis-related investment company (given the \"Flower\" nomenclature) with no operating revenue. The company generated $35.9M in net income despite zero revenue, suggesting investment income, liquidation proceeds, or one-time gains. This is not an operating business in any traditional sense, making fundamental analysis extremely challenging.\n\n## Financial Health: 3/10\n\nWhile the company holds $103.6M in cash against a $49.9M market cap (2.1x cash-to-market cap ratio), the 49.9% debt-to-assets ratio and complete absence of revenue indicate significant structural issues. The positive net income without revenue is anomalous and likely non-recurring.\n\n## Key Risks\n\n- **Zero revenue generation** - No evidence of viable business operations or revenue model\n- **Unsustainable economics** - Positive net income without revenue suggests one-time events that cannot be replicated\n- **High leverage** - 50% debt-to-assets ratio with no operating cash flow to service obligations\n- **Extremely low ENIS score (30/100)** - Indicates poor quality metrics across multiple dimensions\n- **Potential liquidation scenario** - Company profile suggests wind-down rather than going-concern status\n- **Illiquidity risk** - Micro-cap with likely minimal daily trading volume\n\n## Key Opportunities\n\n- **Cash position exceeds market cap** - Trading at ~0.48x cash, potential liquidation value arbitrage\n- **Asset monetization potential** - Net income suggests valuable assets that could be realized\n- **Acquisition target** - Cash-rich shell could attract reverse merger interest\n- **Hidden asset value** - Balance sheet may contain undervalued investments or securities\n\n## Recommendation: **AVOID**\n\n## Conviction: **HIGH**\n\n## 12-Month Price Target: **N/A**\n\n---\n\n**Rationale:** This is not an institutional-quality investment. The absence of operating revenue, combined with unexplained profitability and structural leverage, presents unacceptable risks for fiduciary capital. While the cash position",
+    "key_risks": [
+      "**Zero revenue generation** - No evidence of viable business operations or revenue model",
+      "**Unsustainable economics** - Positive net income without revenue suggests one-time events that cannot be replicated",
+      "**High leverage** - 50% debt-to-assets ratio with no operating cash flow to service obligations",
+      "**Extremely low ENIS score (30/100)** - Indicates poor quality metrics across multiple dimensions",
+      "**Potential liquidation scenario** - Company profile suggests wind-down rather than going-concern status"
+    ],
+    "key_opportunities": [
+      "**Cash position exceeds market cap** - Trading at ~0.48x cash, potential liquidation value arbitrage",
+      "**Asset monetization potential** - Net income suggests valuable assets that could be realized",
+      "**Acquisition target** - Cash-rich shell could attract reverse merger interest",
+      "**Hidden asset value** - Balance sheet may contain undervalued investments or securities"
+    ],
+    "ticker": "AFCG",
+    "company": "Advanced Flower Capital Inc.",
+    "market_cap": 49933900,
+    "enis_score": 30.0,
+    "analysis_date": "2026-03-06T10:49:27.476106",
+    "full_analysis": "# ADVANCED FLOWER CAPITAL INC. (AFCG) RESEARCH NOTE\n\n## Business Assessment\n\nAdvanced Flower Capital appears to be a special purpose acquisition vehicle (SPAC), liquidating entity, or cannabis-related investment company (given the \"Flower\" nomenclature) with no operating revenue. The company generated $35.9M in net income despite zero revenue, suggesting investment income, liquidation proceeds, or one-time gains. This is not an operating business in any traditional sense, making fundamental analysis extremely challenging.\n\n## Financial Health: 3/10\n\nWhile the company holds $103.6M in cash against a $49.9M market cap (2.1x cash-to-market cap ratio), the 49.9% debt-to-assets ratio and complete absence of revenue indicate significant structural issues. The positive net income without revenue is anomalous and likely non-recurring.\n\n## Key Risks\n\n- **Zero revenue generation** - No evidence of viable business operations or revenue model\n- **Unsustainable economics** - Positive net income without revenue suggests one-time events that cannot be replicated\n- **High leverage** - 50% debt-to-assets ratio with no operating cash flow to service obligations\n- **Extremely low ENIS score (30/100)** - Indicates poor quality metrics across multiple dimensions\n- **Potential liquidation scenario** - Company profile suggests wind-down rather than going-concern status\n- **Illiquidity risk** - Micro-cap with likely minimal daily trading volume\n\n## Key Opportunities\n\n- **Cash position exceeds market cap** - Trading at ~0.48x cash, potential liquidation value arbitrage\n- **Asset monetization potential** - Net income suggests valuable assets that could be realized\n- **Acquisition target** - Cash-rich shell could attract reverse merger interest\n- **Hidden asset value** - Balance sheet may contain undervalued investments or securities\n\n## Recommendation: **AVOID**\n\n## Conviction: **HIGH**\n\n## 12-Month Price Target: **N/A**\n\n---\n\n**Rationale:** This is not an institutional-quality investment. The absence of operating revenue, combined with unexplained profitability and structural leverage, presents unacceptable risks for fiduciary capital. While the cash position",
+    "analysis_type": "goldman_sachs",
+    "cik": "0001822523",
+    "financial_score": 50
+  },
+  "0001279704": {
+    "ticker": "CLRB",
+    "company": "Cellectar Biosciences, Inc.",
+    "recommendation": "PASS",
+    "conviction": "LOW",
+    "analysis_date": "2026-03-06T10:49:29.487053",
+    "summary": "Low ENIS score (21.0/100). Not actionable.",
+    "analysis_type": "quick_summary",
+    "cik": "0001279704",
+    "enis_score": 21.0,
+    "financial_score": 35
+  }
+}

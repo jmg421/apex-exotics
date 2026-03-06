@@ -1,0 +1,248 @@
+{
+  "elements": {
+    "nodes": [
+      {
+        "data": {
+          "id": "0001822523",
+          "label": "Advanced Flower Capital Inc.",
+          "type": "company",
+          "color": "#f97316",
+          "description": "ENIS Score: 30.0/100\nMarket Cap: $49,933,900\nConcentration: 0%",
+          "customData": {
+            "enis_score": 30.0,
+            "customer_concentration": 0,
+            "financial_score": 50,
+            "network_metrics": {
+              "systemic_importance": 0.0,
+              "contagion_risk": 0.0,
+              "network_value": 0,
+              "variance": 0.0
+            },
+            "market_cap": 49933900,
+            "size": 116.9839549588877
+          }
+        },
+        "position": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "data": {
+          "id": "0001783328",
+          "label": "TScan Therapeutics, Inc.",
+          "type": "company",
+          "color": "#ef4444",
+          "description": "ENIS Score: 0/100\nMarket Cap: $0\nConcentration: 0%",
+          "customData": {
+            "enis_score": 0,
+            "customer_concentration": 0,
+            "financial_score": 0,
+            "network_metrics": {},
+            "market_cap": 0,
+            "size": 40
+          }
+        },
+        "position": {
+          "x": 200,
+          "y": 100
+        }
+      },
+      {
+        "data": {
+          "id": "0001279704",
+          "label": "Cellectar Biosciences, Inc.",
+          "type": "company",
+          "color": "#f97316",
+          "description": "ENIS Score: 21.0/100\nMarket Cap: $11,363,600\nConcentration: 0%",
+          "customData": {
+            "enis_score": 21.0,
+            "customer_concentration": 0,
+            "financial_score": 35,
+            "network_metrics": {
+              "systemic_importance": 0.0,
+              "contagion_risk": 0.0,
+              "network_value": 0,
+              "variance": 0.0
+            },
+            "market_cap": 11363600,
+            "size": 110.55515976323301
+          }
+        },
+        "position": {
+          "x": 400,
+          "y": 200
+        }
+      },
+      {
+        "data": {
+          "id": "0001462418",
+          "label": "ALTISOURCE PORTFOLIO SOLUTIONS S.A.",
+          "type": "company",
+          "color": "#ef4444",
+          "description": "ENIS Score: 0/100\nMarket Cap: $0\nConcentration: 42%",
+          "customData": {
+            "enis_score": 0,
+            "customer_concentration": 42,
+            "financial_score": 0,
+            "network_metrics": {},
+            "market_cap": 0,
+            "size": 40
+          }
+        },
+        "position": {
+          "x": 600,
+          "y": 300
+        }
+      },
+      {
+        "data": {
+          "id": "0001273441",
+          "label": "GRAN TIERRA ENERGY INC.",
+          "type": "company",
+          "color": "#ef4444",
+          "description": "ENIS Score: 0/100\nMarket Cap: $0\nConcentration: 19%",
+          "customData": {
+            "enis_score": 0,
+            "customer_concentration": 19,
+            "financial_score": 0,
+            "network_metrics": {},
+            "market_cap": 0,
+            "size": 40
+          }
+        },
+        "position": {
+          "x": 800,
+          "y": 400
+        }
+      },
+      {
+        "data": {
+          "id": "0001829864",
+          "label": "TaskUs, Inc.",
+          "type": "company",
+          "color": "#ef4444",
+          "description": "ENIS Score: 0/100\nMarket Cap: $0\nConcentration: 87%",
+          "customData": {
+            "enis_score": 0,
+            "customer_concentration": 87,
+            "financial_score": 0,
+            "network_metrics": {},
+            "market_cap": 0,
+            "size": 40
+          }
+        },
+        "position": {
+          "x": 1000,
+          "y": 500
+        }
+      },
+      {
+        "data": {
+          "id": "0001527613",
+          "label": "CIMG Inc.",
+          "type": "company",
+          "color": "#ef4444",
+          "description": "ENIS Score: 0/100\nMarket Cap: $0\nConcentration: 0%",
+          "customData": {
+            "enis_score": 0,
+            "customer_concentration": 0,
+            "financial_score": 0,
+            "network_metrics": {},
+            "market_cap": 0,
+            "size": 40
+          }
+        },
+        "position": {
+          "x": 1200,
+          "y": 600
+        }
+      },
+      {
+        "data": {
+          "id": "0002000762",
+          "label": "GMTech Inc.",
+          "type": "company",
+          "color": "#ef4444",
+          "description": "ENIS Score: 0/100\nMarket Cap: $0\nConcentration: 0%",
+          "customData": {
+            "enis_score": 0,
+            "customer_concentration": 0,
+            "financial_score": 0,
+            "network_metrics": {},
+            "market_cap": 0,
+            "size": 40
+          }
+        },
+        "position": {
+          "x": 1400,
+          "y": 700
+        }
+      }
+    ],
+    "edges": []
+  },
+  "legend": {
+    "nodes": [
+      {
+        "type": "company",
+        "label": "High Score (60+)",
+        "description": "Strong ENIS score",
+        "style": {
+          "backgroundColor": "#10b981",
+          "borderColor": "#059669",
+          "borderWidth": 3,
+          "shape": "ellipse",
+          "color": "#ffffff"
+        }
+      },
+      {
+        "type": "company_medium",
+        "label": "Medium Score (40-59)",
+        "description": "Moderate ENIS score",
+        "style": {
+          "backgroundColor": "#f59e0b",
+          "borderColor": "#d97706",
+          "borderWidth": 3,
+          "shape": "ellipse",
+          "color": "#ffffff"
+        }
+      },
+      {
+        "type": "company_low",
+        "label": "Low Score (<40)",
+        "description": "Weak ENIS score",
+        "style": {
+          "backgroundColor": "#ef4444",
+          "borderColor": "#dc2626",
+          "borderWidth": 3,
+          "shape": "ellipse",
+          "color": "#ffffff"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "type": "concentration_risk",
+        "label": "Concentration Risk",
+        "description": "Shared customer concentration risk (>40%)",
+        "style": {
+          "lineColor": "#ef4444",
+          "lineStyle": "dashed",
+          "targetArrowShape": "triangle",
+          "targetArrowColor": "#ef4444",
+          "width": 3
+        }
+      }
+    ]
+  },
+  "exportedAt": "2026-03-06T15:34:04.257968Z",
+  "metadata": {
+    "source": "ENIS - EDGAR Network Intelligence System",
+    "patents": [
+      "US 10,176,442",
+      "US 10,997,540"
+    ],
+    "description": "Micro-cap company network with MGF-based risk analysis"
+  }
+}

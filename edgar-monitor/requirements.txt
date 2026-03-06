@@ -4,3 +4,7 @@ python-dotenv
 edgartools
 pytest
 networkx
+anthropic
+beautifulsoup4
+yfinance
+tastytrade

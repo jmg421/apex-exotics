@@ -19,6 +19,170 @@
     }
   },
   {
+    "cik": "0001043186",
+    "company": "Stabilis Solutions, Inc.",
+    "ticker": "SLNG",
+    "market_cap": 80706088,
+    "score": 50,
+    "reasons": [
+      "Low debt: 21.7%",
+      "Profitable"
+    ],
+    "metrics": {
+      "revenue": null,
+      "net_margin": null,
+      "debt_to_assets": 21.704991587212564,
+      "cash": 8987000,
+      "net_income": 4599000
+    }
+  },
+  {
+    "cik": "0001699382",
+    "company": "PMV Pharmaceuticals, Inc.",
+    "ticker": "PMVP",
+    "market_cap": 86128144,
+    "score": 45,
+    "reasons": [
+      "Low debt: 8.0%",
+      "Strong cash: 21.4% of assets"
+    ],
+    "metrics": {
+      "revenue": null,
+      "net_margin": null,
+      "debt_to_assets": 7.950315754255363,
+      "cash": 40876000,
+      "net_income": -68960000
+    }
+  },
+  {
+    "cik": "0001805651",
+    "company": "MARKETWISE, INC.",
+    "ticker": "MKTW",
+    "market_cap": 36370040,
+    "score": 45,
+    "reasons": [
+      "Strong cash: 59.8% of assets",
+      "Profitable",
+      "Revenue: $364.2M"
+    ],
+    "metrics": {
+      "revenue": 364179000,
+      "net_margin": 0.48931981250978224,
+      "debt_to_assets": 183.9735660751787,
+      "cash": 155174000,
+      "net_income": 1782000
+    }
+  },
+  {
+    "cik": "0001513525",
+    "company": "ADIAL PHARMACEUTICALS, INC.",
+    "ticker": "ADIL",
+    "market_cap": 1977882,
+    "score": 45,
+    "reasons": [
+      "Low debt: 19.3%",
+      "Strong cash: 74.4% of assets"
+    ],
+    "metrics": {
+      "revenue": null,
+      "net_margin": null,
+      "debt_to_assets": 19.347129685472197,
+      "cash": 3750525,
+      "net_income": -13197451
+    }
+  },
+  {
+    "cik": "0001661059",
+    "company": "NextCure, Inc.",
+    "ticker": "NXTC",
+    "market_cap": 45573072,
+    "score": 45,
+    "reasons": [
+      "Low debt: 19.0%",
+      "Strong cash: 34.3% of assets"
+    ],
+    "metrics": {
+      "revenue": null,
+      "net_margin": null,
+      "debt_to_assets": 19.030422953252536,
+      "cash": 27727000,
+      "net_income": -55654000
+    }
+  },
+  {
+    "cik": "0001533040",
+    "company": "Phio Pharmaceuticals Corp.",
+    "ticker": "PHIO",
+    "market_cap": 13256751,
+    "score": 45,
+    "reasons": [
+      "Low debt: 17.7%",
+      "Strong cash: 93.8% of assets"
+    ],
+    "metrics": {
+      "revenue": 21000,
+      "net_margin": -34047.619047619046,
+      "debt_to_assets": 17.689090275357266,
+      "cash": 5382000,
+      "net_income": -7150000
+    }
+  },
+  {
+    "cik": "0001095146",
+    "company": "Athena Bitcoin Global",
+    "ticker": "ABIT",
+    "market_cap": 20475048,
+    "score": 45,
+    "reasons": [
+      "Strong cash: 22.4% of assets",
+      "Profitable",
+      "Revenue: $285.4M"
+    ],
+    "metrics": {
+      "revenue": 285391000,
+      "net_margin": 3.6034773346041042,
+      "debt_to_assets": 72.6103058962234,
+      "cash": 17506000,
+      "net_income": 10284000
+    }
+  },
+  {
+    "cik": "0001554818",
+    "company": "AUDDIA INC.",
+    "ticker": "AUUD",
+    "market_cap": 2238918,
+    "score": 45,
+    "reasons": [
+      "Low debt: 11.4%",
+      "Strong cash: 51.1% of assets"
+    ],
+    "metrics": {
+      "revenue": 0,
+      "net_margin": null,
+      "debt_to_assets": 11.399973727560846,
+      "cash": 2706319,
+      "net_income": -8722039
+    }
+  },
+  {
+    "cik": "0000081955",
+    "company": "RAND CAPITAL CORP",
+    "ticker": "RAND",
+    "market_cap": 34717124,
+    "score": 40,
+    "reasons": [
+      "Low debt: 9.8%",
+      "Profitable"
+    ],
+    "metrics": {
+      "revenue": null,
+      "net_margin": null,
+      "debt_to_assets": 9.83323960703935,
+      "cash": 834805,
+      "net_income": 6526650
+    }
+  },
+  {
     "cik": "0001279704",
     "company": "Cellectar Biosciences, Inc.",
     "ticker": "CLRB",
@@ -34,6 +198,266 @@
       "debt_to_assets": 38.46009626974465,
       "cash": 23288607,
       "net_income": -44581446
+    }
+  },
+  {
+    "cik": "0000793524",
+    "company": "RESEARCH FRONTIERS INC",
+    "ticker": "REFR",
+    "market_cap": 32975260,
+    "score": 35,
+    "reasons": [
+      "Moderate debt: 35.5%",
+      "Strong cash: 49.4% of assets"
+    ],
+    "metrics": {
+      "revenue": 433269,
+      "net_margin": -302.6715504686465,
+      "debt_to_assets": 35.53062928518259,
+      "cash": 1994186,
+      "net_income": -1311382
+    }
+  },
+  {
+    "cik": "0000829323",
+    "company": "Inuvo, Inc.",
+    "ticker": "INUV",
+    "market_cap": 39359212,
+    "score": 30,
+    "reasons": [
+      "Strong cash: 32.5% of assets",
+      "Revenue: $83.8M"
+    ],
+    "metrics": {
+      "revenue": 83793859,
+      "net_margin": -6.876161414167595,
+      "debt_to_assets": null,
+      "cash": 10475964,
+      "net_income": -5761801
+    }
+  },
+  {
+    "cik": "0001785279",
+    "company": "Metagenomi Therapeutics, Inc.",
+    "ticker": "MGX",
+    "market_cap": 55193728,
+    "score": 25,
+    "reasons": [
+      "Low debt: 27.6%"
+    ],
+    "metrics": {
+      "revenue": null,
+      "net_margin": null,
+      "debt_to_assets": 27.647035265050107,
+      "cash": 27386000,
+      "net_income": -78058000
+    }
+  },
+  {
+    "cik": "0001339970",
+    "company": "aTYR PHARMA INC",
+    "ticker": "ATYR",
+    "market_cap": 81593472,
+    "score": 20,
+    "reasons": [
+      "Strong cash: 23.3% of assets"
+    ],
+    "metrics": {
+      "revenue": null,
+      "net_margin": null,
+      "debt_to_assets": null,
+      "cash": 22544000,
+      "net_income": -50389000
+    }
+  },
+  {
+    "cik": "0000109657",
+    "company": "GT Biopharma, Inc.",
+    "ticker": "GTBP",
+    "market_cap": 12507875,
+    "score": 20,
+    "reasons": [
+      "Strong cash: 93.4% of assets"
+    ],
+    "metrics": {
+      "revenue": 0,
+      "net_margin": null,
+      "debt_to_assets": 733.5302457466919,
+      "cash": 3951000,
+      "net_income": -13162000
+    }
+  },
+  {
+    "cik": "0001512931",
+    "company": "MONROE CAPITAL Corp",
+    "ticker": "MRCC",
+    "market_cap": 93598592,
+    "score": 15,
+    "reasons": [
+      "Profitable"
+    ],
+    "metrics": {
+      "revenue": null,
+      "net_margin": null,
+      "debt_to_assets": 60.91841580203435,
+      "cash": 9044000,
+      "net_income": 371000
+    }
+  },
+  {
+    "cik": "0000898171",
+    "company": "UWHARRIE CAPITAL CORP",
+    "ticker": "UWHR",
+    "market_cap": 79178504,
+    "score": 15,
+    "reasons": [
+      "Profitable"
+    ],
+    "metrics": {
+      "revenue": null,
+      "net_margin": null,
+      "debt_to_assets": 94.89027363378005,
+      "cash": 52267000,
+      "net_income": 1088000
+    }
+  },
+  {
+    "cik": "0001089872",
+    "company": "GAIA, INC",
+    "ticker": "GAIA",
+    "market_cap": 81143664,
+    "score": 15,
+    "reasons": [
+      "Moderate debt: 33.4%"
+    ],
+    "metrics": {
+      "revenue": 2900000,
+      "net_margin": -180.44827586206898,
+      "debt_to_assets": 33.42657045539843,
+      "cash": 5860000,
+      "net_income": -5233000
+    }
+  },
+  {
+    "cik": "0001270436",
+    "company": "Cohen & Co Inc.",
+    "ticker": "COHN",
+    "market_cap": 40310084,
+    "score": 10,
+    "reasons": [
+      "Revenue: $83.0M"
+    ],
+    "metrics": {
+      "revenue": 82981000,
+      "net_margin": -6.161651462382956,
+      "debt_to_assets": 90.70348628274343,
+      "cash": 19590000,
+      "net_income": -5113000
+    }
+  },
+  {
+    "cik": "0001673504",
+    "company": "Atlantis Glory Inc.",
+    "ticker": "AGLY",
+    "market_cap": 10267490,
+    "score": 0,
+    "reasons": [],
+    "metrics": {
+      "revenue": 155996,
+      "net_margin": -25.94938331752096,
+      "debt_to_assets": 1904.7666666666669,
+      "cash": 0,
+      "net_income": -40480
+    }
+  },
+  {
+    "cik": "0001857853",
+    "company": "Traeger, Inc.",
+    "ticker": "COOK",
+    "market_cap": 96039240,
+    "score": 0,
+    "reasons": [],
+    "metrics": {
+      "revenue": null,
+      "net_margin": null,
+      "debt_to_assets": 66.72232408023817,
+      "cash": 14981000,
+      "net_income": -84402000
+    }
+  },
+  {
+    "cik": "0001378950",
+    "company": "CarParts.com, Inc.",
+    "ticker": "PRTS",
+    "market_cap": 48710400,
+    "score": 0,
+    "reasons": [],
+    "metrics": {
+      "revenue": null,
+      "net_margin": null,
+      "debt_to_assets": 59.551036690189676,
+      "cash": 2031000,
+      "net_income": -40601000
+    }
+  },
+  {
+    "cik": "0000948708",
+    "company": "SMITH MICRO SOFTWARE, INC.",
+    "ticker": "SMSI",
+    "market_cap": 17109270,
+    "score": 0,
+    "reasons": [],
+    "metrics": {
+      "revenue": null,
+      "net_margin": null,
+      "debt_to_assets": null,
+      "cash": 2808000,
+      "net_income": -48697000
+    }
+  },
+  {
+    "cik": "0000917225",
+    "company": "SOLITARIO RESOURCES CORP.",
+    "ticker": "XPL",
+    "market_cap": 72930136,
+    "score": 0,
+    "reasons": [],
+    "metrics": {
+      "revenue": 408000,
+      "net_margin": -1315.6862745098038,
+      "debt_to_assets": null,
+      "cash": 81000,
+      "net_income": -5368000
+    }
+  },
+  {
+    "cik": "0001846084",
+    "company": "Global Crossing Airlines Group Inc.",
+    "ticker": "JETMF",
+    "market_cap": 32039742,
+    "score": 0,
+    "reasons": [],
+    "metrics": {
+      "revenue": null,
+      "net_margin": null,
+      "debt_to_assets": 117.67312986164005,
+      "cash": 12345000,
+      "net_income": -11472000
+    }
+  },
+  {
+    "cik": "0001487091",
+    "company": "Quest Water Global, Inc.",
+    "ticker": "QWTR",
+    "market_cap": 3864759,
+    "score": 0,
+    "reasons": [],
+    "metrics": {
+      "revenue": null,
+      "net_margin": null,
+      "debt_to_assets": 83542.65575261482,
+      "cash": 3,
+      "net_income": -596013
     }
   }
 ]

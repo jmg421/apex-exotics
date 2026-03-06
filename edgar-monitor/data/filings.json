@@ -2985,5 +2985,389 @@
     "filed_date": "",
     "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001579428&type=10-K&count=1",
     "discovered": "2026-03-06T10:41:50.023692"
+  },
+  "0001704287_10-K_": {
+    "cik": "0001704287",
+    "company": "Bluejay Diagnostics, Inc.",
+    "filing_type": "10-K",
+    "filed_date": "",
+    "url": "https://www.sec.gov/Archives/edgar/data/1704287/000121390026024616/0001213900-26-024616-index.htm",
+    "discovered": "2026-03-06T16:03:16.998330"
+  },
+  "0002087087_10-K_": {
+    "cik": "0002087087",
+    "company": "Black Spade Acquisition III Co",
+    "filing_type": "10-K",
+    "filed_date": "",
+    "url": "https://www.sec.gov/Archives/edgar/data/2087087/000110465926024679/0001104659-26-024679-index.htm",
+    "discovered": "2026-03-06T16:03:16.998340"
+  },
+  "0002030772_10-K_": {
+    "cik": "0002030772",
+    "company": "Blackstone Infrastructure Strategies L.P.",
+    "filing_type": "10-K",
+    "filed_date": "",
+    "url": "https://www.sec.gov/Archives/edgar/data/2030772/000119312526096453/0001193125-26-096453-index.htm",
+    "discovered": "2026-03-06T16:03:16.998345"
+  },
+  "0001015739_10-K_": {
+    "cik": "0001015739",
+    "company": "AWARE INC /MA/",
+    "filing_type": "10-K",
+    "filed_date": "",
+    "url": "https://www.sec.gov/Archives/edgar/data/1015739/000119312526096448/0001193125-26-096448-index.htm",
+    "discovered": "2026-03-06T16:03:16.998354"
+  },
+  "0000765207_10-K_": {
+    "cik": "0000765207",
+    "company": "First Bancorp, Inc /ME/",
+    "filing_type": "10-K",
+    "filed_date": "",
+    "url": "https://www.sec.gov/Archives/edgar/data/765207/000076520726000067/0000765207-26-000067-index.htm",
+    "discovered": "2026-03-06T16:03:16.998360"
+  },
+  "0001095146_10-K_": {
+    "cik": "0001095146",
+    "company": "Athena Bitcoin Global",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T16:16:46-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/1095146/000168316826001588/0001683168-26-001588-index.htm",
+    "discovered": "2026-03-06T16:20:09.133309"
+  },
+  "0001954360_10-K_": {
+    "cik": "0001954360",
+    "company": "Crescent Private Credit Income Corp",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T16:16:40-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/1954360/000119312526096558/0001193125-26-096558-index.htm",
+    "discovered": "2026-03-06T16:20:09.133314"
+  },
+  "0002017636_10-K_": {
+    "cik": "0002017636",
+    "company": "CCS IX Portfolio Holdings, LLC",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T16:15:48-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/2017636/000119312526096557/0001193125-26-096557-index.htm",
+    "discovered": "2026-03-06T16:20:09.133318"
+  },
+  "0001798749_10-K_": {
+    "cik": "0001798749",
+    "company": "Jade Biosciences, Inc.",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T16:15:25-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/1798749/000119312526096550/0001193125-26-096550-index.htm",
+    "discovered": "2026-03-06T16:20:09.133320"
+  },
+  "0001851322_10-K/A_": {
+    "cik": "0001851322",
+    "company": "North Haven Private Income Fund LLC",
+    "filing_type": "10-K/A",
+    "filed_date": "2026-03-06T16:14:54-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/1851322/000119312526096532/0001193125-26-096532-index.htm",
+    "discovered": "2026-03-06T16:20:09.133323"
+  },
+  "0001327811_10-K_": {
+    "cik": "0001327811",
+    "company": "Workday, Inc.",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T16:13:04-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/1327811/000132781126000014/0001327811-26-000014-index.htm",
+    "discovered": "2026-03-06T16:20:09.133325"
+  },
+  "0001941536_10-K_": {
+    "cik": "0001941536",
+    "company": "Bridger Aerospace Group Holdings, Inc.",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T16:11:48-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/1941536/000194153626000005/0001941536-26-000005-index.htm",
+    "discovered": "2026-03-06T16:20:09.133328"
+  },
+  "0000775215_10-K_": {
+    "cik": "0000775215",
+    "company": "HBT Financial, Inc.",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T16:11:40-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/775215/000077521526000025/0000775215-26-000025-index.htm",
+    "discovered": "2026-03-06T16:20:09.133330"
+  },
+  "0001554818_10-K_": {
+    "cik": "0001554818",
+    "company": "AUDDIA INC.",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T16:11:18-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/1554818/000168316826001587/0001683168-26-001587-index.htm",
+    "discovered": "2026-03-06T16:20:09.133332"
+  },
+  "0002023730_10-K_": {
+    "cik": "0002023730",
+    "company": "GigCapital7 Corp.",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T16:11:16-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/2023730/000119312526096526/0001193125-26-096526-index.htm",
+    "discovered": "2026-03-06T16:20:09.133335"
+  },
+  "0001089872_10-K_": {
+    "cik": "0001089872",
+    "company": "GAIA, INC",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T16:11:01-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/1089872/000119312526096522/0001193125-26-096522-index.htm",
+    "discovered": "2026-03-06T16:20:09.133337"
+  },
+  "0001810019_10-K_": {
+    "cik": "0001810019",
+    "company": "Rackspace Technology, Inc.",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T16:07:05-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/1810019/000181001926000015/0001810019-26-000015-index.htm",
+    "discovered": "2026-03-06T16:20:09.133339"
+  },
+  "0001723596_10-K_": {
+    "cik": "0001723596",
+    "company": "Columbia Financial, Inc.",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T16:06:57-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/1723596/000172359626000010/0001723596-26-000010-index.htm",
+    "discovered": "2026-03-06T16:20:09.133341"
+  },
+  "0001681206_10-K_": {
+    "cik": "0001681206",
+    "company": "NI Holdings, Inc.",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T16:06:55-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/1681206/000117494726000305/0001174947-26-000305-index.htm",
+    "discovered": "2026-03-06T16:20:09.133343"
+  },
+  "0001698514_10-K_": {
+    "cik": "0001698514",
+    "company": "National Energy Services Reunited Corp.",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T16:06:31-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/1698514/000149315226009139/0001493152-26-009139-index.htm",
+    "discovered": "2026-03-06T16:20:09.133346"
+  },
+  "0001742313_10-K_": {
+    "cik": "0001742313",
+    "company": "Monroe Capital Income Plus Corp",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T16:06:25-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/1742313/000174231326000013/0001742313-26-000013-index.htm",
+    "discovered": "2026-03-06T16:20:09.133348"
+  },
+  "0002034269_10-K_": {
+    "cik": "0002034269",
+    "company": "Cantor Equity Partners II, Inc.",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T16:06:14-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/2034269/000121390026024633/0001213900-26-024633-index.htm",
+    "discovered": "2026-03-06T16:20:09.133350"
+  },
+  "0001325618_10-K_": {
+    "cik": "0001325618",
+    "company": "IRADIMED CORP",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T16:05:54-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/1325618/000110465926024691/0001104659-26-024691-index.htm",
+    "discovered": "2026-03-06T16:20:09.133352"
+  },
+  "0000708781_10-K_": {
+    "cik": "0000708781",
+    "company": "CASS INFORMATION SYSTEMS INC",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T16:04:59-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/708781/000070878126000010/0000708781-26-000010-index.htm",
+    "discovered": "2026-03-06T16:20:09.133354"
+  },
+  "0001911066_10-K_": {
+    "cik": "0001911066",
+    "company": "Nuveen Churchill Private Capital Income Fund",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T15:46:24-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/1911066/000191106626000012/0001911066-26-000012-index.htm",
+    "discovered": "2026-03-06T16:20:09.133368"
+  },
+  "0000854560_10-K_": {
+    "cik": "0000854560",
+    "company": "GREAT SOUTHERN BANCORP, INC.",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T15:46:06-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/854560/000110465926024659/0001104659-26-024659-index.htm",
+    "discovered": "2026-03-06T16:20:09.133370"
+  },
+  "0001569455_10-K_": {
+    "cik": "0001569455",
+    "company": "J.P. Morgan Chase Commercial Mortgage Securities Trust 2013-C10",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T15:33:28-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/1569455/000188852426003888/0001888524-26-003888-index.htm",
+    "discovered": "2026-03-06T16:20:09.133372"
+  },
+  "0000923139_10-K_": {
+    "cik": "0000923139",
+    "company": "FLUSHING FINANCIAL CORP",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T15:19:10-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/923139/000110465926024646/0001104659-26-024646-index.htm",
+    "discovered": "2026-03-06T16:20:09.133374"
+  },
+  "0000859070_10-K_": {
+    "cik": "0000859070",
+    "company": "FIRST COMMUNITY BANKSHARES INC /VA/",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T15:15:07-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/859070/000143774926007180/0001437749-26-007180-index.htm",
+    "discovered": "2026-03-06T16:20:09.133377"
+  },
+  "0000731122_10-K_": {
+    "cik": "0000731122",
+    "company": "MUNCY COLUMBIA FINANCIAL Corp",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T14:35:15-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/731122/000117494726000299/0001174947-26-000299-index.htm",
+    "discovered": "2026-03-06T16:20:09.133379"
+  },
+  "0000810958_10-K_": {
+    "cik": "0000810958",
+    "company": "CITIZENS & NORTHERN CORP",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T14:25:32-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/810958/000110465926024613/0001104659-26-024613-index.htm",
+    "discovered": "2026-03-06T16:20:09.133381"
+  },
+  "0001163370_10-K_": {
+    "cik": "0001163370",
+    "company": "NORTHRIM BANCORP INC",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T13:55:55-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/1163370/000116337026000007/0001163370-26-000007-index.htm",
+    "discovered": "2026-03-06T16:20:09.133383"
+  },
+  "0001331465_10-K_": {
+    "cik": "0001331465",
+    "company": "Federal Home Loan Bank of Atlanta",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T13:35:28-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/1331465/000133146526000047/0001331465-26-000047-index.htm",
+    "discovered": "2026-03-06T16:20:09.133385"
+  },
+  "0001884516_10-K_": {
+    "cik": "0001884516",
+    "company": "Drilling Tools International Corp",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T13:31:14-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/1884516/000119312526095973/0001193125-26-095973-index.htm",
+    "discovered": "2026-03-06T16:20:09.133387"
+  },
+  "0000712770_10-K_": {
+    "cik": "0000712770",
+    "company": "ONE LIBERTY PROPERTIES INC",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T13:27:00-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/712770/000110465926024579/0001104659-26-024579-index.htm",
+    "discovered": "2026-03-06T16:20:09.133389"
+  },
+  "0001371489_10-K_": {
+    "cik": "0001371489",
+    "company": "Information Services Group Inc.",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T13:08:40-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/1371489/000110465926024573/0001104659-26-024573-index.htm",
+    "discovered": "2026-03-06T16:20:09.133394"
+  },
+  "0000717538_10-K_": {
+    "cik": "0000717538",
+    "company": "ARROW FINANCIAL CORP",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T12:55:17-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/717538/000071753826000037/0000717538-26-000037-index.htm",
+    "discovered": "2026-03-06T16:20:09.133397"
+  },
+  "0001270436_10-K_": {
+    "cik": "0001270436",
+    "company": "Cohen & Co Inc.",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T12:48:57-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/1270436/000143774926007157/0001437749-26-007157-index.htm",
+    "discovered": "2026-03-06T16:20:09.133399"
+  },
+  "0000767405_10-K_": {
+    "cik": "0000767405",
+    "company": "SB FINANCIAL GROUP, INC.",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T12:48:17-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/767405/000121390026024471/0001213900-26-024471-index.htm",
+    "discovered": "2026-03-06T16:20:09.133401"
+  },
+  "0000750686_10-K_": {
+    "cik": "0000750686",
+    "company": "CAMDEN NATIONAL CORP",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T12:36:08-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/750686/000075068626000010/0000750686-26-000010-index.htm",
+    "discovered": "2026-03-06T16:20:09.133404"
+  },
+  "0001637880_10-K_": {
+    "cik": "0001637880",
+    "company": "Tri-State Generation & Transmission Association, Inc.",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T12:25:10-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/1637880/000163788026000012/0001637880-26-000012-index.htm",
+    "discovered": "2026-03-06T16:20:09.133406"
+  },
+  "0001860424_10-K_": {
+    "cik": "0001860424",
+    "company": "Onex Direct Lending BDC Fund",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T11:47:23-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/1860424/000119312526095711/0001193125-26-095711-index.htm",
+    "discovered": "2026-03-06T16:20:09.133408"
+  },
+  "0000837010_10-K_": {
+    "cik": "0000837010",
+    "company": "VOYA RETIREMENT INSURANCE & ANNUITY Co",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T11:37:13-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/837010/000083701026000003/0000837010-26-000003-index.htm",
+    "discovered": "2026-03-06T16:20:09.133410"
+  },
+  "0000921557_10-K_": {
+    "cik": "0000921557",
+    "company": "REPUBLIC BANCORP INC /KY/",
+    "filing_type": "10-K",
+    "filed_date": "2026-03-06T11:08:14-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/921557/000110465926024523/0001104659-26-024523-index.htm",
+    "discovered": "2026-03-06T16:20:09.133412"
+  },
+  "0001423221_10-Q_": {
+    "cik": "0001423221",
+    "company": "Quanex Building Products CORP",
+    "filing_type": "10-Q",
+    "filed_date": "2026-03-06T16:15:30-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/1423221/000142322126000017/0001423221-26-000017-index.htm",
+    "discovered": "2026-03-06T16:20:11.150825"
+  },
+  "0000711404_10-Q_": {
+    "cik": "0000711404",
+    "company": "COOPER COMPANIES, INC.",
+    "filing_type": "10-Q",
+    "filed_date": "2026-03-06T16:12:10-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/711404/000162828026015620/0001628280-26-015620-index.htm",
+    "discovered": "2026-03-06T16:20:11.150846"
+  },
+  "0000109657_10-Q/A_": {
+    "cik": "0000109657",
+    "company": "GT Biopharma, Inc.",
+    "filing_type": "10-Q/A",
+    "filed_date": "2026-03-06T16:01:09-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/109657/000149315226009127/0001493152-26-009127-index.htm",
+    "discovered": "2026-03-06T16:20:11.150853"
+  },
+  "0000315374_10-Q_": {
+    "cik": "0000315374",
+    "company": "HURCO COMPANIES INC",
+    "filing_type": "10-Q",
+    "filed_date": "2026-03-06T14:26:03-05:00",
+    "url": "https://www.sec.gov/Archives/edgar/data/315374/000110465926024614/0001104659-26-024614-index.htm",
+    "discovered": "2026-03-06T16:20:11.150866"
   }
 }

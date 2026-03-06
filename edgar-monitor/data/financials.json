@@ -242,5 +242,63 @@
     "cash": 3,
     "stockholders_equity": -1238891,
     "debt_to_assets": 83542.65575261482
+  },
+  "0001095146": {
+    "cik": "0001095146",
+    "company": "Athena Bitcoin Global",
+    "revenue": 285391000,
+    "net_income": 10284000,
+    "total_assets": 78033000,
+    "total_liabilities": 56660000,
+    "cash": 17506000,
+    "stockholders_equity": 11018000,
+    "net_margin": 3.6034773346041042,
+    "debt_to_assets": 72.6103058962234
+  },
+  "0001554818": {
+    "cik": "0001554818",
+    "company": "AUDDIA INC.",
+    "revenue": 0,
+    "net_income": -8722039,
+    "total_assets": 5298328,
+    "total_liabilities": 604008,
+    "cash": 2706319,
+    "stockholders_equity": 420420,
+    "debt_to_assets": 11.399973727560846
+  },
+  "0001089872": {
+    "cik": "0001089872",
+    "company": "GAIA, INC",
+    "revenue": 2900000,
+    "net_income": -5233000,
+    "total_assets": 141217000,
+    "total_liabilities": 47204000,
+    "cash": 5860000,
+    "stockholders_equity": 80675000,
+    "net_margin": -180.44827586206898,
+    "debt_to_assets": 33.42657045539843
+  },
+  "0001270436": {
+    "cik": "0001270436",
+    "company": "Cohen & Co Inc.",
+    "revenue": 82981000,
+    "net_income": -5113000,
+    "total_assets": 971149000,
+    "total_liabilities": 880866000,
+    "cash": 19590000,
+    "stockholders_equity": 41728000,
+    "net_margin": -6.161651462382956,
+    "debt_to_assets": 90.70348628274343
+  },
+  "0000109657": {
+    "cik": "0000109657",
+    "company": "GT Biopharma, Inc.",
+    "revenue": 0,
+    "net_income": -13162000,
+    "total_assets": 4232000,
+    "total_liabilities": 31043000,
+    "cash": 3951000,
+    "stockholders_equity": 7476000,
+    "debt_to_assets": 733.5302457466919
   }
 }

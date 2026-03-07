@@ -95,7 +95,7 @@
 <body>
     <div class="container">
         <h1>📊 ENIS Portfolio Dashboard</h1>
-        <p class="subtitle">Attention Arbitrage • Paper Trading • Real-Time Data</p>
+        <p class="subtitle">Attention Arbitrage • Paper Trading • Real-Time Data <span id="demo-badge"></span></p>
         
         <div class="stats">
             <div class="stat-card">
@@ -144,6 +144,12 @@
         async function loadData() {
             // Load portfolio data
             const portfolio = await fetch('/api/portfolio').then(r => r.json());
+            
+            // Show demo mode badge
+            if (portfolio.demo_mode) {
+                document.getElementById('demo-badge').innerHTML = 
+                    '<span style="background: #ef4444; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; margin-left: 10px;">DEMO MODE</span>';
+            }
             
             // Update stats
             document.getElementById('total-value').textContent = formatMoney(portfolio.total_value);
@@ -252,8 +258,8 @@
         // Load data on page load
         loadData();
         
-        // Auto-refresh every 60 seconds
-        setInterval(loadData, 60000);
+        // Auto-refresh every 5 seconds in demo mode, 60 seconds in live mode
+        setInterval(loadData, 5000);
     </script>
 </body>
 </html>

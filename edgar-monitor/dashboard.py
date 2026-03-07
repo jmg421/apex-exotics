@@ -19,14 +19,25 @@ def dashboard():
 @app.route('/api/portfolio')
 def api_portfolio():
     """Get current portfolio data."""
+    import random
+    from datetime import datetime
+    
     portfolio = load_portfolio()
+    
+    # Demo mode: simulate price movements if market is closed
+    demo_mode = datetime.now().weekday() >= 5 or datetime.now().hour < 9 or datetime.now().hour >= 16
     
     # Calculate current values
     total_value = portfolio['cash']
     positions = []
     
     for ticker, pos in portfolio['positions'].items():
-        current_price = get_current_price(ticker)
+        if demo_mode:
+            # Simulate small random movements (-0.5% to +0.5%)
+            current_price = pos['avg_price'] * (1 + random.uniform(-0.005, 0.005))
+        else:
+            current_price = get_current_price(ticker)
+        
         shares = pos['shares']
         avg_price = pos['avg_price']
         cost_basis = shares * avg_price
@@ -59,7 +70,8 @@ def api_portfolio():
         'invested': total_value - portfolio['cash'],
         'total_return': total_return,
         'total_return_pct': total_return_pct,
-        'positions': positions
+        'positions': positions,
+        'demo_mode': demo_mode
     })
 
 @app.route('/api/history')

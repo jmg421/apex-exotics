@@ -12,16 +12,31 @@ DATA_DIR = Path(__file__).parent / "data"
 
 def analyze_all_companies():
     """Analyze all companies in ENIS database."""
-    # Load all companies
-    with open(DATA_DIR / "enis_scores.json") as f:
+    # Load all companies from scores.json
+    with open(DATA_DIR / "scores.json") as f:
         companies = json.load(f)
     
+    # Load existing reports to skip already analyzed
+    existing_reports = load_all_reports()
+    
+    # Filter to only unanalyzed companies with score >= 40
+    to_analyze = [c for c in companies 
+                  if c.get('score', 0) >= 40 
+                  and c.get('cik') not in existing_reports]
+    
+    # Sort by score descending
+    to_analyze.sort(key=lambda x: x.get('score', 0), reverse=True)
+    
+    print(f"Found {len(to_analyze)} companies to analyze (score >= 40)")
+    print()
+    
     results = []
-    for i, company in enumerate(companies, 1):
+    for i, company in enumerate(to_analyze, 1):
         cik = company['cik']
         ticker = company.get('ticker', 'N/A')
+        score = company.get('score', 0)
         
-        print(f"[{i}/{len(companies)}] Analyzing {ticker} ({cik})...")
+        print(f"[{i}/{len(to_analyze)}] {ticker} ({score}/100) - {company.get('company', 'Unknown')[:40]}...")
         
         try:
             result = analyze_company_from_enis(cik)
@@ -29,14 +44,14 @@ def analyze_all_companies():
             results.append(result)
             
             # Rate limit - 2 seconds between API calls
-            if i < len(companies):
+            if i < len(to_analyze):
                 time.sleep(2)
             
         except Exception as e:
             print(f"  Error: {e}")
             continue
     
-    print(f"\n✓ Analyzed {len(results)}/{len(companies)} companies")
+    print(f"\n✓ Analyzed {len(results)}/{len(to_analyze)} companies")
     return results
 
 def filter_actionable(results):

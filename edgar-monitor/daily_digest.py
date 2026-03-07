@@ -28,9 +28,11 @@ def categorize_recommendations(reports):
     passes = []
     
     for r in reports:
-        rec = r.get('recommendation', '').upper()
+        if not r or not isinstance(r, dict):
+            continue
+        rec = (r.get('recommendation') or '').upper()
         risk = r.get('risk_score', 0)
-        conviction = r.get('conviction', '').upper()
+        conviction = (r.get('conviction') or '').upper()
         
         if rec == 'BUY' and conviction in ['HIGH', 'MEDIUM']:
             longs.append(r)

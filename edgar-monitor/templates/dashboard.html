@@ -3,6 +3,9 @@
 <head>
     <title>ENIS Portfolio Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -90,6 +93,30 @@
             font-size: 1em;
         }
         .refresh:hover { background: #764ba2; }
+        .candlestick-container {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .ticker-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .ticker-tab {
+            background: #333;
+            border: none;
+            color: #888;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        .ticker-tab:hover { background: #444; color: #fff; }
+        .ticker-tab.active { background: #667eea; color: #fff; }
     </style>
 </head>
 <body>
@@ -121,6 +148,12 @@
             <canvas id="performance-chart"></canvas>
         </div>
 
+        <div class="candlestick-container">
+            <h2>Live Candlestick Chart</h2>
+            <div class="ticker-tabs" id="ticker-tabs"></div>
+            <canvas id="candlestick-chart"></canvas>
+        </div>
+
         <div class="positions">
             <h2>Positions</h2>
             <div id="positions-list"></div>
@@ -131,6 +164,10 @@
 
     <script>
         let performanceChart = null;
+        let candlestickChart = null;
+        let currentTicker = null;
+        let candlestickData = {};
+        let tickers = [];
 
         function formatMoney(value) {
             return '$' + value.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
@@ -188,6 +225,14 @@
                     </div>
                 </div>
             `).join('');
+            
+            // Update tickers for candlestick
+            tickers = portfolio.positions.map(p => p.ticker);
+            if (!currentTicker && tickers.length > 0) {
+                currentTicker = tickers[0];
+            }
+            updateTickerTabs();
+            updateCandlestickData(portfolio.positions);
             
             // Load history
             const history = await fetch('/api/history').then(r => r.json());
@@ -248,6 +293,124 @@
                         },
                         x: {
                             ticks: { color: '#888' },
+                            grid: { color: '#333' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateTickerTabs() {
+            const tabsContainer = document.getElementById('ticker-tabs');
+            tabsContainer.innerHTML = tickers.map(ticker => `
+                <button class="ticker-tab ${ticker === currentTicker ? 'active' : ''}" 
+                        onclick="selectTicker('${ticker}')">
+                    ${ticker}
+                </button>
+            `).join('');
+        }
+
+        function selectTicker(ticker) {
+            currentTicker = ticker;
+            updateTickerTabs();
+            updateCandlestickChart();
+        }
+
+        function updateCandlestickData(positions) {
+            const now = Date.now();
+            
+            positions.forEach(pos => {
+                const ticker = pos.ticker;
+                
+                // Initialize if needed
+                if (!candlestickData[ticker]) {
+                    candlestickData[ticker] = [];
+                }
+                
+                const data = candlestickData[ticker];
+                const price = pos.current_price;
+                
+                // Create new candle every 30 seconds
+                const lastCandle = data[data.length - 1];
+                const shouldCreateNew = !lastCandle || (now - lastCandle.t) > 30000;
+                
+                if (shouldCreateNew) {
+                    // New candle
+                    data.push({
+                        t: now,
+                        o: price,
+                        h: price,
+                        l: price,
+                        c: price
+                    });
+                    
+                    // Keep last 50 candles
+                    if (data.length > 50) {
+                        data.shift();
+                    }
+                } else {
+                    // Update current candle
+                    lastCandle.c = price;
+                    lastCandle.h = Math.max(lastCandle.h, price);
+                    lastCandle.l = Math.min(lastCandle.l, price);
+                }
+            });
+            
+            updateCandlestickChart();
+        }
+
+        function updateCandlestickChart() {
+            if (!currentTicker || !candlestickData[currentTicker]) return;
+            
+            const ctx = document.getElementById('candlestick-chart').getContext('2d');
+            
+            if (candlestickChart) {
+                candlestickChart.destroy();
+            }
+            
+            const data = candlestickData[currentTicker];
+            
+            candlestickChart = new Chart(ctx, {
+                type: 'candlestick',
+                data: {
+                    datasets: [{
+                        label: currentTicker,
+                        data: data
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 2.5,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1a1a1a',
+                            titleColor: '#e0e0e0',
+                            bodyColor: '#e0e0e0',
+                            borderColor: '#333',
+                            borderWidth: 1
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'minute',
+                                displayFormats: {
+                                    minute: 'HH:mm'
+                                }
+                            },
+                            ticks: { color: '#888' },
+                            grid: { color: '#333' }
+                        },
+                        y: {
+                            ticks: { 
+                                color: '#888',
+                                callback: function(value) {
+                                    return '$' + value.toFixed(2);
+                                }
+                            },
                             grid: { color: '#333' }
                         }
                     }

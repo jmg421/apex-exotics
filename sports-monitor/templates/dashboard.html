@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sports Stats Monitor - Margins Over Score</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            padding: 15px;
+            margin: 0;
+            transition: background 0.5s ease;
+        }
+        body.team-dominant {
+            background: radial-gradient(ellipse at top left, var(--team-color-dim) 0%, #0a0a0a 50%);
+        }
+        :root {
+            --accent-color: #4CAF50;
+            --team-color: #4CAF50;
+            --team-color-dim: rgba(76, 175, 80, 0.03);
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 15px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        .games-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .header {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .header h1 { 
+            color: var(--accent-color); 
+            margin-bottom: 5px;
+            font-size: 24px;
+            transition: color 0.5s ease;
+        }
+        .header p { 
+            color: #888; 
+            font-size: 13px;
+            margin: 0;
+        }
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .game-card {
+            background: #1a1a1a;
+            border-radius: 6px;
+            padding: 10px;
+            border: 1px solid #333;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .game-card:hover {
+            border-color: var(--accent-color);
+        }
+        .game-card.selected {
+            border-color: var(--accent-color);
+            background: #1f1f1f;
+        }
+        .game-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+        .game-details {
+            display: none;
+        }
+        .teams-compact {
+            flex: 1;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .scores-compact {
+            display: flex;
+            gap: 8px;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-color);
+            transition: color 0.5s ease;
+        }
+        .clock-compact {
+            font-size: 11px;
+            color: #888;
+            white-space: nowrap;
+        }
+        .game-details {
+            display: none;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #333;
+        }
+        .game-card.expanded .game-details {
+            display: block;
+        }
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+        }
+        .matchup { font-size: 14px; font-weight: 600; }
+        .status { 
+            color: #4CAF50;
+            font-size: 11px;
+            background: rgba(76, 175, 80, 0.1);
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+        .score-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .team { display: flex; align-items: center; gap: 6px; }
+        .team-name { min-width: 100px; font-size: 13px; }
+        .score { 
+            color: #4CAF50;
+            font-size: 24px;
+            min-width: 40px;
+            text-align: right;
+        }
+        .margins {
+            background: #0f0f0f;
+            border-radius: 4px;
+            padding: 10px;
+        }
+        .margins h3 {
+            color: #888;
+            font-size: 10px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+        .stat-row {
+            display: grid;
+            grid-template-columns: 90px 1fr 1fr;
+            gap: 6px;
+            margin-bottom: 5px;
+            font-size: 11px;
+        }
+        .stat-label { color: #888; font-weight: 600; }
+        .stat-value {
+            text-align: right;
+            font-weight: 600;
+        }
+        .stat-value.better { color: #4CAF50; }
+        .stat-value.worse { color: #666; }
+        .insight {
+            margin-top: 8px;
+            padding: 6px;
+            background: rgba(76, 175, 80, 0.1);
+            border-left: 2px solid #4CAF50;
+            border-radius: 3px;
+            font-size: 10px;
+            color: #aaa;
+            line-height: 1.4;
+        }
+        .insight.warning {
+            background: rgba(255, 193, 7, 0.1);
+            border-left-color: #FFC107;
+        }
+        .insight.danger {
+            background: rgba(244, 67, 54, 0.1);
+            border-left-color: #F44336;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .btn {
+            flex: 1;
+            padding: 6px;
+            border: 1px solid #333;
+            background: #0f0f0f;
+            color: #e0e0e0;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn:hover {
+            border-color: #4CAF50;
+            background: #1a1a1a;
+        }
+        .btn.active {
+            background: #4CAF50;
+            border-color: #4CAF50;
+            color: #000;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+        .detail-panel {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #333;
+            position: sticky;
+            top: 15px;
+            max-height: calc(100vh - 30px);
+            overflow-y: auto;
+        }
+        .detail-panel h2 {
+            color: #4CAF50;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        .detail-panel p {
+            color: #888;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+        .detail-panel .highlight {
+            color: #4CAF50;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="detail-panel" id="detail-panel">
+            <h2>Why Margins Matter</h2>
+            <p><strong>Score = Stock Price</strong><br>What everyone watches, reacts to headlines</p>
+            <p><strong>Field Goal % = Gross Margin</strong><br>Shooting efficiency predicts future scoring</p>
+            <p><strong>Turnovers = Operating Expenses</strong><br>Waste that kills efficiency</p>
+            <p><strong>Rebounds = Competitive Advantage</strong><br>Control of possessions = moat</p>
+            <p><strong>3-Point % = High-Margin Products</strong><br>50% more value per shot</p>
+            <p style="margin-top: 15px;" class="highlight">The margins predict the outcome before the score reflects it. Same as ENIS.</p>
+            <p style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #333; color: #666; font-size: 12px;">
+                Click any game to see detailed margins and insights.
+            </p>
+        </div>
+
+        <div class="games-section">
+            <div class="header">
+                <h1>🏀 Sports Stats Monitor</h1>
+                <p>Everyone watches the score. You watch the margins. <span style="color: #4CAF50;">● Live (5s refresh)</span></p>
+            </div>
+
+            <div id="games" class="games-grid">
+                <div class="loading">Loading live games...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedGames = new Set();
+
+        async function loadGames() {
+            try {
+                const resp = await fetch('/api/games');
+                const games = await resp.json();
+                
+                // Only show LIVE games (margins only matter during the game)
+                const liveGames = games.filter(g => g.state === 'live');
+
+                if (liveGames.length === 0) {
+                    document.getElementById('games').innerHTML = 
+                        '<div class="loading">No live games right now. Margins matter during the game, not after!</div>';
+                    return;
+                }
+
+                // Show all live games
+                liveGames.forEach(g => selectedGames.add(g.id));
+                displayGames(liveGames);
+            } catch (err) {
+                console.error('Error loading games:', err);
+            }
+        }
+
+        async function displayGames(games) {
+            const container = document.getElementById('games');
+            
+            // Track which game is currently selected
+            const selectedCard = document.querySelector('.game-card.selected');
+            const selectedGameId = selectedCard ? selectedCard.dataset.gameId : null;
+
+            container.innerHTML = '';
+
+            for (const game of games) {
+                if (!selectedGames.has(game.id)) continue;
+
+                const isSelected = selectedGameId === game.id;
+                const card = document.createElement('div');
+                card.className = `game-card ${isSelected ? 'selected' : ''}`;
+                card.dataset.gameId = game.id;
+                card.dataset.away = game.away;
+                card.dataset.home = game.home;
+                card.dataset.status = game.status;
+                card.dataset.clock = game.clock;
+                
+                card.innerHTML = `
+                    <div class="game-summary">
+                        <div class="teams-compact">${game.away} @ ${game.home}</div>
+                        <div class="scores-compact">
+                            <span>${game.away_score}</span>
+                            <span>-</span>
+                            <span>${game.home_score}</span>
+                        </div>
+                        <div class="clock-compact">${game.status} ${game.clock}</div>
+                    </div>
+                `;
+                
+                card.onclick = function() {
+                    selectGame(this.dataset.gameId, this.dataset.away, this.dataset.home, this.dataset.status, this.dataset.clock);
+                };
+                
+                container.appendChild(card);
+
+                // Load stats for selected game
+                if (isSelected) {
+                    loadGameStats(game.id, game.away, game.home);
+                }
+            }
+        }
+
+        function selectGame(gameId, awayTeam, homeTeam, status, clock) {
+            // Get scores from the card
+            const card = document.querySelector(`[data-game-id="${gameId}"]`);
+            const scores = card.querySelectorAll('.scores-compact span');
+            const awayScore = scores[0]?.textContent || '0';
+            const homeScore = scores[2]?.textContent || '0';
+            
+            // Update selected card
+            document.querySelectorAll('.game-card').forEach(c => c.classList.remove('selected'));
+            if (card) {
+                card.classList.add('selected');
+            }
+            
+            // Update detail panel header with scores
+            const detailPanel = document.getElementById('detail-panel');
+            detailPanel.innerHTML = `
+                <h2 style="color: var(--accent-color); transition: color 0.5s ease;">${awayTeam} @ ${homeTeam}</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div style="font-size: 32px; font-weight: 700; color: var(--accent-color); transition: color 0.5s ease;">
+                        ${awayScore} - ${homeScore}
+                    </div>
+                    <div style="color: #888; font-size: 13px;">${status} - ${clock}</div>
+                </div>
+                <div id="detail-content">
+                    <p style="color: #888;">Loading margins...</p>
+                </div>
+            `;
+            
+            // Load detailed stats
+            loadGameStats(gameId, awayTeam, homeTeam);
+        }
+
+        async function loadGameStats(gameId, awayTeam, homeTeam) {
+            try {
+                const resp = await fetch(`/api/game/${gameId}/stats`);
+                const data = await resp.json();
+                
+                if (data.teams && data.teams.length === 2) {
+                    displayDetailedMargins(data, awayTeam, homeTeam);
+                }
+            } catch (err) {
+                console.error(`Error loading stats for game ${gameId}:`, err);
+            }
+        }
+
+        function displayDetailedMargins(data, awayTeam, homeTeam) {
+            // API returns teams in order: [home, away] or based on isHome flag
+            const homeData = data.teams.find(t => t.is_home) || data.teams[0];
+            const awayData = data.teams.find(t => !t.is_home) || data.teams[1];
+
+            const fgPctAway = parseFloat(awayData.fg_pct) || 0;
+            const fgPctHome = parseFloat(homeData.fg_pct) || 0;
+            const threePctAway = parseFloat(awayData.three_pct) || 0;
+            const threePctHome = parseFloat(homeData.three_pct) || 0;
+            const toAway = parseInt(awayData.turnovers) || 0;
+            const toHome = parseInt(homeData.turnovers) || 0;
+            const rebAway = parseInt(awayData.rebounds) || 0;
+            const rebHome = parseInt(homeData.rebounds) || 0;
+
+            const fgWinner = fgPctAway > fgPctHome ? 'away' : 'home';
+            const threeWinner = threePctAway > threePctHome ? 'away' : 'home';
+            const toWinner = toAway < toHome ? 'away' : 'home';
+            const rebWinner = rebAway > rebHome ? 'away' : 'home';
+
+            const margins = [fgWinner, threeWinner, toWinner, rebWinner];
+            const awayAdvantages = margins.filter(w => w === 'away').length;
+            const homeAdvantages = margins.filter(w => w === 'home').length;
+            const leader = awayAdvantages > homeAdvantages ? awayTeam : homeTeam;
+            const count = Math.max(awayAdvantages, homeAdvantages);
+
+            // Team colors (NCAA official colors)
+            const teamColors = {
+                'Ohio St.': { primary: '#BB0000', dim: 'rgba(187, 0, 0, 0.03)', rgb: '187, 0, 0' },
+                'Indiana': { primary: '#990000', dim: 'rgba(153, 0, 0, 0.03)', rgb: '153, 0, 0' },
+                'Michigan': { primary: '#00274C', dim: 'rgba(0, 39, 76, 0.03)', rgb: '0, 39, 76' },
+                'Purdue': { primary: '#CFB991', dim: 'rgba(207, 185, 145, 0.03)', rgb: '207, 185, 145' },
+                'Wisconsin': { primary: '#C5050C', dim: 'rgba(197, 5, 12, 0.03)', rgb: '197, 5, 12' },
+                'Kentucky': { primary: '#0033A0', dim: 'rgba(0, 51, 160, 0.03)', rgb: '0, 51, 160' },
+                'Duke': { primary: '#003087', dim: 'rgba(0, 48, 135, 0.03)', rgb: '0, 48, 135' },
+                'North Carolina': { primary: '#7BAFD4', dim: 'rgba(123, 175, 212, 0.03)', rgb: '123, 175, 212' }
+            };
+
+            // Set theme based on dominant team (3+ margins)
+            if (count >= 3) {
+                const dominantColor = teamColors[leader] || { primary: '#4CAF50', dim: 'rgba(76, 175, 80, 0.03)', rgb: '76, 175, 80' };
+                document.documentElement.style.setProperty('--accent-color', dominantColor.primary);
+                document.documentElement.style.setProperty('--team-color', dominantColor.primary);
+                document.documentElement.style.setProperty('--team-color-dim', dominantColor.dim);
+                document.documentElement.style.setProperty('--team-color-rgb', dominantColor.rgb);
+                document.body.classList.add('team-dominant');
+                
+                console.log(`🎨 Theme set to ${leader}: ${dominantColor.primary}`);
+            } else {
+                // Reset to default green
+                document.documentElement.style.setProperty('--accent-color', '#4CAF50');
+                document.documentElement.style.setProperty('--team-color', '#4CAF50');
+                document.documentElement.style.setProperty('--team-color-dim', 'rgba(76, 175, 80, 0.03)');
+                document.documentElement.style.setProperty('--team-color-rgb', '76, 175, 80');
+                document.body.classList.remove('team-dominant');
+                
+                console.log('🎨 Theme reset to default green');
+            }
+
+            let insightMessage = '';
+            if (count >= 3) {
+                insightMessage = `<strong>${leader}</strong> controls ${count}/4 key margins. Efficiency predicts they extend/maintain lead.`;
+            } else {
+                insightMessage = `Margins are split (${awayAdvantages}-${homeAdvantages}). Close game, outcome uncertain.`;
+            }
+
+            // Calculate margin advantage percentages for bars
+            const fgDiff = Math.abs(fgPctAway - fgPctHome);
+            const threeDiff = Math.abs(threePctAway - threePctHome);
+            const toDiff = Math.abs(toAway - toHome);
+            const rebDiff = Math.abs(rebAway - rebHome);
+
+            const detailContent = document.getElementById('detail-content');
+            detailContent.innerHTML = `
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #888; font-size: 11px; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 1px;">The Margins</h3>
+                    
+                    <div style="margin-bottom: 15px; position: relative;">
+                        <div style="position: absolute; left: -8px; top: 0; bottom: 0; width: 3px; background: ${fgWinner === 'away' ? 'var(--accent-color)' : '#333'}; opacity: ${fgDiff / 100};"></div>
+                        <div style="color: #888; font-size: 11px; margin-bottom: 5px;">Field Goal %</div>
+                        <div style="display: flex; justify-content: space-between; font-size: 14px;">
+                            <span style="color: ${fgWinner === 'away' ? 'var(--accent-color)' : '#666'}; font-weight: 600;">${awayTeam}: ${awayData.fg_pct}</span>
+                            <span style="color: ${fgWinner === 'home' ? 'var(--accent-color)' : '#666'}; font-weight: 600;">${homeTeam}: ${homeData.fg_pct}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 11px; color: #666;">
+                            <span>${awayData.fg_made}/${awayData.fg_att}</span>
+                            <span>${homeData.fg_made}/${homeData.fg_att}</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px; position: relative;">
+                        <div style="position: absolute; left: -8px; top: 0; bottom: 0; width: 3px; background: ${threeWinner === 'away' ? 'var(--accent-color)' : '#333'}; opacity: ${threeDiff / 100};"></div>
+                        <div style="color: #888; font-size: 11px; margin-bottom: 5px;">3-Point %</div>
+                        <div style="display: flex; justify-content: space-between; font-size: 14px;">
+                            <span style="color: ${threeWinner === 'away' ? 'var(--accent-color)' : '#666'}; font-weight: 600;">${awayTeam}: ${awayData.three_pct}</span>
+                            <span style="color: ${threeWinner === 'home' ? 'var(--accent-color)' : '#666'}; font-weight: 600;">${homeTeam}: ${homeData.three_pct}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 11px; color: #666;">
+                            <span>${awayData.three_made}/${awayData.three_att}</span>
+                            <span>${homeData.three_made}/${homeData.three_att}</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px; position: relative;">
+                        <div style="position: absolute; left: -8px; top: 0; bottom: 0; width: 3px; background: ${toWinner === 'away' ? 'var(--accent-color)' : '#333'}; opacity: ${toDiff / 20};"></div>
+                        <div style="color: #888; font-size: 11px; margin-bottom: 5px;">Turnovers</div>
+                        <div style="display: flex; justify-content: space-between; font-size: 14px;">
+                            <span style="color: ${toWinner === 'away' ? 'var(--accent-color)' : '#666'}; font-weight: 600;">${awayTeam}: ${awayData.turnovers}</span>
+                            <span style="color: ${toWinner === 'home' ? 'var(--accent-color)' : '#666'}; font-weight: 600;">${homeTeam}: ${homeData.turnovers}</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px; position: relative;">
+                        <div style="position: absolute; left: -8px; top: 0; bottom: 0; width: 3px; background: ${rebWinner === 'away' ? 'var(--accent-color)' : '#333'}; opacity: ${rebDiff / 30};"></div>
+                        <div style="color: #888; font-size: 11px; margin-bottom: 5px;">Rebounds</div>
+                        <div style="display: flex; justify-content: space-between; font-size: 14px;">
+                            <span style="color: ${rebWinner === 'away' ? 'var(--accent-color)' : '#666'}; font-weight: 600;">${awayTeam}: ${awayData.rebounds}</span>
+                            <span style="color: ${rebWinner === 'home' ? 'var(--accent-color)' : '#666'}; font-weight: 600;">${homeTeam}: ${homeData.rebounds}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="padding: 12px; background: ${count >= 3 ? 'rgba(var(--team-color-rgb), 0.1)' : 'rgba(76, 175, 80, 0.1)'}; border-left: 3px solid var(--accent-color); border-radius: 4px; margin-bottom: 15px; transition: all 0.5s ease;">
+                    <div style="font-size: 12px; color: #aaa; line-height: 1.5;">${insightMessage}</div>
+                </div>
+
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn" onclick="alert('Betting odds coming soon!')">📊 Odds</button>
+                    <button class="btn" onclick="alert('Historical analysis coming soon!')">📈 History</button>
+                </div>
+            `;
+        }
+
+        function generateInsight(away, home, fgWinner, threeWinner, toWinner, rebWinner) {
+            const margins = [fgWinner, threeWinner, toWinner, rebWinner];
+            const awayAdvantages = margins.filter(w => w === 'away').length;
+            const homeAdvantages = margins.filter(w => w === 'home').length;
+
+            const leader = awayAdvantages > homeAdvantages ? away.name : home.name;
+            const count = Math.max(awayAdvantages, homeAdvantages);
+
+            let insightClass = '';
+            let message = '';
+
+            if (count >= 3) {
+                insightClass = '';
+                message = `<strong>${leader}</strong> controls ${count}/4 key margins. Efficiency predicts they extend/maintain lead.`;
+            } else {
+                insightClass = 'warning';
+                message = `Margins are split (${awayAdvantages}-${homeAdvantages}). Close game, outcome uncertain.`;
+            }
+
+            return { message, insightClass };
+        }
+
+        // Load games immediately
+        loadGames();
+
+        // Refresh every 5 seconds (near real-time, well under 5 req/sec limit)
+        setInterval(loadGames, 5000);
+    </script>
+</body>
+</html>

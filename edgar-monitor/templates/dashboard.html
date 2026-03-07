@@ -2,10 +2,10 @@
 <html>
 <head>
     <title>ENIS Portfolio Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial"></script>
-    <script src="https://cdn.jsdelivr.net/npm/luxon@3"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial@0.2.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.3.1"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -100,6 +100,11 @@
             padding: 20px;
             margin-bottom: 20px;
         }
+        #candlestick-chart {
+            width: 100%;
+            height: 500px;
+            display: block;
+        }
         .ticker-tabs {
             display: flex;
             gap: 10px;
@@ -152,11 +157,37 @@
             <h2>Live Candlestick Chart</h2>
             <div class="ticker-tabs" id="ticker-tabs"></div>
             <canvas id="candlestick-chart"></canvas>
+            <div style="margin-top: 15px; padding: 15px; background: #0a0a0a; border-radius: 4px; font-size: 0.9em; color: #888;">
+                <strong style="color: #fff;">Reading the Chart:</strong><br>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                    <div>
+                        <span style="color: #10b981;">█</span> <strong>Green Candle:</strong> Price went UP (close > open)<br>
+                        <span style="color: #ef4444;">█</span> <strong>Red Candle:</strong> Price went DOWN (close < open)<br>
+                        <span style="color: #10b981;">│</span> <strong>Wicks:</strong> High/low reached during that 10-second period<br>
+                        <span style="color: #fbbf24;">┄</span> <strong>Yellow Line:</strong> Your entry price (what you paid)
+                    </div>
+                    <div>
+                        <span style="color: #fbbf24;">▼</span> <strong>Doji:</strong> Tiny body, long wicks = indecision<br>
+                        <span style="color: #fbbf24;">▼</span> <strong>Hammer:</strong> Long lower wick = potential bounce<br>
+                        <span style="color: #fbbf24;">▼</span> <strong>Shooting Star:</strong> Long upper wick = potential drop<br>
+                        <span style="color: #fbbf24;">▼</span> <strong>Engulfing:</strong> Big candle swallows previous = momentum shift
+                    </div>
+                </div>
+                <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #333; color: #666;">
+                    <strong>Learning patterns:</strong> Watch how they form in real-time. Notice how often they appear vs. how rarely price actually reverses. 
+                    <strong>The truth:</strong> Patterns are fun to spot, but your edge is finding overlooked companies with strong fundamentals, not predicting short-term moves.
+                </div>
+            </div>
         </div>
 
         <div class="positions">
             <h2>Positions</h2>
             <div id="positions-list"></div>
+        </div>
+
+        <div class="positions" style="margin-top: 20px;">
+            <h2>📰 News Alerts <span id="news-badge" style="font-size: 0.7em; color: #888;"></span></h2>
+            <div id="news-list" style="font-size: 0.9em;"></div>
         </div>
     </div>
 
@@ -182,10 +213,12 @@
             // Load portfolio data
             const portfolio = await fetch('/api/portfolio').then(r => r.json());
             
+            console.log('Portfolio loaded:', portfolio.positions.length, 'positions');
+            
             // Show demo mode badge
             if (portfolio.demo_mode) {
                 document.getElementById('demo-badge').innerHTML = 
-                    '<span style="background: #ef4444; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; margin-left: 10px;">DEMO MODE</span>';
+                    '<span style="background: #ef4444; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; margin-left: 10px;">DEMO MODE - LIVE TICKS</span>';
             }
             
             // Update stats
@@ -230,8 +263,13 @@
             tickers = portfolio.positions.map(p => p.ticker);
             if (!currentTicker && tickers.length > 0) {
                 currentTicker = tickers[0];
+                // Load initial historical data for first ticker
+                const candles = await fetch(`/api/intraday/${currentTicker}`).then(r => r.json());
+                candlestickData[currentTicker] = candles;
+                console.log('Loaded', candles.length, 'historical candles for', currentTicker);
             }
             updateTickerTabs();
+            updateCandlestickChart();
             updateCandlestickData(portfolio.positions);
             
             // Load history
@@ -240,6 +278,35 @@
             if (history.length > 0) {
                 updateChart(history);
             }
+
+            // Load news alerts
+            const news = await fetch('/api/news').then(r => r.json());
+            updateNews(news);
+        }
+
+        function updateNews(news) {
+            const newsList = document.getElementById('news-list');
+            const badge = document.getElementById('news-badge');
+            
+            if (news.length === 0) {
+                newsList.innerHTML = '<div style="color: #666; padding: 15px;">No recent material events. Run <code>python news_monitor.py</code> to check for updates.</div>';
+                badge.textContent = '';
+                return;
+            }
+            
+            badge.textContent = `(${news.length} recent)`;
+            badge.style.color = '#fbbf24';
+            
+            newsList.innerHTML = news.map(alert => `
+                <div style="padding: 12px; margin: 8px 0; background: #1a1a1a; border-left: 3px solid #fbbf24; border-radius: 4px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <strong style="color: #fbbf24;">${alert.ticker}</strong>
+                        <span style="color: #888; font-size: 0.85em;">${alert.date.substring(0, 10)}</span>
+                    </div>
+                    <div style="color: #e0e0e0; margin-bottom: 5px;">${alert.type}: ${alert.summary}</div>
+                    <a href="${alert.link}" target="_blank" style="color: #667eea; font-size: 0.85em;">View Filing →</a>
+                </div>
+            `).join('');
         }
 
         function updateChart(history) {
@@ -313,11 +380,24 @@
         function selectTicker(ticker) {
             currentTicker = ticker;
             updateTickerTabs();
-            updateCandlestickChart();
+            
+            // Load historical data if not already loaded
+            if (!candlestickData[ticker] || candlestickData[ticker].length === 0) {
+                fetch(`/api/intraday/${ticker}`)
+                    .then(r => r.json())
+                    .then(candles => {
+                        candlestickData[ticker] = candles;
+                        updateCandlestickChart();
+                    });
+            } else {
+                updateCandlestickChart();
+            }
         }
 
         function updateCandlestickData(positions) {
             const now = Date.now();
+            
+            console.log('Updating candlestick data for', positions.length, 'positions');
             
             positions.forEach(pos => {
                 const ticker = pos.ticker;
@@ -325,24 +405,27 @@
                 // Initialize if needed
                 if (!candlestickData[ticker]) {
                     candlestickData[ticker] = [];
+                    console.log('Initialized candlestick data for', ticker);
                 }
                 
                 const data = candlestickData[ticker];
                 const price = pos.current_price;
                 
-                // Create new candle every 30 seconds
+                // Create new candle every 10 seconds (faster for demo)
                 const lastCandle = data[data.length - 1];
-                const shouldCreateNew = !lastCandle || (now - lastCandle.t) > 30000;
+                const shouldCreateNew = !lastCandle || (now - lastCandle.t) > 10000;
                 
                 if (shouldCreateNew) {
                     // New candle
-                    data.push({
+                    const newCandle = {
                         t: now,
                         o: price,
                         h: price,
                         l: price,
                         c: price
-                    });
+                    };
+                    data.push(newCandle);
+                    console.log(ticker, 'new candle:', newCandle);
                     
                     // Keep last 50 candles
                     if (data.length > 50) {
@@ -353,13 +436,238 @@
                     lastCandle.c = price;
                     lastCandle.h = Math.max(lastCandle.h, price);
                     lastCandle.l = Math.min(lastCandle.l, price);
+                    console.log(ticker, 'updated candle:', lastCandle);
                 }
             });
             
             updateCandlestickChart();
         }
 
+        // Detect candlestick patterns
+        function detectPattern(candle, prevCandle) {
+            const body = Math.abs(candle.c - candle.o);
+            const range = candle.h - candle.l;
+            const upperWick = candle.h - Math.max(candle.o, candle.c);
+            const lowerWick = Math.min(candle.o, candle.c) - candle.l;
+            
+            if (range === 0) return null;
+            
+            // Doji: tiny body, long wicks
+            if (body / range < 0.1) return 'Doji';
+            
+            // Hammer: small body at top, long lower wick
+            if (lowerWick > body * 2 && upperWick < body * 0.3) return 'Hammer';
+            
+            // Shooting Star: small body at bottom, long upper wick
+            if (upperWick > body * 2 && lowerWick < body * 0.3) return 'Shooting Star';
+            
+            // Engulfing (needs previous candle)
+            if (prevCandle) {
+                const prevBody = Math.abs(prevCandle.c - prevCandle.o);
+                const prevBullish = prevCandle.c > prevCandle.o;
+                const currBullish = candle.c > candle.o;
+                
+                // Current body must be 1.5x bigger and opposite direction
+                if (body > prevBody * 1.5) {
+                    if (currBullish && !prevBullish) return 'Bullish Engulfing';
+                    if (!currBullish && prevBullish) return 'Bearish Engulfing';
+                }
+            }
+            
+            return null;
+        }
+        
         function updateCandlestickChart() {
+            if (!currentTicker || !candlestickData[currentTicker]) {
+                console.log('No data for', currentTicker);
+                return;
+            }
+            
+            const data = candlestickData[currentTicker];
+            console.log('Drawing', data.length, 'candles for', currentTicker);
+            
+            const ctx = document.getElementById('candlestick-chart').getContext('2d');
+            
+            if (candlestickChart) {
+                candlestickChart.destroy();
+            }
+            
+            // Detect patterns on last candle
+            const lastPattern = detectPattern(data[data.length - 1], data[data.length - 2]);
+            const patternText = lastPattern ? ` | ${lastPattern}` : '';
+            
+            // Keep only last 30 candles for readability
+            const displayData = data.slice(-30);
+            
+            const entryPrice = data[0].o;
+            const currentPrice = data[data.length - 1].c;
+            const priceChange = ((currentPrice - entryPrice) / entryPrice * 100).toFixed(2);
+            
+            const labels = displayData.map((d, i) => `${data.length - displayData.length + i + 1}`);
+            const highs = displayData.map(d => d.h);
+            const lows = displayData.map(d => d.l);
+            const opens = displayData.map(d => d.o);
+            const closes = displayData.map(d => d.c);
+            
+            // Calculate trend on display window
+            const n = closes.length;
+            const sumX = n * (n - 1) / 2;
+            const sumY = closes.reduce((a, b) => a + b, 0);
+            const sumXY = closes.reduce((sum, y, x) => sum + x * y, 0);
+            const sumX2 = n * (n - 1) * (2 * n - 1) / 6;
+            const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+            const intercept = (sumY - slope * sumX) / n;
+            const trendLine = displayData.map((_, i) => slope * i + intercept);
+            
+            const momentum = slope > 0 ? 'Uptrend' : 'Downtrend';
+            const slopePercent = (slope / entryPrice * 100).toFixed(3);
+            
+            // Draw custom candlesticks on canvas
+            const canvas = document.getElementById('candlestick-chart');
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = canvas.offsetWidth * dpr;
+            canvas.height = canvas.offsetHeight * dpr;
+            ctx.scale(dpr, dpr);
+            const displayWidth = canvas.offsetWidth;
+            const displayHeight = canvas.offsetHeight;
+            ctx.clearRect(0, 0, displayWidth, displayHeight);
+            
+            const padding = 60;
+            const chartWidth = displayWidth - padding * 2;
+            const chartHeight = displayHeight - padding * 2;
+            
+            const minPrice = Math.min(...lows);
+            const maxPrice = Math.max(...highs);
+            const priceRange = maxPrice - minPrice;
+            const candleWidth = chartWidth / displayData.length;
+            
+            // Draw grid and axes
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 5; i++) {
+                const y = padding + (chartHeight / 5) * i;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(displayWidth - padding, y);
+                ctx.stroke();
+                
+                const price = maxPrice - (priceRange / 5) * i;
+                ctx.fillStyle = '#888';
+                ctx.font = '14px monospace';
+                ctx.textAlign = 'right';
+                ctx.fillText('$' + price.toFixed(2), padding - 10, y + 5);
+            }
+            
+            // Draw entry price line
+            const entryY = padding + ((maxPrice - entryPrice) / priceRange) * chartHeight;
+            ctx.strokeStyle = '#fbbf24';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(padding, entryY);
+            ctx.lineTo(displayWidth - padding, entryY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Draw trend line
+            ctx.strokeStyle = slope > 0 ? '#10b981' : '#ef4444';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            trendLine.forEach((price, i) => {
+                const x = padding + candleWidth * (i + 0.5);
+                const y = padding + ((maxPrice - price) / priceRange) * chartHeight;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+            
+            // Draw candlesticks
+            displayData.forEach((candle, i) => {
+                const x = padding + candleWidth * i;
+                const centerX = x + candleWidth / 2;
+                
+                const highY = padding + ((maxPrice - candle.h) / priceRange) * chartHeight;
+                const lowY = padding + ((maxPrice - candle.l) / priceRange) * chartHeight;
+                const openY = padding + ((maxPrice - candle.o) / priceRange) * chartHeight;
+                const closeY = padding + ((maxPrice - candle.c) / priceRange) * chartHeight;
+                
+                const isGreen = candle.c >= candle.o;
+                const color = isGreen ? '#10b981' : '#ef4444';
+                
+                const bodyTop = Math.min(openY, closeY);
+                const bodyBottom = Math.max(openY, closeY);
+                const bodyHeight = Math.max(Math.abs(closeY - openY), 3);
+                const bodyWidth = Math.max(candleWidth * 0.7, 8);
+                
+                // Detect pattern for this candle
+                const pattern = detectPattern(candle, displayData[i - 1]);
+                
+                // Draw upper wick (high to top of body)
+                if (highY < bodyTop - 1) {
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, highY);
+                    ctx.lineTo(centerX, bodyTop);
+                    ctx.stroke();
+                }
+                
+                // Draw body
+                ctx.fillStyle = color;
+                ctx.fillRect(centerX - bodyWidth / 2, bodyTop, bodyWidth, bodyHeight);
+                
+                // Draw lower wick (bottom of body to low)
+                if (lowY > bodyBottom + 1) {
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, bodyBottom);
+                    ctx.lineTo(centerX, lowY);
+                    ctx.stroke();
+                }
+                
+                // Annotate patterns
+                if (pattern) {
+                    ctx.fillStyle = '#fbbf24';
+                    ctx.font = 'bold 11px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(pattern, centerX, highY - 10);
+                    
+                    // Draw arrow pointing to pattern
+                    ctx.strokeStyle = '#fbbf24';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, highY - 5);
+                    ctx.lineTo(centerX - 3, highY - 2);
+                    ctx.moveTo(centerX, highY - 5);
+                    ctx.lineTo(centerX + 3, highY - 2);
+                    ctx.stroke();
+                }
+                
+                // Draw timestamp every 5 candles
+                if (i % 5 === 0) {
+                    const time = new Date(candle.t);
+                    const timeStr = time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                    ctx.fillStyle = '#888';
+                    ctx.font = '13px monospace';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(timeStr, centerX, displayHeight - padding + 20);
+                }
+            });
+            
+            // Draw title
+            ctx.fillStyle = priceChange >= 0 ? '#10b981' : '#ef4444';
+            ctx.font = 'bold 18px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(`${currentTicker} - ${priceChange > 0 ? '+' : ''}${priceChange}% from entry${patternText}`, displayWidth / 2, 25);
+            
+            ctx.fillStyle = '#888';
+            ctx.font = '14px sans-serif';
+            ctx.fillText(`${momentum}, ${slopePercent > 0 ? '+' : ''}${slopePercent}%/candle`, displayWidth / 2, 45);
+        }
+
+        function drawSimplePriceChart() {
+            // Fallback: simple line chart showing close prices
             if (!currentTicker || !candlestickData[currentTicker]) return;
             
             const ctx = document.getElementById('candlestick-chart').getContext('2d');
@@ -371,11 +679,16 @@
             const data = candlestickData[currentTicker];
             
             candlestickChart = new Chart(ctx, {
-                type: 'candlestick',
+                type: 'line',
                 data: {
+                    labels: data.map(d => new Date(d.t).toLocaleTimeString()),
                     datasets: [{
-                        label: currentTicker,
-                        data: data
+                        label: currentTicker + ' Price',
+                        data: data.map(d => d.c),
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        tension: 0.4,
+                        fill: true
                     }]
                 },
                 options: {
@@ -393,17 +706,6 @@
                         }
                     },
                     scales: {
-                        x: {
-                            type: 'time',
-                            time: {
-                                unit: 'minute',
-                                displayFormats: {
-                                    minute: 'HH:mm'
-                                }
-                            },
-                            ticks: { color: '#888' },
-                            grid: { color: '#333' }
-                        },
                         y: {
                             ticks: { 
                                 color: '#888',
@@ -411,6 +713,10 @@
                                     return '$' + value.toFixed(2);
                                 }
                             },
+                            grid: { color: '#333' }
+                        },
+                        x: {
+                            ticks: { color: '#888' },
                             grid: { color: '#333' }
                         }
                     }

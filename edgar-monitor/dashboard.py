@@ -74,6 +74,17 @@ def api_portfolio():
         'demo_mode': demo_mode
     })
 
+@app.route('/api/news')
+def api_news():
+    """Get recent news alerts."""
+    news_file = DATA_DIR / "news_alerts.json"
+    if news_file.exists():
+        with open(news_file) as f:
+            data = json.load(f)
+            # Return last 10 alerts, newest first
+            return jsonify(list(reversed(data['alerts'][-10:])))
+    return jsonify([])
+
 @app.route('/api/history')
 def api_history():
     """Get historical performance data."""
@@ -95,21 +106,63 @@ def api_history():
 
 @app.route('/api/intraday/<ticker>')
 def api_intraday(ticker):
-    """Get intraday price data for a ticker."""
-    try:
-        stock = yf.Ticker(ticker)
-        hist = stock.history(period='1d', interval='5m')
+    """Get intraday candlestick data for a ticker."""
+    import random
+    from datetime import datetime, timedelta
+    
+    demo_mode = datetime.now().weekday() >= 5 or datetime.now().hour < 9 or datetime.now().hour >= 16
+    
+    if demo_mode:
+        # Generate historical demo candles (last 30 candles, 10 seconds apart)
+        portfolio = load_portfolio()
+        if ticker not in portfolio['positions']:
+            return jsonify({'error': 'Ticker not found'}), 404
         
-        data = []
-        for idx, row in hist.iterrows():
-            data.append({
-                'time': idx.strftime('%H:%M'),
-                'price': float(row['Close'])
+        base_price = portfolio['positions'][ticker]['avg_price']
+        now = datetime.now()
+        candles = []
+        
+        # Generate 30 historical candles
+        for i in range(30):
+            candle_time = now - timedelta(seconds=(30 - i) * 10)
+            
+            # Random walk from base price
+            price_drift = random.uniform(-0.02, 0.02)  # -2% to +2% from base
+            open_price = base_price * (1 + price_drift)
+            
+            # Intracandle movement
+            high_move = random.uniform(0, 0.01)  # 0-1% above
+            low_move = random.uniform(0, 0.01)   # 0-1% below
+            close_move = random.uniform(-0.005, 0.005)  # -0.5% to +0.5%
+            
+            candles.append({
+                't': int(candle_time.timestamp() * 1000),
+                'o': round(open_price, 2),
+                'h': round(open_price * (1 + high_move), 2),
+                'l': round(open_price * (1 - low_move), 2),
+                'c': round(open_price * (1 + close_move), 2)
             })
         
-        return jsonify(data)
-    except:
-        return jsonify([])
+        return jsonify(candles)
+    else:
+        # Real market data - use yfinance 1-minute bars
+        try:
+            stock = yf.Ticker(ticker)
+            df = stock.history(period='1d', interval='1m')
+            
+            candles = []
+            for idx, row in df.iterrows():
+                candles.append({
+                    't': int(idx.timestamp() * 1000),
+                    'o': round(row['Open'], 2),
+                    'h': round(row['High'], 2),
+                    'l': round(row['Low'], 2),
+                    'c': round(row['Close'], 2)
+                })
+            
+            return jsonify(candles)
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     print("="*80)

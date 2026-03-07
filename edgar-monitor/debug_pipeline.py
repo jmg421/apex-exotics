@@ -89,12 +89,13 @@ def show_status():
         reports = json.load(open(llm_file))
         print(f"🤖 LLM Analysis: {len(reports)} companies")
         
-        # Count by recommendation
+        # Count by recommendation (handle None)
         recs = {}
         for report in reports.values():
-            rec = report.get('recommendation', 'unknown')
-            recs[rec] = recs.get(rec, 0) + 1
-        for rec, count in sorted(recs.items()):
+            if report and isinstance(report, dict):
+                rec = report.get('recommendation') or 'INCOMPLETE'
+                recs[rec] = recs.get(rec, 0) + 1
+        for rec, count in sorted(recs.items(), key=lambda x: (x[0] is None, x[0])):
             print(f"   • {rec}: {count}")
         print()
     

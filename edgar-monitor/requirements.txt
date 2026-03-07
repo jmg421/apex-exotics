@@ -8,3 +8,4 @@ anthropic
 beautifulsoup4
 yfinance
 tastytrade
+flask

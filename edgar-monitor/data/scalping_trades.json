@@ -1,0 +1,78 @@
+{
+  "starting_capital": 10000,
+  "cash": 12350.0,
+  "position": null,
+  "trades": [
+    {
+      "contract": "ES",
+      "side": "LONG",
+      "entry_price": 5850.0,
+      "exit_price": 5855.0,
+      "contracts": 1,
+      "pnl": 250.0,
+      "entry_time": "2026-03-07T13:24:39.121869",
+      "exit_time": "2026-03-07T13:24:42.669395"
+    },
+    {
+      "contract": "ES",
+      "side": "LONG",
+      "entry_price": 5852.0,
+      "exit_price": 5857.0,
+      "contracts": 1,
+      "pnl": 250.0,
+      "entry_time": "2026-03-07T13:34:13.338948",
+      "exit_time": "2026-03-07T13:34:13.356753"
+    },
+    {
+      "contract": "NQ",
+      "side": "SHORT",
+      "entry_price": 20500.0,
+      "exit_price": 20475.0,
+      "contracts": 1,
+      "pnl": 1250.0,
+      "entry_time": "2026-03-07T13:34:13.374212",
+      "exit_time": "2026-03-07T13:34:13.391646"
+    },
+    {
+      "contract": "ES",
+      "side": "LONG",
+      "entry_price": 5860.0,
+      "exit_price": 5855.0,
+      "contracts": 1,
+      "pnl": -250.0,
+      "entry_time": "2026-03-07T13:34:13.409213",
+      "exit_time": "2026-03-07T13:34:13.426803"
+    },
+    {
+      "contract": "ES",
+      "side": "SHORT",
+      "entry_price": 5855.0,
+      "exit_price": 5848.0,
+      "contracts": 1,
+      "pnl": 350.0,
+      "entry_time": "2026-03-07T13:34:13.444699",
+      "exit_time": "2026-03-07T13:34:13.462249"
+    },
+    {
+      "contract": "NQ",
+      "side": "LONG",
+      "entry_price": 20480.0,
+      "exit_price": 20475.0,
+      "contracts": 1,
+      "pnl": -250.0,
+      "entry_time": "2026-03-07T13:34:13.480029",
+      "exit_time": "2026-03-07T13:34:13.497323"
+    },
+    {
+      "contract": "ES",
+      "side": "LONG",
+      "entry_price": 5850.0,
+      "exit_price": 5865.0,
+      "contracts": 1,
+      "pnl": 750.0,
+      "entry_time": "2026-03-07T13:36:05.456624",
+      "exit_time": "2026-03-07T13:36:15.220198"
+    }
+  ],
+  "total_pnl": 2350.0
+}

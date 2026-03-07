@@ -74,6 +74,23 @@ def api_portfolio():
         'demo_mode': demo_mode
     })
 
+@app.route('/api/scalping')
+def api_scalping():
+    """Get scalping account status."""
+    scalping_file = DATA_DIR / "scalping_trades.json"
+    if scalping_file.exists():
+        with open(scalping_file) as f:
+            return jsonify(json.load(f))
+    
+    # Return default account
+    return jsonify({
+        "starting_capital": 10000,
+        "cash": 10000,
+        "position": None,
+        "trades": [],
+        "total_pnl": 0
+    })
+
 @app.route('/api/news')
 def api_news():
     """Get recent news alerts."""

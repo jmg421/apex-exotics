@@ -146,11 +146,23 @@
                 <div class="stat-label">Cash</div>
                 <div class="stat-value" id="cash">$0</div>
             </div>
+            <div class="stat-card" style="border-left: 3px solid #667eea;">
+                <div class="stat-label">⚡ Scalping Account</div>
+                <div class="stat-value" id="scalping-value">$0</div>
+                <div style="font-size: 0.75em; color: #888; margin-top: 5px;" id="scalping-pnl">P&L: $0</div>
+            </div>
         </div>
 
-        <div class="chart-container">
-            <h2>Portfolio Performance</h2>
-            <canvas id="performance-chart"></canvas>
+        <div class="positions" style="border: 2px solid #667eea; margin-bottom: 20px;">
+            <h2>⚡ Futures Scalping Lab</h2>
+            <div style="background: #0a0a0a; padding: 15px; border-radius: 4px; margin-bottom: 15px; font-size: 0.9em; color: #888;">
+                <strong style="color: #fbbf24;">⚠️ Paper Trading Only</strong> - Risk:Reward 1:3 (Risk $250, Target $750)
+                <br>Use CLI: <code style="background: #1a1a1a; padding: 2px 6px; border-radius: 3px;">python trade.py long ES 5850</code>
+            </div>
+            <div style="margin-bottom: 15px; background: #0a0a0a; padding: 15px; border-radius: 4px;">
+                <canvas id="scalping-chart" style="max-height: 250px;"></canvas>
+            </div>
+            <div id="scalping-details"></div>
         </div>
 
         <div class="candlestick-container">
@@ -191,11 +203,10 @@
         </div>
     </div>
 
-    <button class="refresh" onclick="loadData()">↻ Refresh</button>
-
     <script>
         let performanceChart = null;
         let candlestickChart = null;
+        let scalpingChart = null;
         let currentTicker = null;
         let candlestickData = {};
         let tickers = [];
@@ -272,16 +283,189 @@
             updateCandlestickChart();
             updateCandlestickData(portfolio.positions);
             
-            // Load history
-            const history = await fetch('/api/history').then(r => r.json());
-            
-            if (history.length > 0) {
-                updateChart(history);
-            }
-
             // Load news alerts
             const news = await fetch('/api/news').then(r => r.json());
             updateNews(news);
+            
+            // Load scalping account
+            const scalping = await fetch('/api/scalping').then(r => r.json());
+            updateScalping(scalping);
+        }
+
+        function updateScalping(scalping) {
+            const valueEl = document.getElementById('scalping-value');
+            const pnlEl = document.getElementById('scalping-pnl');
+            
+            valueEl.textContent = formatMoney(scalping.cash);
+            
+            const pnlColor = scalping.total_pnl >= 0 ? '#10b981' : '#ef4444';
+            const pnlSign = scalping.total_pnl >= 0 ? '+' : '';
+            pnlEl.innerHTML = `P&L: <span style="color: ${pnlColor}">${pnlSign}${formatMoney(scalping.total_pnl)}</span>`;
+            
+            if (scalping.position) {
+                pnlEl.innerHTML += `<br><span style="color: #fbbf24;">📊 ${scalping.position.side} ${scalping.position.contracts} ${scalping.position.contract}</span>`;
+            }
+            
+            // Update scalping details section
+            const detailsEl = document.getElementById('scalping-details');
+            
+            let html = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div>
+                        <strong>Account Balance:</strong> ${formatMoney(scalping.cash)}<br>
+                        <strong>Total P&L:</strong> <span style="color: ${scalping.total_pnl >= 0 ? '#10b981' : '#ef4444'}">${formatMoney(scalping.total_pnl)}</span><br>
+                        <strong>Return:</strong> ${((scalping.total_pnl / scalping.starting_capital) * 100).toFixed(2)}%
+                    </div>
+                    <div>
+                        <strong>Trades:</strong> ${scalping.trades.length}<br>
+            `;
+            
+            if (scalping.trades.length > 0) {
+                const wins = scalping.trades.filter(t => t.pnl > 0).length;
+                const losses = scalping.trades.filter(t => t.pnl < 0).length;
+                const winRate = (wins / scalping.trades.length * 100).toFixed(1);
+                html += `<strong>Win Rate:</strong> ${winRate}% (${wins}W / ${losses}L)`;
+            } else {
+                html += `<strong>Win Rate:</strong> N/A`;
+            }
+            
+            html += `</div></div>`;
+            
+            if (scalping.position) {
+                const pos = scalping.position;
+                html += `
+                    <div style="background: #1a1a1a; padding: 15px; border-radius: 4px; border-left: 3px solid #fbbf24; margin-bottom: 15px;">
+                        <strong style="color: #fbbf24;">OPEN POSITION</strong><br>
+                        <div style="margin-top: 10px;">
+                            ${pos.side} ${pos.contracts} ${pos.contract} @ $${pos.entry_price.toFixed(2)}<br>
+                            Margin: ${formatMoney(pos.margin)}<br>
+                            Opened: ${pos.entry_time.substring(0, 19).replace('T', ' ')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (scalping.trades.length > 0) {
+                html += `<div style="font-size: 0.9em;"><strong>Recent Trades:</strong></div>`;
+                scalping.trades.slice(-5).reverse().forEach(trade => {
+                    const color = trade.pnl > 0 ? '#10b981' : '#ef4444';
+                    const icon = trade.pnl > 0 ? '✅' : '❌';
+                    html += `
+                        <div style="padding: 8px; margin: 5px 0; background: #1a1a1a; border-radius: 4px; font-size: 0.85em;">
+                            ${icon} ${trade.side} ${trade.contract} @ $${trade.entry_price.toFixed(2)} → $${trade.exit_price.toFixed(2)} 
+                            <span style="color: ${color}; float: right;">${formatMoney(trade.pnl)}</span>
+                        </div>
+                    `;
+                });
+            }
+            
+            detailsEl.innerHTML = html;
+            
+            // Update scalping chart
+            updateScalpingChart(scalping);
+        }
+        
+        function updateScalpingChart(scalping) {
+            console.log('Updating scalping chart with', scalping.trades.length, 'trades');
+            
+            const canvas = document.getElementById('scalping-chart');
+            if (!canvas) {
+                console.error('Scalping chart canvas not found!');
+                return;
+            }
+            
+            const ctx = canvas.getContext('2d');
+            
+            if (scalpingChart) {
+                scalpingChart.destroy();
+            }
+            
+            // Build equity curve from trades
+            const equityCurve = [scalping.starting_capital];
+            let runningTotal = scalping.starting_capital;
+            
+            scalping.trades.forEach(trade => {
+                runningTotal += trade.pnl;
+                equityCurve.push(runningTotal);
+            });
+            
+            const labels = equityCurve.map((_, i) => i === 0 ? 'Start' : `Trade ${i}`);
+            
+            scalpingChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Account Balance',
+                        data: equityCurve,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.3)',
+                        tension: 0.1,
+                        fill: true,
+                        pointBackgroundColor: equityCurve.map((val, i) => {
+                            if (i === 0) return '#667eea';
+                            const trade = scalping.trades[i - 1];
+                            return trade.pnl > 0 ? '#10b981' : '#ef4444';
+                        }),
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        pointBorderWidth: 2,
+                        pointBorderColor: '#000'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 3.5,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1a1a1a',
+                            titleColor: '#e0e0e0',
+                            bodyColor: '#e0e0e0',
+                            borderColor: '#667eea',
+                            borderWidth: 2,
+                            padding: 12,
+                            callbacks: {
+                                label: function(context) {
+                                    const idx = context.dataIndex;
+                                    if (idx === 0) return 'Starting: $' + context.parsed.y.toFixed(2);
+                                    
+                                    const trade = scalping.trades[idx - 1];
+                                    const pnlColor = trade.pnl > 0 ? '✅' : '❌';
+                                    return [
+                                        'Balance: $' + context.parsed.y.toFixed(2),
+                                        '',
+                                        pnlColor + ' ' + trade.side + ' ' + trade.contract,
+                                        'Entry: $' + trade.entry_price.toFixed(2),
+                                        'Exit: $' + trade.exit_price.toFixed(2),
+                                        'P&L: $' + trade.pnl.toFixed(2)
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: { 
+                                color: '#888',
+                                font: { size: 12 },
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            },
+                            grid: { color: '#333' }
+                        },
+                        x: {
+                            ticks: { 
+                                color: '#888',
+                                font: { size: 11 }
+                            },
+                            grid: { color: '#333' }
+                        }
+                    }
+                }
+            });
         }
 
         function updateNews(news) {

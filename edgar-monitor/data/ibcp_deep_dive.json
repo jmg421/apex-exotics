@@ -1,0 +1,24 @@
+{
+  "ticker": "IBCP",
+  "company": "Independent Bank Corporation",
+  "market_cap": 708285504,
+  "price": 34.23,
+  "pe_ratio": 10.46789,
+  "pb_ratio": 1.3985128,
+  "roe": 14.315,
+  "profit_margin": 31.223,
+  "dividend_yield": 327.0,
+  "ytd_return": 11.018197173221733,
+  "recommendation": "HOLD",
+  "strengths": [
+    "High ROE",
+    "Strong margins",
+    "Profitable",
+    "Dividend paying"
+  ],
+  "concerns": [
+    "Low liquidity",
+    "Micro-cap",
+    "Regional concentration"
+  ]
+}

@@ -1,0 +1,11 @@
+[
+  {
+    "date": "2026-03-07T08:38:30.152194",
+    "action": "BUY",
+    "ticker": "IBCP",
+    "shares": 500,
+    "price": 34.23,
+    "total": 17115.0,
+    "reason": "HOLD recommendation - strong fundamentals, 31% margin"
+  }
+]

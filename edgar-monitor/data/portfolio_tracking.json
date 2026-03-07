@@ -1,0 +1,76 @@
+[
+  {
+    "date": "2026-03-07T08:40:06.965667",
+    "total_value": 100000.00000000001,
+    "cash": 43424.6,
+    "invested": 56575.400000000016,
+    "total_return": 1.4551915228366852e-11,
+    "total_return_pct": 1.4551915228366852e-14,
+    "positions": [
+      {
+        "ticker": "IBCP",
+        "shares": 1000,
+        "avg_price": 34.23,
+        "current_price": 34.23,
+        "value": 34230.0,
+        "pnl": 0.0,
+        "pnl_pct": 0.0
+      },
+      {
+        "ticker": "TASK",
+        "shares": 80,
+        "avg_price": 10.92,
+        "current_price": 10.92,
+        "value": 873.6,
+        "pnl": 0.0,
+        "pnl_pct": 0.0
+      },
+      {
+        "ticker": "GRNT",
+        "shares": 150,
+        "avg_price": 5.02,
+        "current_price": 5.02,
+        "value": 752.9999999999999,
+        "pnl": 0.0,
+        "pnl_pct": 0.0
+      },
+      {
+        "ticker": "PLPC",
+        "shares": 15,
+        "avg_price": 235.72,
+        "current_price": 235.72,
+        "value": 3535.8,
+        "pnl": 0.0,
+        "pnl_pct": 0.0
+      },
+      {
+        "ticker": "FMNB",
+        "shares": 300,
+        "avg_price": 12.53,
+        "current_price": 12.53,
+        "value": 3759.0,
+        "pnl": 0.0,
+        "pnl_pct": 0.0
+      },
+      {
+        "ticker": "SPFI",
+        "shares": 200,
+        "avg_price": 40.99,
+        "current_price": 40.99,
+        "value": 8198.0,
+        "pnl": 0.0,
+        "pnl_pct": 0.0
+      },
+      {
+        "ticker": "SD",
+        "shares": 300,
+        "avg_price": 17.42,
+        "current_price": 17.42,
+        "value": 5226.000000000001,
+        "pnl": 0.0,
+        "pnl_pct": 0.0
+      }
+    ],
+    "sp500_price": 0
+  }
+]

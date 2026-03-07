@@ -7,5 +7,68 @@
     "price": 34.23,
     "total": 17115.0,
     "reason": "HOLD recommendation - strong fundamentals, 31% margin"
+  },
+  {
+    "date": "2026-03-07T08:39:40.633474",
+    "action": "BUY",
+    "ticker": "IBCP",
+    "shares": 500,
+    "price": 34.23,
+    "total": 17115.0,
+    "reason": "HOLD - 31% margin, 10.5x P/E, regional bank"
+  },
+  {
+    "date": "2026-03-07T08:39:40.901186",
+    "action": "BUY",
+    "ticker": "TASK",
+    "shares": 80,
+    "price": 10.92,
+    "total": 873.6,
+    "reason": "BPO services, $1.2B revenue, 0.86x P/S"
+  },
+  {
+    "date": "2026-03-07T08:39:41.200102",
+    "action": "BUY",
+    "ticker": "GRNT",
+    "shares": 150,
+    "price": 5.02,
+    "total": 752.9999999999999,
+    "reason": "Oil/gas royalties, zero debt, 5.7% margin"
+  },
+  {
+    "date": "2026-03-07T08:39:41.475271",
+    "action": "BUY",
+    "ticker": "PLPC",
+    "shares": 15,
+    "price": 235.72,
+    "total": 3535.8,
+    "reason": "Infrastructure hardware, 70yr history, 0% debt"
+  },
+  {
+    "date": "2026-03-07T08:39:41.728718",
+    "action": "BUY",
+    "ticker": "FMNB",
+    "shares": 300,
+    "price": 12.53,
+    "total": 3759.0,
+    "reason": "Community bank, 30% margin, 2.56x P/S"
+  },
+  {
+    "date": "2026-03-07T08:39:41.974636",
+    "action": "BUY",
+    "ticker": "SPFI",
+    "shares": 200,
+    "price": 40.99,
+    "total": 8198.0,
+    "reason": "Texas bank, 28% margin, strong ROE"
+  },
+  {
+    "date": "2026-03-07T08:39:42.232460",
+    "action": "BUY",
+    "ticker": "SD",
+    "shares": 300,
+    "price": 17.42,
+    "total": 5226.000000000001,
+    "reason": "E&P company, 45% margin, 9x P/E"
   }
 ]

@@ -23,14 +23,61 @@
         .container {
             display: grid;
             grid-template-columns: 400px 1fr;
+            grid-template-rows: auto 1fr;
             gap: 15px;
             max-width: 1800px;
             margin: 0 auto;
+        }
+        .detail-panel {
+            grid-row: 1 / 3;
         }
         .games-section {
             display: flex;
             flex-direction: column;
             gap: 15px;
+        }
+        .efficiency-panel {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid #333;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .efficiency-panel h3 {
+            color: var(--accent-color);
+            font-size: 14px;
+            margin-bottom: 12px;
+            transition: color 0.5s ease;
+        }
+        .efficiency-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 8px;
+            margin-bottom: 4px;
+            background: #0f0f0f;
+            border-radius: 4px;
+            font-size: 12px;
+            border-left: 3px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+        .efficiency-item.top {
+            border-left-color: var(--accent-color);
+        }
+        .efficiency-rank {
+            color: #666;
+            font-weight: 600;
+            min-width: 25px;
+        }
+        .efficiency-team {
+            flex: 1;
+            color: #e0e0e0;
+        }
+        .efficiency-score {
+            color: var(--accent-color);
+            font-weight: 600;
+            transition: color 0.5s ease;
         }
         .header {
             text-align: center;
@@ -52,7 +99,7 @@
         }
         .games-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 10px;
         }
         .game-card {
@@ -221,6 +268,50 @@
             top: 15px;
             max-height: calc(100vh - 30px);
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .detail-content-wrapper {
+            flex: 1;
+            overflow-y: auto;
+        }
+        .live-ticker {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #333;
+            height: 80px;
+            overflow: hidden;
+            position: relative;
+        }
+        .ticker-label {
+            color: #888;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        .ticker-content {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            animation: tickerScroll 20s linear infinite;
+        }
+        .ticker-item {
+            font-size: 12px;
+            color: #aaa;
+            padding: 4px 8px;
+            background: #0f0f0f;
+            border-radius: 3px;
+            border-left: 2px solid var(--accent-color);
+            white-space: nowrap;
+        }
+        .ticker-item.milestone {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+        @keyframes tickerScroll {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
         }
         .detail-panel h2 {
             color: #4CAF50;
@@ -264,10 +355,20 @@
                 <div class="loading">Loading live games...</div>
             </div>
         </div>
+
+        <div class="efficiency-panel">
+            <h3>⚡ Live Efficiency Rankings</h3>
+            <div id="efficiency-rankings">
+                <div style="color: #888; font-size: 11px;">Calculating...</div>
+            </div>
+        </div>
     </div>
 
     <script>
         let selectedGames = new Set();
+        let previousStats = {}; // Track stat changes for ticker
+        let currentSelectedGame = null; // Track which game is selected
+        let allGameStats = {}; // Store all game stats for efficiency ranking
 
         async function loadGames() {
             try {
@@ -286,9 +387,73 @@
                 // Show all live games
                 liveGames.forEach(g => selectedGames.add(g.id));
                 displayGames(liveGames);
+                
+                // Load stats for all games to calculate efficiency
+                loadAllGameStats(liveGames);
             } catch (err) {
                 console.error('Error loading games:', err);
             }
+        }
+
+        async function loadAllGameStats(games) {
+            const statsPromises = games.map(async (game) => {
+                try {
+                    const resp = await fetch(`/api/game/${game.id}/stats`);
+                    const data = await resp.json();
+                    if (data.teams && data.teams.length === 2) {
+                        allGameStats[game.id] = {
+                            away: game.away,
+                            home: game.home,
+                            data: data
+                        };
+                    }
+                } catch (err) {
+                    console.error(`Error loading stats for ${game.id}:`, err);
+                }
+            });
+            
+            await Promise.all(statsPromises);
+            updateEfficiencyRankings();
+        }
+
+        function updateEfficiencyRankings() {
+            const rankings = [];
+            
+            for (const [gameId, gameData] of Object.entries(allGameStats)) {
+                const homeData = gameData.data.teams.find(t => t.is_home) || gameData.data.teams[0];
+                const awayData = gameData.data.teams.find(t => !t.is_home) || gameData.data.teams[1];
+                
+                // Calculate efficiency score: FG% + 3PT% - (TO/10) + (REB/10)
+                const calcEfficiency = (team) => {
+                    const fgPct = parseFloat(team.fg_pct) || 0;
+                    const threePct = parseFloat(team.three_pct) || 0;
+                    const to = parseInt(team.turnovers) || 0;
+                    const reb = parseInt(team.rebounds) || 0;
+                    return fgPct + threePct - (to * 2) + (reb * 0.5);
+                };
+                
+                rankings.push({
+                    team: gameData.away,
+                    score: calcEfficiency(awayData)
+                });
+                rankings.push({
+                    team: gameData.home,
+                    score: calcEfficiency(homeData)
+                });
+            }
+            
+            // Sort by efficiency score
+            rankings.sort((a, b) => b.score - a.score);
+            
+            // Display top 10
+            const container = document.getElementById('efficiency-rankings');
+            container.innerHTML = rankings.slice(0, 10).map((item, index) => `
+                <div class="efficiency-item ${index < 3 ? 'top' : ''}">
+                    <span class="efficiency-rank">#${index + 1}</span>
+                    <span class="efficiency-team">${item.team}</span>
+                    <span class="efficiency-score">${item.score.toFixed(1)}</span>
+                </div>
+            `).join('');
         }
 
         async function displayGames(games) {
@@ -330,14 +495,20 @@
                 
                 container.appendChild(card);
 
-                // Load stats for selected game
-                if (isSelected) {
+                // Update detail panel if this game is selected
+                if (isSelected && currentSelectedGame && currentSelectedGame.gameId === game.id) {
+                    // Update header with new scores
+                    updateDetailPanelHeader(game.away, game.home, game.away_score, game.home_score, game.status, game.clock);
+                    // Reload stats
                     loadGameStats(game.id, game.away, game.home);
                 }
             }
         }
 
         function selectGame(gameId, awayTeam, homeTeam, status, clock) {
+            // Store selected game info
+            currentSelectedGame = { gameId, awayTeam, homeTeam, status, clock };
+            
             // Get scores from the card
             const card = document.querySelector(`[data-game-id="${gameId}"]`);
             const scores = card.querySelectorAll('.scores-compact span');
@@ -351,22 +522,44 @@
             }
             
             // Update detail panel header with scores
-            const detailPanel = document.getElementById('detail-panel');
-            detailPanel.innerHTML = `
-                <h2 style="color: var(--accent-color); transition: color 0.5s ease;">${awayTeam} @ ${homeTeam}</h2>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <div style="font-size: 32px; font-weight: 700; color: var(--accent-color); transition: color 0.5s ease;">
-                        ${awayScore} - ${homeScore}
-                    </div>
-                    <div style="color: #888; font-size: 13px;">${status} - ${clock}</div>
-                </div>
-                <div id="detail-content">
-                    <p style="color: #888;">Loading margins...</p>
-                </div>
-            `;
+            updateDetailPanelHeader(awayTeam, homeTeam, awayScore, homeScore, status, clock);
             
             // Load detailed stats
             loadGameStats(gameId, awayTeam, homeTeam);
+        }
+
+        function updateDetailPanelHeader(awayTeam, homeTeam, awayScore, homeScore, status, clock) {
+            // Check if detail panel structure exists
+            let detailContent = document.getElementById('detail-content');
+            let tickerContent = document.getElementById('ticker-content');
+            
+            if (!detailContent || !tickerContent) {
+                // First time - create full structure
+                const detailPanel = document.getElementById('detail-panel');
+                detailPanel.innerHTML = `
+                    <div class="detail-content-wrapper">
+                        <h2 id="detail-header" style="color: var(--accent-color); transition: color 0.5s ease;">${awayTeam} @ ${homeTeam}</h2>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <div id="detail-score" style="font-size: 32px; font-weight: 700; color: var(--accent-color); transition: color 0.5s ease;">
+                                ${awayScore} - ${homeScore}
+                            </div>
+                            <div id="detail-clock" style="color: #888; font-size: 13px;">${status} - ${clock}</div>
+                        </div>
+                        <div id="detail-content">
+                            <p style="color: #888;">Loading margins...</p>
+                        </div>
+                    </div>
+                    <div class="live-ticker">
+                        <div class="ticker-label">📊 Live Stats Feed</div>
+                        <div id="ticker-content" class="ticker-content"></div>
+                    </div>
+                `;
+            } else {
+                // Update only - don't recreate
+                document.getElementById('detail-header').textContent = `${awayTeam} @ ${homeTeam}`;
+                document.getElementById('detail-score').textContent = `${awayScore} - ${homeScore}`;
+                document.getElementById('detail-clock').textContent = `${status} - ${clock}`;
+            }
         }
 
         async function loadGameStats(gameId, awayTeam, homeTeam) {
@@ -375,10 +568,95 @@
                 const data = await resp.json();
                 
                 if (data.teams && data.teams.length === 2) {
+                    // Generate ticker events from stat changes
+                    updateTicker(gameId, data, awayTeam, homeTeam);
+                    
                     displayDetailedMargins(data, awayTeam, homeTeam);
                 }
             } catch (err) {
                 console.error(`Error loading stats for game ${gameId}:`, err);
+            }
+        }
+
+        function updateTicker(gameId, data, awayTeam, homeTeam) {
+            const tickerContent = document.getElementById('ticker-content');
+            if (!tickerContent) return;
+
+            const homeData = data.teams.find(t => t.is_home) || data.teams[0];
+            const awayData = data.teams.find(t => !t.is_home) || data.teams[1];
+            
+            const events = [];
+            const now = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+            // Check for stat changes
+            if (previousStats[gameId]) {
+                const prev = previousStats[gameId];
+                
+                // Field goals
+                const awayFGDiff = parseInt(awayData.fg_made) - parseInt(prev.awayFG);
+                const homeFGDiff = parseInt(homeData.fg_made) - parseInt(prev.homeFG);
+                if (awayFGDiff > 0) events.push(`${now} - ${awayTeam}: +${awayFGDiff} FG`);
+                if (homeFGDiff > 0) events.push(`${now} - ${homeTeam}: +${homeFGDiff} FG`);
+                
+                // Three pointers
+                const away3Diff = parseInt(awayData.three_made) - parseInt(prev.away3PT);
+                const home3Diff = parseInt(homeData.three_made) - parseInt(prev.home3PT);
+                if (away3Diff > 0) events.push(`${now} - ${awayTeam}: 🎯 ${away3Diff} three-pointer${away3Diff > 1 ? 's' : ''}`);
+                if (home3Diff > 0) events.push(`${now} - ${homeTeam}: 🎯 ${home3Diff} three-pointer${home3Diff > 1 ? 's' : ''}`);
+                
+                // Turnovers
+                const awayTODiff = parseInt(awayData.turnovers) - parseInt(prev.awayTO);
+                const homeTODiff = parseInt(homeData.turnovers) - parseInt(prev.homeTO);
+                if (awayTODiff > 0) events.push(`${now} - ${awayTeam}: ⚠️ +${awayTODiff} turnover${awayTODiff > 1 ? 's' : ''}`);
+                if (homeTODiff > 0) events.push(`${now} - ${homeTeam}: ⚠️ +${homeTODiff} turnover${homeTODiff > 1 ? 's' : ''}`);
+                
+                // Efficiency milestones
+                const awayFGPct = parseFloat(awayData.fg_pct);
+                const homeFGPct = parseFloat(homeData.fg_pct);
+                if (awayFGPct >= 60 && parseFloat(prev.awayFGPct) < 60) {
+                    events.push(`${now} - 🔥 ${awayTeam} shooting 60%+ from field`);
+                }
+                if (homeFGPct >= 60 && parseFloat(prev.homeFGPct) < 60) {
+                    events.push(`${now} - 🔥 ${homeTeam} shooting 60%+ from field`);
+                }
+            }
+
+            // Store current stats for next comparison
+            previousStats[gameId] = {
+                awayFG: awayData.fg_made,
+                homeFG: homeData.fg_made,
+                away3PT: awayData.three_made,
+                home3PT: homeData.three_made,
+                awayTO: awayData.turnovers,
+                homeTO: homeData.turnovers,
+                awayFGPct: awayData.fg_pct,
+                homeFGPct: homeData.fg_pct
+            };
+
+            // Add events to ticker (keep last 10)
+            if (events.length > 0) {
+                const existingEvents = Array.from(tickerContent.querySelectorAll('.ticker-item')).map(el => el.textContent);
+                const newEvents = events.filter(e => !existingEvents.includes(e));
+                
+                newEvents.forEach(event => {
+                    const item = document.createElement('div');
+                    item.className = event.includes('🔥') || event.includes('🎯') ? 'ticker-item milestone' : 'ticker-item';
+                    item.textContent = event;
+                    tickerContent.insertBefore(item, tickerContent.firstChild);
+                });
+
+                // Keep only last 10 events
+                while (tickerContent.children.length > 10) {
+                    tickerContent.removeChild(tickerContent.lastChild);
+                }
+            }
+
+            // Add initial placeholder if empty
+            if (tickerContent.children.length === 0) {
+                tickerContent.innerHTML = `
+                    <div class="ticker-item">Watching for live stat changes...</div>
+                    <div class="ticker-item">Updates every 5 seconds</div>
+                `;
             }
         }
 

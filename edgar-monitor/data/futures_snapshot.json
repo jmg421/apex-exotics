@@ -1,0 +1,79 @@
+{
+  "timestamp": "2026-03-09T09:56:31.272522",
+  "market": "CME_FUTURES",
+  "source": "yfinance",
+  "quotes": [
+    {
+      "symbol": "ES=F",
+      "price": 6660.5,
+      "change": -83.25,
+      "change_percent": -1.23,
+      "volume": 717952,
+      "prev_close": 6743.75,
+      "timestamp": "2026-03-09T09:56:29.506217"
+    },
+    {
+      "symbol": "NQ=F",
+      "price": 24393.25,
+      "change": -277.0,
+      "change_percent": -1.12,
+      "volume": 279013,
+      "prev_close": 24670.25,
+      "timestamp": "2026-03-09T09:56:29.749073"
+    },
+    {
+      "symbol": "YM=F",
+      "price": 46896.0,
+      "change": -621.0,
+      "change_percent": -1.31,
+      "volume": 77736,
+      "prev_close": 47517.0,
+      "timestamp": "2026-03-09T09:56:30.001731"
+    },
+    {
+      "symbol": "RTY=F",
+      "price": 2481.9,
+      "change": -44.8,
+      "change_percent": -1.77,
+      "volume": 135266,
+      "prev_close": 2526.7,
+      "timestamp": "2026-03-09T09:56:30.298616"
+    },
+    {
+      "symbol": "GC=F",
+      "price": 5086.3,
+      "change": -72.4,
+      "change_percent": -1.4,
+      "volume": 105698,
+      "prev_close": 5158.7,
+      "timestamp": "2026-03-09T09:56:30.540341"
+    },
+    {
+      "symbol": "SI=F",
+      "price": 84.14,
+      "change": -0.17,
+      "change_percent": -0.2,
+      "volume": 30619,
+      "prev_close": 84.31,
+      "timestamp": "2026-03-09T09:56:30.799861"
+    },
+    {
+      "symbol": "CL=F",
+      "price": 99.72,
+      "change": 8.82,
+      "change_percent": 9.7,
+      "volume": 614025,
+      "prev_close": 90.9,
+      "timestamp": "2026-03-09T09:56:31.038667"
+    },
+    {
+      "symbol": "NG=F",
+      "price": 3.29,
+      "change": 0.1,
+      "change_percent": 3.2,
+      "volume": 109897,
+      "prev_close": 3.19,
+      "timestamp": "2026-03-09T09:56:31.272424"
+    }
+  ]
+}

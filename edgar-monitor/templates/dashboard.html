@@ -154,13 +154,88 @@
         </div>
 
         <div class="positions" style="border: 2px solid #667eea; margin-bottom: 20px;">
-            <h2>⚡ Futures Scalping Lab</h2>
+            <h2>⚡ Futures Scalping Lab 
+                <button onclick="showTradeModal()" style="float: right; background: #10b981; color: white; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-left: 10px;">
+                    Trade
+                </button>
+                <button onclick="toggleVolatility()" id="vol-toggle" style="float: right; background: #fbbf24; color: #000; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                    Stable Market
+                </button>
+            </h2>
             <div style="background: #0a0a0a; padding: 15px; border-radius: 4px; margin-bottom: 15px; font-size: 0.9em; color: #888;">
                 <strong style="color: #fbbf24;">⚠️ Paper Trading Only</strong> - Risk:Reward 1:3 (Risk $250, Target $750)
-                <br>Use CLI: <code style="background: #1a1a1a; padding: 2px 6px; border-radius: 3px;">python trade.py long ES 5850</code>
+                <span id="vol-indicator" style="margin-left: 15px; color: #10b981;">● Stable (±0.15%)</span>
             </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                <div style="background: #0a0a0a; padding: 15px; border-radius: 4px;">
+                    <h3 style="margin: 0 0 10px 0; color: #10b981; font-size: 1em;">ES (S&P 500)</h3>
+                    <canvas id="es-chart" style="max-height: 180px;"></canvas>
+                </div>
+                <div style="background: #0a0a0a; padding: 15px; border-radius: 4px;">
+                    <h3 style="margin: 0 0 10px 0; color: #667eea; font-size: 1em;">NQ (Nasdaq)</h3>
+                    <canvas id="nq-chart" style="max-height: 180px;"></canvas>
+                </div>
+            </div>
+            
+            <div style="background: #0a0a0a; padding: 15px; border-radius: 4px; margin-bottom: 15px; border-left: 3px solid #ef4444;">
+                <h3 style="margin: 0 0 10px 0; color: #ef4444; font-size: 1em;">⚠️ Latency Reality Check</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; font-size: 0.85em; margin-bottom: 15px;">
+                    <div>
+                        <strong style="color: #10b981;">HFT Firms (Co-located)</strong><br>
+                        <span style="color: #888;">Location:</span> CME Data Center<br>
+                        <span style="color: #888;">Latency:</span> <strong style="color: #10b981;">5 μs</strong><br>
+                        <span style="color: #888;">Advantage:</span> See orders first
+                    </div>
+                    <div>
+                        <strong style="color: #fbbf24;">Proximity Hosting</strong><br>
+                        <span style="color: #888;">Location:</span> Chicago area<br>
+                        <span style="color: #888;">Latency:</span> <strong style="color: #fbbf24;">500 μs</strong><br>
+                        <span style="color: #888;">Cost:</span> ~$1,000/month
+                    </div>
+                    <div>
+                        <strong style="color: #ef4444;">You (Ohio)</strong><br>
+                        <span style="color: #888;">Location:</span> Columbus, OH<br>
+                        <span style="color: #888;">Latency:</span> <strong style="color: #ef4444;">20 ms</strong><br>
+                        <span style="color: #888;">Disadvantage:</span> <strong>4,000x slower</strong>
+                    </div>
+                </div>
+                
+                <div style="background: #000; padding: 15px; border-radius: 4px; margin-bottom: 10px;">
+                    <div style="margin-bottom: 10px; color: #888; font-size: 0.85em;">
+                        <strong style="color: #fff;">Order Race to CME:</strong> 
+                        <button onclick="simulateLatency()" id="sim-btn" style="float: right; background: #667eea; color: white; border: none; padding: 5px 15px; border-radius: 3px; cursor: pointer; font-size: 0.9em;">
+                            Run Simulation
+                        </button>
+                    </div>
+                    <div style="position: relative; height: 80px;">
+                        <div style="position: absolute; left: 0; top: 10px; width: 100%; height: 20px; background: #1a1a1a; border-radius: 3px;">
+                            <div id="hft-order" style="position: absolute; left: 0; top: 0; width: 20px; height: 20px; background: #10b981; border-radius: 3px; transition: left 0.05s linear;"></div>
+                            <span style="position: absolute; left: 5px; top: 2px; font-size: 0.75em; color: #000; font-weight: bold;">HFT</span>
+                        </div>
+                        <div style="position: absolute; left: 0; top: 35px; width: 100%; height: 20px; background: #1a1a1a; border-radius: 3px;">
+                            <div id="prox-order" style="position: absolute; left: 0; top: 0; width: 20px; height: 20px; background: #fbbf24; border-radius: 3px; transition: left 0.5s linear;"></div>
+                            <span style="position: absolute; left: 5px; top: 2px; font-size: 0.75em; color: #000; font-weight: bold;">PRX</span>
+                        </div>
+                        <div style="position: absolute; left: 0; top: 60px; width: 100%; height: 20px; background: #1a1a1a; border-radius: 3px;">
+                            <div id="you-order" style="position: absolute; left: 0; top: 0; width: 20px; height: 20px; background: #ef4444; border-radius: 3px; transition: left 20s linear;"></div>
+                            <span style="position: absolute; left: 5px; top: 2px; font-size: 0.75em; color: #000; font-weight: bold;">YOU</span>
+                        </div>
+                        <div style="position: absolute; right: 0; top: 0; width: 2px; height: 80px; background: #667eea;"></div>
+                        <span style="position: absolute; right: 5px; top: 30px; font-size: 0.75em; color: #667eea; font-weight: bold;">CME</span>
+                    </div>
+                </div>
+                
+                <div style="color: #888; font-size: 0.85em;">
+                    <strong style="color: #fff;">What this means:</strong> By the time your order reaches CME, HFT algos have already seen it, 
+                    analyzed it, and potentially front-run it. This is why you target 5-15 point moves (not 1-tick scalps) and use 
+                    limit orders. Your edge is strategy and discipline, not speed.
+                </div>
+            </div>
+            
             <div style="margin-bottom: 15px; background: #0a0a0a; padding: 15px; border-radius: 4px;">
-                <canvas id="scalping-chart" style="max-height: 250px;"></canvas>
+                <h3 style="margin: 0 0 10px 0; color: #fbbf24; font-size: 1em;">Account Equity</h3>
+                <canvas id="scalping-chart" style="max-height: 180px;"></canvas>
             </div>
             <div id="scalping-details"></div>
         </div>
@@ -201,15 +276,299 @@
             <h2>📰 News Alerts <span id="news-badge" style="font-size: 0.7em; color: #888;"></span></h2>
             <div id="news-list" style="font-size: 0.9em;"></div>
         </div>
+
+        <div class="positions" style="margin-top: 20px; border: 2px solid #10b981;">
+            <h2>🔬 Matching Engines: CME vs. ENIS</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div style="background: #0a0a0a; padding: 20px; border-radius: 4px; border-left: 3px solid #667eea;">
+                    <h3 style="margin: 0 0 15px 0; color: #667eea;">CME Matching Engine</h3>
+                    <div style="font-size: 0.9em; color: #888; margin-bottom: 15px;">
+                        <strong style="color: #fff;">Purpose:</strong> Match buyers to sellers
+                    </div>
+                    
+                    <div style="background: #000; padding: 15px; border-radius: 4px; margin-bottom: 10px;">
+                        <div style="color: #10b981; margin-bottom: 5px;">📥 INPUT</div>
+                        <div style="font-size: 0.85em; color: #888;">
+                            • Buy orders (bids)<br>
+                            • Sell orders (asks)<br>
+                            • Price & quantity
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; color: #667eea; font-size: 1.5em; margin: 10px 0;">⚙️</div>
+                    
+                    <div style="background: #000; padding: 15px; border-radius: 4px; margin-bottom: 10px;">
+                        <div style="color: #fbbf24; margin-bottom: 5px;">⚡ PROCESS</div>
+                        <div style="font-size: 0.85em; color: #888;">
+                            • Price-time priority<br>
+                            • Best price first<br>
+                            • FIFO within price level<br>
+                            • <strong style="color: #ef4444;">Speed: 5 μs</strong>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; color: #667eea; font-size: 1.5em; margin: 10px 0;">⬇️</div>
+                    
+                    <div style="background: #000; padding: 15px; border-radius: 4px;">
+                        <div style="color: #ef4444; margin-bottom: 5px;">📤 OUTPUT</div>
+                        <div style="font-size: 0.85em; color: #888;">
+                            • Executed trades<br>
+                            • Market price<br>
+                            • Liquidity provision
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #333; font-size: 0.85em; color: #888;">
+                        <strong style="color: #fff;">Competition:</strong> Zero-sum game<br>
+                        <strong style="color: #fff;">Edge:</strong> Speed (HFT wins)<br>
+                        <strong style="color: #fff;">Moat:</strong> Co-location ($50k/mo)
+                    </div>
+                </div>
+                
+                <div style="background: #0a0a0a; padding: 20px; border-radius: 4px; border-left: 3px solid #10b981;">
+                    <h3 style="margin: 0 0 15px 0; color: #10b981;">ENIS Matching Engine</h3>
+                    <div style="font-size: 0.9em; color: #888; margin-bottom: 15px;">
+                        <strong style="color: #fff;">Purpose:</strong> Match investors to overlooked companies
+                    </div>
+                    
+                    <div style="background: #000; padding: 15px; border-radius: 4px; margin-bottom: 10px;">
+                        <div style="color: #10b981; margin-bottom: 5px;">📥 INPUT</div>
+                        <div style="font-size: 0.85em; color: #888;">
+                            • SEC 10-K filings (409)<br>
+                            • Financial metrics (XBRL)<br>
+                            • Market cap data
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; color: #10b981; font-size: 1.5em; margin: 10px 0;">🧠</div>
+                    
+                    <div style="background: #000; padding: 15px; border-radius: 4px; margin-bottom: 10px;">
+                        <div style="color: #fbbf24; margin-bottom: 5px;">⚡ PROCESS</div>
+                        <div style="font-size: 0.85em; color: #888;">
+                            • MGF threshold analysis<br>
+                            • Margin > 25%, Debt < 0.5x<br>
+                            • Network relationships<br>
+                            • <strong style="color: #10b981;">Speed: Patience</strong>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; color: #10b981; font-size: 1.5em; margin: 10px 0;">⬇️</div>
+                    
+                    <div style="background: #000; padding: 15px; border-radius: 4px;">
+                        <div style="color: #ef4444; margin-bottom: 5px;">📤 OUTPUT</div>
+                        <div style="font-size: 0.85em; color: #888;">
+                            • Quality companies (27)<br>
+                            • ENIS scores (21-87)<br>
+                            • Investment opportunities
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #333; font-size: 0.85em; color: #888;">
+                        <strong style="color: #fff;">Competition:</strong> Positive-sum game<br>
+                        <strong style="color: #fff;">Edge:</strong> Attention arbitrage<br>
+                        <strong style="color: #fff;">Moat:</strong> Patents + systematic process
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; padding: 20px; background: #0a0a0a; border-radius: 4px; border-left: 3px solid #fbbf24;">
+                <strong style="color: #fbbf24; font-size: 1.1em;">💡 Key Insight:</strong>
+                <div style="margin-top: 10px; color: #e0e0e0; line-height: 1.6;">
+                    You can't beat HFT firms at the CME matching engine game (they're 4,000x faster). 
+                    But you don't need to - you're running a <strong>different matching engine</strong> that finds 
+                    opportunities <strong>before they reach CME</strong>. By the time IBCP shows up on a trader's 
+                    screen, you've already analyzed the 10-K, calculated the ENIS score, and taken a position. 
+                    <strong>Your patents (US 10,176,442 & 10,997,540) formalize this systematic matching process.</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="trade-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: #1a1a1a; padding: 30px; border-radius: 8px; border: 2px solid #667eea; max-width: 500px; width: 90%;">
+            <h2 style="margin-top: 0; color: #fff;">Quick Trade</h2>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="color: #888; display: block; margin-bottom: 5px;">Contract:</label>
+                <select id="trade-contract" style="width: 100%; padding: 10px; background: #0a0a0a; border: 1px solid #333; color: #fff; border-radius: 4px; font-size: 1em;">
+                    <option value="ES">ES (S&P 500)</option>
+                    <option value="NQ">NQ (Nasdaq)</option>
+                </select>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="color: #888; display: block; margin-bottom: 5px;">Direction:</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button onclick="setDirection('LONG')" id="btn-long" style="padding: 15px; background: #10b981; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 1em;">
+                        LONG (Buy)
+                    </button>
+                    <button onclick="setDirection('SHORT')" id="btn-short" style="padding: 15px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 1em;">
+                        SHORT (Sell)
+                    </button>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="color: #888; display: block; margin-bottom: 5px;">Entry Price:</label>
+                <input type="number" id="trade-price" step="0.25" style="width: 100%; padding: 10px; background: #0a0a0a; border: 1px solid #333; color: #fff; border-radius: 4px; font-size: 1em;" placeholder="5850.00">
+            </div>
+            
+            <div style="background: #0a0a0a; padding: 15px; border-radius: 4px; margin-bottom: 20px; border-left: 3px solid #fbbf24;">
+                <strong style="color: #fbbf24;">✨ Automatic Risk Management</strong><br>
+                <div style="margin-top: 10px; color: #e0e0e0;">
+                    • Stop Loss: $250 risk (auto-calculated)<br>
+                    • Profit Target: $750 reward (1:3 ratio)<br>
+                    • Position closes automatically at targets<br>
+                    • No emotional decisions needed
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <button onclick="closeTradeModal()" style="padding: 12px; background: #333; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    Cancel
+                </button>
+                <button onclick="executeTrade()" style="padding: 12px; background: #667eea; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                    Execute Trade
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>
         let performanceChart = null;
         let candlestickChart = null;
         let scalpingChart = null;
+        let esChart = null;
+        let nqChart = null;
         let currentTicker = null;
         let candlestickData = {};
+        let futuresData = { ES: [], NQ: [], equity: [] };
         let tickers = [];
+        let lastTradeCount = 0;
+        let selectedDirection = 'LONG';
+        let volatilityMode = 'stable'; // 'stable' or 'volatile'
+
+        function toggleVolatility() {
+            volatilityMode = volatilityMode === 'stable' ? 'volatile' : 'stable';
+            
+            const btn = document.getElementById('vol-toggle');
+            const indicator = document.getElementById('vol-indicator');
+            
+            if (volatilityMode === 'volatile') {
+                btn.textContent = 'Volatile Market';
+                btn.style.background = '#ef4444';
+                btn.style.color = '#fff';
+                indicator.innerHTML = '● Volatile (±1.5%)';
+                indicator.style.color = '#ef4444';
+            } else {
+                btn.textContent = 'Stable Market';
+                btn.style.background = '#fbbf24';
+                btn.style.color = '#000';
+                indicator.innerHTML = '● Stable (±0.15%)';
+                indicator.style.color = '#10b981';
+            }
+        }
+
+        function showTradeModal() {
+            document.getElementById('trade-modal').style.display = 'flex';
+            
+            // Pre-fill with current ES price
+            const esData = futuresData.ES;
+            if (esData.length > 0) {
+                const currentPrice = esData[esData.length - 1].c;
+                document.getElementById('trade-price').value = currentPrice.toFixed(2);
+            }
+        }
+
+        function closeTradeModal() {
+            document.getElementById('trade-modal').style.display = 'none';
+        }
+
+        function setDirection(direction) {
+            selectedDirection = direction;
+            document.getElementById('btn-long').style.opacity = direction === 'LONG' ? '1' : '0.5';
+            document.getElementById('btn-short').style.opacity = direction === 'SHORT' ? '1' : '0.5';
+        }
+
+        function executeTrade() {
+            const contract = document.getElementById('trade-contract').value;
+            const price = parseFloat(document.getElementById('trade-price').value);
+            
+            if (!price) {
+                alert('Please enter a valid price');
+                return;
+            }
+            
+            // Show CLI command to execute
+            const command = `python trade.py ${selectedDirection.toLowerCase()} ${contract} ${price}`;
+            
+            alert(`Execute this command in terminal:\n\n${command}\n\nThen refresh the dashboard to see your trade!`);
+            
+            closeTradeModal();
+        }
+        
+        function simulateLatency() {
+            const btn = document.getElementById('sim-btn');
+            
+            // Disable button during simulation
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+            
+            // Reset positions
+            document.getElementById('hft-order').style.left = '0%';
+            document.getElementById('prox-order').style.left = '0%';
+            document.getElementById('you-order').style.left = '0%';
+            
+            // Start race after brief delay
+            setTimeout(() => {
+                // HFT: 5 microseconds = instant (0.05s animation)
+                document.getElementById('hft-order').style.left = 'calc(100% - 20px)';
+                
+                // Proximity: 500 microseconds = 0.5s animation
+                setTimeout(() => {
+                    document.getElementById('prox-order').style.left = 'calc(100% - 20px)';
+                }, 500);
+                
+                // You: 20 milliseconds = 20s animation (scaled for visibility)
+                setTimeout(() => {
+                    document.getElementById('you-order').style.left = 'calc(100% - 20px)';
+                    
+                    // Change button to Reset after animation completes
+                    setTimeout(() => {
+                        btn.textContent = 'Reset';
+                        btn.style.background = '#fbbf24';
+                        btn.disabled = false;
+                        btn.style.opacity = '1';
+                        btn.onclick = resetLatency;
+                    }, 1000);
+                }, 1000);
+            }, 100);
+        }
+        
+        function resetLatency() {
+            const btn = document.getElementById('sim-btn');
+            
+            // Reset button
+            btn.textContent = 'Run Simulation';
+            btn.style.background = '#667eea';
+            btn.onclick = simulateLatency;
+            
+            // Reset positions instantly
+            document.getElementById('hft-order').style.transition = 'none';
+            document.getElementById('prox-order').style.transition = 'none';
+            document.getElementById('you-order').style.transition = 'none';
+            
+            document.getElementById('hft-order').style.left = '0%';
+            document.getElementById('prox-order').style.left = '0%';
+            document.getElementById('you-order').style.left = '0%';
+            
+            // Re-enable transitions
+            setTimeout(() => {
+                document.getElementById('hft-order').style.transition = 'left 0.05s linear';
+                document.getElementById('prox-order').style.transition = 'left 0.5s linear';
+                document.getElementById('you-order').style.transition = 'left 20s linear';
+            }, 50);
+        }
 
         function formatMoney(value) {
             return '$' + value.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
@@ -290,6 +649,14 @@
             // Load scalping account
             const scalping = await fetch('/api/scalping').then(r => r.json());
             updateScalping(scalping);
+            
+            // Load futures data
+            const futuresHistory = await fetch('/api/futures').then(r => r.json());
+            if (futuresHistory.ES && futuresHistory.ES.length > 0) {
+                futuresData.ES = futuresHistory.ES;
+                futuresData.NQ = futuresHistory.NQ;
+                console.log('Loaded', futuresData.ES.length, 'historical ES candles');
+            }
         }
 
         function updateScalping(scalping) {
@@ -363,6 +730,153 @@
             
             // Update scalping chart
             updateScalpingChart(scalping);
+            
+            // Update futures charts
+            updateFuturesCharts();
+        }
+        
+        function updateFuturesCharts() {
+            const now = Date.now();
+            
+            // Set volatility parameters based on mode
+            const volatility = volatilityMode === 'volatile' ? {
+                drift: 0.015,      // -1.5% to +1.5% per candle
+                intraMove: 0.015   // -1.5% to +1.5% within candle
+            } : {
+                drift: 0.0015,     // -0.15% to +0.15% per candle
+                intraMove: 0.003   // -0.3% to +0.3% within candle
+            };
+            
+            // Initialize or update ES and NQ candles
+            ['ES', 'NQ'].forEach(contract => {
+                const basePrice = contract === 'ES' ? 5850 : 20500;
+                const data = futuresData[contract];
+                
+                // Create new candle every 10 seconds
+                const lastCandle = data[data.length - 1];
+                const shouldCreateNew = !lastCandle || (now - lastCandle.t) > 10000;
+                
+                if (shouldCreateNew) {
+                    const driftMove = (Math.random() * 2 - 1) * volatility.drift;
+                    const price = lastCandle ? lastCandle.c * (1 + driftMove) : basePrice;
+                    
+                    data.push({
+                        t: now,
+                        o: price,
+                        h: price,
+                        l: price,
+                        c: price
+                    });
+                    
+                    if (data.length > 30) data.shift();
+                } else {
+                    const move = (Math.random() * 2 - 1) * volatility.intraMove;
+                    const price = lastCandle.c * (1 + move);
+                    lastCandle.c = price;
+                    lastCandle.h = Math.max(lastCandle.h, price);
+                    lastCandle.l = Math.min(lastCandle.l, price);
+                }
+            });
+            
+            // Draw ES chart
+            drawFuturesChart('es-chart', futuresData.ES, 'ES', '#10b981', esChart, (chart) => { esChart = chart; });
+            
+            // Draw NQ chart
+            drawFuturesChart('nq-chart', futuresData.NQ, 'NQ', '#667eea', nqChart, (chart) => { nqChart = chart; });
+            
+            // Save futures data to backend
+            saveFuturesData();
+        }
+        
+        function saveFuturesData() {
+            fetch('/api/futures/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    ES: futuresData.ES,
+                    NQ: futuresData.NQ
+                })
+            });
+        }
+        
+        function drawFuturesChart(canvasId, data, contract, color, existingChart, setChart) {
+            if (data.length === 0) return;
+            
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            
+            if (existingChart) {
+                existingChart.destroy();
+            }
+            
+            const labels = data.map((_, i) => `${i+1}`);
+            const highs = data.map(d => d.h);
+            const lows = data.map(d => d.l);
+            const closes = data.map(d => d.c);
+            const opens = data.map(d => d.o);
+            
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: contract,
+                        data: closes,
+                        borderColor: color,
+                        backgroundColor: color.replace(')', ', 0.1)').replace('rgb', 'rgba'),
+                        tension: 0.3,
+                        fill: true,
+                        pointRadius: 2,
+                        pointHoverRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 2,
+                    animation: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1a1a1a',
+                            titleColor: '#e0e0e0',
+                            bodyColor: '#e0e0e0',
+                            borderColor: color,
+                            borderWidth: 2,
+                            callbacks: {
+                                label: function(context) {
+                                    const idx = context.dataIndex;
+                                    const candle = data[idx];
+                                    return [
+                                        `Price: $${candle.c.toFixed(2)}`,
+                                        `High: $${candle.h.toFixed(2)}`,
+                                        `Low: $${candle.l.toFixed(2)}`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: { 
+                                color: '#888',
+                                font: { size: 10 },
+                                callback: function(value) {
+                                    return '$' + value.toFixed(0);
+                                }
+                            },
+                            grid: { color: '#333' }
+                        },
+                        x: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            setChart(chart);
         }
         
         function updateScalpingChart(scalping) {
@@ -380,16 +894,23 @@
                 scalpingChart.destroy();
             }
             
-            // Build equity curve from trades
-            const equityCurve = [scalping.starting_capital];
-            let runningTotal = scalping.starting_capital;
-            
-            scalping.trades.forEach(trade => {
-                runningTotal += trade.pnl;
-                equityCurve.push(runningTotal);
+            // Add current balance to equity curve (scrolling timeline)
+            const now = Date.now();
+            futuresData.equity.push({
+                t: now,
+                balance: scalping.cash,
+                isNewTrade: scalping.trades.length > lastTradeCount
             });
             
-            const labels = equityCurve.map((_, i) => i === 0 ? 'Start' : `Trade ${i}`);
+            // Keep last 30 points
+            if (futuresData.equity.length > 30) {
+                futuresData.equity.shift();
+            }
+            
+            lastTradeCount = scalping.trades.length;
+            
+            const labels = futuresData.equity.map((_, i) => `${i+1}`);
+            const balances = futuresData.equity.map(d => d.balance);
             
             scalpingChart = new Chart(ctx, {
                 type: 'line',
@@ -397,17 +918,15 @@
                     labels: labels,
                     datasets: [{
                         label: 'Account Balance',
-                        data: equityCurve,
+                        data: balances,
                         borderColor: '#667eea',
                         backgroundColor: 'rgba(102, 126, 234, 0.3)',
                         tension: 0.1,
                         fill: true,
-                        pointBackgroundColor: equityCurve.map((val, i) => {
-                            if (i === 0) return '#667eea';
-                            const trade = scalping.trades[i - 1];
-                            return trade.pnl > 0 ? '#10b981' : '#ef4444';
-                        }),
-                        pointRadius: 6,
+                        pointBackgroundColor: futuresData.equity.map(d => 
+                            d.isNewTrade ? '#fbbf24' : '#667eea'
+                        ),
+                        pointRadius: futuresData.equity.map(d => d.isNewTrade ? 6 : 3),
                         pointHoverRadius: 8,
                         pointBorderWidth: 2,
                         pointBorderColor: '#000'
@@ -417,6 +936,7 @@
                     responsive: true,
                     maintainAspectRatio: true,
                     aspectRatio: 3.5,
+                    animation: false,
                     plugins: {
                         legend: { display: false },
                         tooltip: {
@@ -428,19 +948,7 @@
                             padding: 12,
                             callbacks: {
                                 label: function(context) {
-                                    const idx = context.dataIndex;
-                                    if (idx === 0) return 'Starting: $' + context.parsed.y.toFixed(2);
-                                    
-                                    const trade = scalping.trades[idx - 1];
-                                    const pnlColor = trade.pnl > 0 ? '✅' : '❌';
-                                    return [
-                                        'Balance: $' + context.parsed.y.toFixed(2),
-                                        '',
-                                        pnlColor + ' ' + trade.side + ' ' + trade.contract,
-                                        'Entry: $' + trade.entry_price.toFixed(2),
-                                        'Exit: $' + trade.exit_price.toFixed(2),
-                                        'P&L: $' + trade.pnl.toFixed(2)
-                                    ];
+                                    return 'Balance: $' + context.parsed.y.toFixed(2);
                                 }
                             }
                         }
@@ -911,8 +1419,8 @@
         // Load data on page load
         loadData();
         
-        // Auto-refresh every 5 seconds in demo mode, 60 seconds in live mode
-        setInterval(loadData, 5000);
+        // Auto-refresh every 30 seconds (less disruptive)
+        setInterval(loadData, 30000);
     </script>
 </body>
 </html>

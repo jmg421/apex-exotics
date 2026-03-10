@@ -1,0 +1,194 @@
+{
+  "timestamp": "2026-03-09T09:56:32.074443",
+  "total_stocks": 20,
+  "anomalies": [
+    {
+      "symbol": "CLRB",
+      "price": 2.71,
+      "change": -0.05,
+      "change_percent": -1.81,
+      "volume": 1722,
+      "prev_close": 2.76,
+      "timestamp": "2026-03-09T09:56:24.159705"
+    },
+    {
+      "symbol": "PMVP",
+      "price": 1.6,
+      "change": -0.04,
+      "change_percent": -2.44,
+      "volume": 60306,
+      "prev_close": 1.64,
+      "timestamp": "2026-03-09T09:56:24.413513"
+    },
+    {
+      "symbol": "AGLY",
+      "price": 0.02,
+      "change": 0.0,
+      "change_percent": 0.0,
+      "volume": 100,
+      "prev_close": 0.02,
+      "timestamp": "2026-03-09T09:56:24.712055"
+    },
+    {
+      "symbol": "COOK",
+      "price": 0.59,
+      "change": -0.03,
+      "change_percent": -5.17,
+      "volume": 99982,
+      "prev_close": 0.62,
+      "timestamp": "2026-03-09T09:56:24.986021"
+    },
+    {
+      "symbol": "MKTW",
+      "price": 15.15,
+      "change": 0.31,
+      "change_percent": 2.06,
+      "volume": 5982,
+      "prev_close": 14.84,
+      "timestamp": "2026-03-09T09:56:25.236772"
+    },
+    {
+      "symbol": "SLNG",
+      "price": 3.92,
+      "change": 0.16,
+      "change_percent": 4.26,
+      "volume": 815,
+      "prev_close": 3.76,
+      "timestamp": "2026-03-09T09:56:26.042517"
+    },
+    {
+      "symbol": "ADIL",
+      "price": 1.71,
+      "change": -0.12,
+      "change_percent": -6.5,
+      "volume": 21820,
+      "prev_close": 1.83,
+      "timestamp": "2026-03-09T09:56:26.568502"
+    },
+    {
+      "symbol": "NXTC",
+      "price": 12.51,
+      "change": 0.12,
+      "change_percent": 0.97,
+      "volume": 2045,
+      "prev_close": 12.39,
+      "timestamp": "2026-03-09T09:56:27.070953"
+    },
+    {
+      "symbol": "ATYR",
+      "price": 0.86,
+      "change": 0.04,
+      "change_percent": 4.81,
+      "volume": 182825,
+      "prev_close": 0.82,
+      "timestamp": "2026-03-09T09:56:27.854209"
+    },
+    {
+      "symbol": "REFR",
+      "price": 0.96,
+      "change": -0.02,
+      "change_percent": -2.04,
+      "volume": 4621,
+      "prev_close": 0.98,
+      "timestamp": "2026-03-09T09:56:28.104120"
+    },
+    {
+      "symbol": "UWHR",
+      "price": 11.0,
+      "change": 0.0,
+      "change_percent": 0.0,
+      "volume": 139,
+      "prev_close": 11.0,
+      "timestamp": "2026-03-09T09:56:28.646341"
+    }
+  ],
+  "clusters": {
+    "0": [
+      {
+        "symbol": "AFCG",
+        "price": 2.58,
+        "change": -0.04,
+        "change_percent": -1.53,
+        "volume": 29167,
+        "prev_close": 2.62,
+        "timestamp": "2026-03-09T09:56:23.895282"
+      },
+      {
+        "symbol": "PRTS",
+        "price": 0.74,
+        "change": -0.01,
+        "change_percent": -1.34,
+        "volume": 30242,
+        "prev_close": 0.75,
+        "timestamp": "2026-03-09T09:56:25.756282"
+      },
+      {
+        "symbol": "PHIO",
+        "price": 1.16,
+        "change": -0.0,
+        "change_percent": -0.43,
+        "volume": 32730,
+        "prev_close": 1.16,
+        "timestamp": "2026-03-09T09:56:27.318861"
+      }
+    ],
+    "1": [
+      {
+        "symbol": "INUV",
+        "price": 2.55,
+        "change": -0.09,
+        "change_percent": -3.41,
+        "volume": 101045,
+        "prev_close": 2.64,
+        "timestamp": "2026-03-09T09:56:25.502835"
+      },
+      {
+        "symbol": "SMSI",
+        "price": 0.63,
+        "change": -0.02,
+        "change_percent": -3.36,
+        "volume": 58764,
+        "prev_close": 0.65,
+        "timestamp": "2026-03-09T09:56:26.272970"
+      },
+      {
+        "symbol": "MRCC",
+        "price": 4.08,
+        "change": -0.16,
+        "change_percent": -3.66,
+        "volume": 14702,
+        "prev_close": 4.24,
+        "timestamp": "2026-03-09T09:56:26.839152"
+      }
+    ],
+    "2": [
+      {
+        "symbol": "MGX",
+        "price": 1.52,
+        "change": 0.04,
+        "change_percent": 2.7,
+        "volume": 28697,
+        "prev_close": 1.48,
+        "timestamp": "2026-03-09T09:56:27.574585"
+      },
+      {
+        "symbol": "XPL",
+        "price": 0.84,
+        "change": 0.02,
+        "change_percent": 1.84,
+        "volume": 73333,
+        "prev_close": 0.82,
+        "timestamp": "2026-03-09T09:56:28.349252"
+      },
+      {
+        "symbol": "JETMF",
+        "price": 0.51,
+        "change": 0.01,
+        "change_percent": 2.64,
+        "volume": 39823,
+        "prev_close": 0.49,
+        "timestamp": "2026-03-09T09:56:28.969688"
+      }
+    ]
+  }
+}

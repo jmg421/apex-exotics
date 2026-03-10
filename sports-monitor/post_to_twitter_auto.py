@@ -1,0 +1,87 @@
+#!/usr/bin/env python3
+"""
+Auto-post to Twitter using keyboard/mouse automation
+Opens Twitter, pastes tweet, and posts it
+"""
+import pyautogui
+import pyperclip
+import time
+from headline_storage import get_unposted_headlines, mark_posted_to_x
+
+# Safety: enable fail-safe (move mouse to corner to abort)
+pyautogui.FAILSAFE = True
+
+def post_tweet_automated(tweet_text):
+    """Post a tweet using keyboard automation"""
+    
+    print(f"📋 Copying tweet to clipboard...")
+    pyperclip.copy(tweet_text)
+    
+    print(f"⌨️  Pasting tweet...")
+    time.sleep(0.5)
+    
+    # Paste the tweet (cursor should already be in compose box)
+    pyautogui.hotkey('command', 'v')
+    time.sleep(1)
+    
+    print(f"🚀 Posting in 3 seconds...")
+    print(f"   (Move mouse to corner to abort!)")
+    time.sleep(3)
+    
+    # Press Cmd+Enter to post
+    pyautogui.hotkey('command', 'return')
+    
+    print(f"✅ Tweet posted!")
+    time.sleep(2)
+    
+    return True
+
+def post_headline(headline_text, source_url):
+    """Post a headline to Twitter"""
+    tweet_text = f"{headline_text}\n\n{source_url}"
+    
+    print(f"\n📰 Posting: {headline_text[:60]}...")
+    print(f"🔗 URL: {source_url}")
+    
+    input("\n⏸️  Press ENTER when ready (make sure x.com is open)...")
+    
+    if post_tweet_automated(tweet_text):
+        mark_posted_to_x(headline_text)
+        return True
+    return False
+
+def post_unposted_headlines(limit=1):
+    """Post unposted headlines"""
+    unposted = get_unposted_headlines()
+    
+    if not unposted:
+        print("No unposted headlines")
+        return
+    
+    posted_count = 0
+    for headline in unposted[:limit]:
+        if headline.get('source_url'):
+            if post_headline(headline['text'], headline['source_url']):
+                posted_count += 1
+        else:
+            print(f"⏭️  Skipping (no URL): {headline['text'][:60]}")
+    
+    print(f"\n📊 Posted {posted_count} of {len(unposted)} unposted headlines")
+
+if __name__ == "__main__":
+    import sys
+    
+    print("🔴 RedZone Auto-Poster")
+    print("=" * 50)
+    print("Make sure:")
+    print("  1. x.com compose box is open and focused")
+    print("  2. Cursor is blinking in 'What's happening?'")
+    print("  3. Move mouse to corner to abort")
+    print("=" * 50)
+    
+    if len(sys.argv) > 1:
+        limit = int(sys.argv[1])
+    else:
+        limit = 1
+    
+    post_unposted_headlines(limit)

@@ -3,20 +3,617 @@
 Sports Stats Monitor - Live NCAA game margins
 Shows efficiency stats that predict outcomes before the score does
 """
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 import requests
 from datetime import datetime
+import os
+from headline_storage import save_headline, get_recent_headlines
+from headline_source import find_source_url
 
 app = Flask(__name__)
 
 NCAA_API = "https://ncaa-api.henrygd.me"
+ESPN_API = "http://site.api.espn.com/apis/site/v2/sports"
+JARVIS_API = "https://staging.nodes.bio/api/jarvis"
+JARVIS_TOKEN = os.getenv('JARVIS_TOKEN', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTZmYjFmMzItNzU5Zi00ZTk5LWI5YzAtNzU5ZjRlOTliOWMwIiwiaWF0IjoxNzQxNTg0NTI3fQ.Ql_CtLxJqJqJqJqJqJqJqJqJqJqJqJqJqJqJqJqJqJo')
+
+def filter_headlines_with_jarvis(headlines):
+    """Filter headlines to only important/interesting ones"""
+    # Simple keyword-based filter
+    important_keywords = ['trade', 'sign', 'deal', 'injury', 'injured', 'out', 'return', 'fire', 'hire', 'suspend', 'fine', 'record', 'mvp', 'playoff']
+    skip_keywords = ['host', 'face', 'play the', 'takes on', 'looks to', 'game preview', 'live updates', 'grades']
+    
+    filtered = []
+    for h in headlines:
+        headline_lower = h['headline'].lower()
+        
+        # Skip generic game previews
+        if any(skip in headline_lower for skip in skip_keywords):
+            continue
+        
+        # Keep if has important keywords or is short/punchy
+        if any(keyword in headline_lower for keyword in important_keywords) or len(h['headline']) < 60:
+            filtered.append(h)
+    
+    return filtered if filtered else headlines[:5]
 
 @app.route('/')
 def index():
     return render_template('dashboard.html')
 
+@app.route('/api/current_channel')
+def get_current_channel():
+    """Get currently playing VSeeBox channel"""
+    import json
+    try:
+        with open('data/current_channel.json', 'r') as f:
+            return jsonify(json.load(f))
+    except:
+        return jsonify({'channel': 'UNKNOWN', 'timestamp': None, 'peer_count': 0})
+
+@app.route('/stream.m3u8')
+def get_stream():
+    """Serve the most recent HLS stream from Movies folder with only existing segments"""
+    import glob
+    import os
+    from flask import Response
+    from urllib.parse import quote
+    
+    movies_dir = os.path.expanduser('/Users/apple/Movies')
+    m3u8_files = glob.glob(f'{movies_dir}/*.m3u8')
+    
+    if not m3u8_files:
+        return "No stream available", 404
+    
+    # Get most recent m3u8 file
+    latest = max(m3u8_files, key=os.path.getmtime)
+    
+    # Read m3u8 and filter to only existing segments
+    with open(latest, 'r') as f:
+        lines = f.readlines()
+    
+    # Get list of existing .ts files
+    existing_segments = set(os.path.basename(f) for f in glob.glob(f'{movies_dir}/*.ts'))
+    
+    # Rebuild m3u8 with only existing segments
+    output = []
+    skip_next = False
+    for line in lines:
+        line = line.strip()
+        if line.endswith('.ts'):
+            if line in existing_segments:
+                output.append('/stream/' + quote(line))
+                skip_next = False
+            else:
+                # Skip this segment and its EXTINF line
+                if output and output[-1].startswith('#EXTINF'):
+                    output.pop()
+        elif not skip_next:
+            output.append(line)
+    
+    response = Response('\n'.join(output), mimetype='application/vnd.apple.mpegurl')
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
+
+@app.route('/stream/<path:filename>')
+def get_stream_segment(filename):
+    """Serve HLS segments"""
+    from flask import send_file
+    import os
+    
+    movies_dir = os.path.expanduser('/Users/apple/Movies')
+    file_path = os.path.join(movies_dir, filename)
+    
+    print(f"Requested segment: {filename}")
+    print(f"Full path: {file_path}")
+    print(f"Exists: {os.path.exists(file_path)}")
+    
+    if os.path.exists(file_path):
+        response = send_file(file_path, mimetype='video/mp2t')
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Cache-Control'] = 'no-cache'
+        return response
+    return f"Segment not found: {filename}", 404
+
+@app.route('/api/excitement')
+def get_excitement():
+    """Get excitement scores for all live games"""
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(__file__))
+    from excitement_engine import get_excitement_rankings
+    
+    games = get_excitement_rankings()
+    return jsonify(games)
+
+@app.route('/api/espn_headlines')
+def get_espn_headlines():
+    """Get ESPN top headlines filtered by Jarvis"""
+    try:
+        # Collect headlines
+        headlines = []
+        for sport in ['football/nfl', 'basketball/nba', 'hockey/nhl']:
+            resp = requests.get(f'http://site.api.espn.com/apis/site/v2/sports/{sport}/news', timeout=3)
+            data = resp.json()
+            
+            for article in data.get('articles', [])[:5]:
+                headlines.append({
+                    'headline': article.get('headline', 'No headline'),
+                    'description': article.get('description', '')[:120]
+                })
+            
+            if len(headlines) >= 15:
+                break
+        
+        # Filter with Jarvis
+        filtered = filter_headlines_with_jarvis(headlines)
+        return jsonify(filtered[:10])
+    except Exception as e:
+        return jsonify([{'headline': 'Error loading headlines', 'description': str(e)}])
+
+@app.route('/api/streamer_feed')
+def get_streamer_feed():
+    """Get top streamer activity from Twitch API with social stats"""
+    try:
+        from streamer_profiles import get_profile
+        
+        # Get Twitch OAuth token
+        client_id = os.getenv('TWITCH_CLIENT_ID', '')
+        client_secret = os.getenv('TWITCH_CLIENT_SECRET', '')
+        
+        if not client_id or not client_secret:
+            # Try to get top streams from public endpoint
+            try:
+                # Get top 10 live streams
+                resp = requests.post('https://gql.twitch.tv/gql', 
+                    headers={
+                        'Client-ID': 'kimne78kx3ncx6brgo4mv6wki5h1ko',
+                        'Content-Type': 'application/json'
+                    },
+                    json={
+                        'query': '''
+                        {
+                            streams(first: 10, options: {sort: VIEWER_COUNT}) {
+                                edges {
+                                    node {
+                                        broadcaster {
+                                            login
+                                            displayName
+                                        }
+                                        viewersCount
+                                        game {
+                                            displayName
+                                        }
+                                        createdAt
+                                    }
+                                }
+                            }
+                        }
+                        '''
+                    },
+                    timeout=5
+                )
+                
+                if resp.status_code == 200:
+                    data = resp.json()
+                    items = []
+                    
+                    for edge in data.get('data', {}).get('streams', {}).get('edges', [])[:10]:
+                        node = edge['node']
+                        broadcaster = node['broadcaster']
+                        channel = broadcaster['login']
+                        name = broadcaster['displayName']
+                        viewers = f"{node['viewersCount']:,}"
+                        game = node.get('game', {}).get('displayName', 'Unknown')
+                        
+                        items.append({
+                            'headline': f'{name} is LIVE',
+                            'description': f'Playing {game} • {viewers} viewers',
+                            'viewers': node['viewersCount']
+                        })
+                    
+                    return jsonify(items)
+            except Exception as e:
+                print(f"Twitch API error: {e}")
+            
+            # Fallback to hardcoded list
+            streamers = ['stake', 'xqc', 'kaicenat', 'pokimane', 'hasanabi', 'ishowspeed']
+            items = []
+            live_count = 0
+            
+            for streamer in streamers:
+                profile = get_profile(streamer)
+                
+                try:
+                    # Try to get stream info from public endpoint
+                    resp = requests.get(f'https://decapi.me/twitch/uptime/{streamer}', timeout=3)
+                    uptime = resp.text.strip()
+                    
+                    if 'offline' not in uptime.lower() and uptime:
+                        live_count += 1
+                        # Get game info
+                        game_resp = requests.get(f'https://decapi.me/twitch/game/{streamer}', timeout=3)
+                        game = game_resp.text.strip()
+                        
+                        # Get viewer count
+                        viewers_resp = requests.get(f'https://decapi.me/twitch/viewercount/{streamer}', timeout=3)
+                        viewers = viewers_resp.text.strip()
+                        
+                        try:
+                            viewer_count = int(viewers.replace(',', ''))
+                        except:
+                            viewer_count = 0
+                        
+                        items.append({
+                            'headline': f'{profile["name"]} is LIVE',
+                            'description': f'Playing {game} • {viewers} viewers • {uptime}',
+                            'viewers': viewer_count
+                        })
+                except:
+                    continue
+            
+            # Sort live streams by viewer count (highest first)
+            items.sort(key=lambda x: x.get('viewers', 0), reverse=True)
+            
+            # Remove viewer count from response (only used for sorting)
+            for item in items:
+                item.pop('viewers', None)
+            
+            # If no one is live, show profiles with stats
+            if live_count == 0:
+                for streamer in streamers:
+                    profile = get_profile(streamer)
+                    
+                    try:
+                        followers_resp = requests.get(f'https://decapi.me/twitch/followcount/{streamer}', timeout=3)
+                        followers = followers_resp.text.strip()
+                        
+                        # Format with commas
+                        try:
+                            followers_formatted = f"{int(followers):,}"
+                        except:
+                            followers_formatted = followers
+                        
+                        # Build social links
+                        socials = []
+                        if profile.get('youtube'):
+                            socials.append(f'YT: {profile["youtube"]}')
+                        if profile.get('instagram'):
+                            socials.append(f'IG: {profile["instagram"]}')
+                        
+                        social_str = ' • '.join(socials) if socials else ''
+                        
+                        items.append({
+                            'headline': f'{profile["name"]} - {followers_formatted} followers',
+                            'description': f'{profile["bio"]} • {social_str}' if social_str else profile["bio"]
+                        })
+                    except:
+                        continue
+            
+            return jsonify(items if items else [{'headline': 'No streamer data available', 'description': ''}])
+        
+        # If we have credentials, use official Twitch API
+        # (implement later if needed)
+        return jsonify([{'headline': 'Twitch API not configured', 'description': 'Set TWITCH_CLIENT_ID and TWITCH_CLIENT_SECRET'}])
+        
+    except Exception as e:
+        return jsonify([{'headline': 'Error loading streamer feed', 'description': str(e)}])
+
+@app.route('/api/personalized_feed')
+def get_personalized_feed():
+    """Get personalized news feed based on user interests"""
+    try:
+        from user_profile import get_personalized_prompt
+        
+        # Get Reddit LivestreamFail for viral moments
+        items = []
+        
+        try:
+            resp = requests.get('https://www.reddit.com/r/LivestreamFail/hot.json?limit=10', 
+                              headers={'User-Agent': 'SportsMonitor/1.0'},
+                              timeout=5)
+            data = resp.json()
+            
+            for post in data.get('data', {}).get('children', [])[:5]:
+                post_data = post.get('data', {})
+                items.append({
+                    'headline': post_data.get('title', 'No title')[:80],
+                    'description': f"👍 {post_data.get('ups', 0)} upvotes • r/LivestreamFail"
+                })
+        except:
+            pass
+        
+        return jsonify(items if items else [{'headline': 'No personalized content available', 'description': ''}])
+        
+    except Exception as e:
+        return jsonify([{'headline': 'Error loading feed', 'description': str(e)}])
+
+@app.route('/api/viral_videos')
+def get_viral_videos():
+    """Get viral videos from tracked creators - bypass YouTube algorithm"""
+    try:
+        from streamer_profiles import STREAMER_PROFILES
+        import xml.etree.ElementTree as ET
+        
+        videos = []
+        
+        # Get videos from tracked creators' YouTube RSS feeds
+        creators_with_youtube = [
+            (username, profile['youtube'], profile['name']) 
+            for username, profile in STREAMER_PROFILES.items() 
+            if profile.get('youtube')
+        ]
+        
+        for username, youtube_handle, creator_name in creators_with_youtube[:3]:  # Limit API calls
+            try:
+                # YouTube RSS feed format
+                channel_handle = youtube_handle.replace('@', '')
+                rss_url = f'https://www.youtube.com/feeds/videos.xml?user={channel_handle}'
+                
+                resp = requests.get(rss_url, timeout=5)
+                if resp.status_code == 200:
+                    root = ET.fromstring(resp.content)
+                    
+                    # Parse first video from feed
+                    ns = {'yt': 'http://www.youtube.com/xml/schemas/2015', 
+                          'media': 'http://search.yahoo.com/mrss/',
+                          'atom': 'http://www.w3.org/2005/Atom'}
+                    
+                    for entry in root.findall('atom:entry', ns)[:1]:  # Get latest video
+                        video_id = entry.find('yt:videoId', ns)
+                        title = entry.find('atom:title', ns)
+                        published = entry.find('atom:published', ns)
+                        
+                        if video_id is not None and title is not None:
+                            videos.append({
+                                'creator': creator_name,
+                                'title': title.text[:80],
+                                'youtube_handle': f'https://www.youtube.com/watch?v={video_id.text}',
+                                'views': 'Latest',
+                                'uploaded': published.text[:10] if published is not None else 'Recent'
+                            })
+            except Exception as e:
+                print(f"Error fetching {creator_name}: {e}")
+                continue
+        
+        # Add Reddit viral videos
+        try:
+            resp = requests.get('https://www.reddit.com/r/videos/hot.json?limit=5',
+                              headers={'User-Agent': 'SportsMonitor/1.0'},
+                              timeout=5)
+            data = resp.json()
+            
+            for post in data.get('data', {}).get('children', [])[:3]:
+                post_data = post.get('data', {})
+                url = post_data.get('url', '')
+                if 'youtube.com' in url or 'youtu.be' in url:
+                    videos.append({
+                        'creator': 'Reddit Trending',
+                        'title': post_data.get('title', '')[:80],
+                        'youtube_handle': url,
+                        'views': f"{post_data.get('ups', 0)} upvotes",
+                        'uploaded': 'Trending'
+                    })
+        except:
+            pass
+        
+        return jsonify(videos if videos else [{'creator': 'No videos', 'title': 'Check back later', 'youtube_handle': '', 'views': '', 'uploaded': ''}])
+        
+    except Exception as e:
+        return jsonify([{'creator': 'Error', 'title': str(e), 'youtube_handle': '', 'views': '', 'uploaded': ''}])
+
+@app.route('/api/headlines/unposted')
+def get_unposted_headlines():
+    """Get headlines not yet posted to X"""
+    try:
+        from headline_storage import get_unposted_headlines
+        headlines = get_unposted_headlines()
+        return jsonify(headlines)
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+@app.route('/api/headlines/mark_posted', methods=['POST'])
+def mark_headline_posted():
+    """Mark a headline as posted to X"""
+    try:
+        from headline_storage import mark_posted_to_x
+        data = request.json
+        headline_text = data.get('headline')
+        if headline_text:
+            mark_posted_to_x(headline_text)
+            return jsonify({'success': True})
+        return jsonify({'error': 'No headline provided'})
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+@app.route('/api/headlines')
+def get_headlines():
+    """Get all stored headlines"""
+    try:
+        limit = request.args.get('limit', 50, type=int)
+        headlines = get_recent_headlines(limit)
+        return jsonify(headlines)
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+@app.route('/api/stream_ocr')
+def get_stream_ocr():
+    """Extract game info from video stream using OCR"""
+    try:
+        from lower_third_ocr import get_live_game_info
+        
+        game_info = get_live_game_info()
+        
+        if game_info:
+            # Save headline to persistent storage with source URL
+            if 'next_game' in game_info and game_info['next_game']:
+                headline_text = game_info['next_game'].replace('📰 ', '')
+                source_url, verified_title = find_source_url(headline_text)
+                
+                # Only save if we have a verified match
+                if source_url and verified_title:
+                    save_headline(verified_title, source_url)  # Save the verified article title
+                else:
+                    print(f"⚠️  No verified match for: {headline_text[:60]}...")
+            
+            return jsonify({
+                'success': True,
+                'game_info': game_info
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'Could not extract game info'
+            })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        })
+        
+        # If we have credentials, use official Twitch API
+        # (implement later if needed)
+        return jsonify([{'headline': 'Twitch API not configured', 'description': 'Set TWITCH_CLIENT_ID and TWITCH_CLIENT_SECRET'}])
+        
+    except Exception as e:
+        return jsonify([{'headline': 'Error loading streamer feed', 'description': str(e)}])
+
+@app.route('/api/pinned_games', methods=['GET', 'POST', 'DELETE'])
+def pinned_games():
+    """Manage pinned games"""
+    import json
+    import os
+    
+    pinned_file = 'data/pinned_games.json'
+    
+    # Ensure file exists
+    if not os.path.exists(pinned_file):
+        with open(pinned_file, 'w') as f:
+            json.dump([], f)
+    
+    if request.method == 'GET':
+        with open(pinned_file, 'r') as f:
+            return jsonify(json.load(f))
+    
+    elif request.method == 'POST':
+        game = request.json
+        with open(pinned_file, 'r') as f:
+            pinned = json.load(f)
+        
+        # Check if already pinned
+        if not any(g['id'] == game['id'] for g in pinned):
+            pinned.append(game)
+            with open(pinned_file, 'w') as f:
+                json.dump(pinned, f, indent=2)
+        
+        return jsonify({'success': True})
+    
+    elif request.method == 'DELETE':
+        game_id = request.args.get('id')
+        with open(pinned_file, 'r') as f:
+            pinned = json.load(f)
+        
+        pinned = [g for g in pinned if g['id'] != game_id]
+        
+        with open(pinned_file, 'w') as f:
+            json.dump(pinned, f, indent=2)
+        
+        return jsonify({'success': True})
+
 @app.route('/api/games')
 def get_games():
+    """Get today's games"""
+    sport = request.args.get('sport', 'ncaa-basketball')
+    
+    if sport == 'nhl':
+        return get_nhl_games()
+    elif sport == 'nba':
+        return get_nba_games()
+    elif sport == 'mlb':
+        return get_mlb_games()
+    else:
+        return get_ncaa_games()
+
+@app.route('/api/upcoming_games')
+def get_upcoming_games():
+    """Get upcoming games with predicted excitement"""
+    sport = request.args.get('sport', 'nba')
+    
+    try:
+        if sport == 'nba':
+            resp = requests.get(f'{ESPN_API}/basketball/nba/scoreboard', timeout=5)
+        elif sport == 'nhl':
+            resp = requests.get(f'{ESPN_API}/hockey/nhl/scoreboard', timeout=5)
+        elif sport == 'mlb':
+            resp = requests.get(f'{ESPN_API}/baseball/mlb/scoreboard', timeout=5)
+        else:
+            return jsonify([])
+        
+        data = resp.json()
+        upcoming = []
+        
+        for event in data.get('events', [])[:10]:
+            competition = event.get('competitions', [{}])[0]
+            status = competition.get('status', {})
+            
+            # Only show scheduled games (not live or final)
+            if status.get('type', {}).get('state') != 'pre':
+                continue
+            
+            competitors = competition.get('competitors', [])
+            if len(competitors) < 2:
+                continue
+            
+            away = competitors[0] if competitors[0].get('homeAway') == 'away' else competitors[1]
+            home = competitors[1] if competitors[1].get('homeAway') == 'home' else competitors[0]
+            
+            # Calculate excitement based on team records
+            away_record = away.get('records', [{}])[0].get('summary', '0-0')
+            home_record = home.get('records', [{}])[0].get('summary', '0-0')
+            
+            try:
+                away_wins, away_losses = map(int, away_record.split('-'))
+                home_wins, home_losses = map(int, home_record.split('-'))
+                
+                # Win percentage
+                away_pct = away_wins / (away_wins + away_losses) if (away_wins + away_losses) > 0 else 0.5
+                home_pct = home_wins / (home_wins + home_losses) if (home_wins + home_losses) > 0 else 0.5
+                
+                # Base excitement: both teams good = high excitement
+                quality = (away_pct + home_pct) * 50
+                
+                # Matchup closeness: evenly matched = more exciting
+                closeness = (1 - abs(away_pct - home_pct)) * 30
+                
+                # Playoff implications: winning teams = higher stakes
+                stakes = min(away_wins, home_wins) * 0.5
+                
+                excitement = int(quality + closeness + stakes)
+                excitement = min(100, max(20, excitement))
+            except:
+                excitement = 50
+            
+            upcoming.append({
+                'id': event.get('id'),
+                'away_team': away.get('team', {}).get('displayName', 'TBD'),
+                'home_team': home.get('team', {}).get('displayName', 'TBD'),
+                'start_time': status.get('type', {}).get('shortDetail', 'TBD'),
+                'excitement': excitement,
+                'away_record': away_record,
+                'home_record': home_record
+            })
+        
+        # Sort by excitement
+        upcoming.sort(key=lambda x: x['excitement'], reverse=True)
+        return jsonify(upcoming[:5])
+        
+    except Exception as e:
+        return jsonify([])
+
+
+def get_ncaa_games():
     """Get today's games"""
     today = datetime.now().strftime('%Y/%m/%d')
     url = f"{NCAA_API}/scoreboard/basketball-men/d1/{today}/all-conf"
@@ -43,8 +640,347 @@ def get_games():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+def get_nba_games():
+    """Get NBA games from ESPN API"""
+    url = f"{ESPN_API}/basketball/nba/scoreboard"
+    
+    try:
+        resp = requests.get(url, timeout=5)
+        data = resp.json()
+        
+        events = data.get('events', [])
+        games = []
+        
+        for event in events:
+            comp = event.get('competitions', [{}])[0]
+            teams = comp.get('competitors', [])
+            status = event.get('status', {})
+            
+            if len(teams) < 2:
+                continue
+            
+            away = next((t for t in teams if t.get('homeAway') == 'away'), teams[0])
+            home = next((t for t in teams if t.get('homeAway') == 'home'), teams[1])
+            
+            games.append({
+                'id': event.get('id'),
+                'away': away.get('team', {}).get('abbreviation', ''),
+                'home': home.get('team', {}).get('abbreviation', ''),
+                'away_score': away.get('score', '0'),
+                'home_score': home.get('score', '0'),
+                'status': status.get('type', {}).get('shortDetail', ''),
+                'clock': status.get('displayClock', '12:00'),
+                'state': status.get('type', {}).get('state', '')
+            })
+        
+        return jsonify(games)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+def get_mlb_games():
+    """Get MLB games from ESPN API"""
+    url = f"{ESPN_API}/baseball/mlb/scoreboard"
+    
+    try:
+        resp = requests.get(url, timeout=5)
+        data = resp.json()
+        
+        events = data.get('events', [])
+        games = []
+        
+        for event in events:
+            comp = event.get('competitions', [{}])[0]
+            teams = comp.get('competitors', [])
+            status = event.get('status', {})
+            
+            if len(teams) < 2:
+                continue
+            
+            away = next((t for t in teams if t.get('homeAway') == 'away'), teams[0])
+            home = next((t for t in teams if t.get('homeAway') == 'home'), teams[1])
+            
+            games.append({
+                'id': event.get('id'),
+                'away': away.get('team', {}).get('abbreviation', ''),
+                'home': home.get('team', {}).get('abbreviation', ''),
+                'away_score': away.get('score', '0'),
+                'home_score': home.get('score', '0'),
+                'status': status.get('type', {}).get('shortDetail', ''),
+                'clock': status.get('displayClock', 'Top 1st'),
+                'state': status.get('type', {}).get('state', '')
+            })
+        
+        return jsonify(games)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+def get_nhl_games():
+    """Get NHL games from ESPN API"""
+    url = f"{ESPN_API}/hockey/nhl/scoreboard"
+    
+    try:
+        resp = requests.get(url, timeout=5)
+        data = resp.json()
+        
+        events = data.get('events', [])
+        games = []
+        
+        for event in events:
+            comp = event.get('competitions', [{}])[0]
+            teams = comp.get('competitors', [])
+            status = event.get('status', {})
+            
+            if len(teams) < 2:
+                continue
+            
+            away = next((t for t in teams if t.get('homeAway') == 'away'), teams[0])
+            home = next((t for t in teams if t.get('homeAway') == 'home'), teams[1])
+            
+            games.append({
+                'id': event.get('id'),
+                'away': away.get('team', {}).get('abbreviation', ''),
+                'home': home.get('team', {}).get('abbreviation', ''),
+                'away_score': away.get('score', '0'),
+                'home_score': home.get('score', '0'),
+                'status': status.get('type', {}).get('shortDetail', ''),
+                'clock': status.get('displayClock', '20:00'),
+                'state': status.get('type', {}).get('state', '')
+            })
+        
+        return jsonify(games)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/game/<game_id>/stats')
 def get_game_stats(game_id):
+    """Get detailed stats for a game"""
+    sport = request.args.get('sport', 'ncaa-basketball')
+    
+    if sport == 'nhl':
+        return get_nhl_stats(game_id)
+    elif sport == 'nba':
+        return get_nba_stats(game_id)
+    else:
+        return get_ncaa_stats(game_id)
+
+def get_nba_stats(game_id):
+    """Get NBA game stats from ESPN"""
+    url = f"{ESPN_API}/basketball/nba/summary?event={game_id}"
+    
+    try:
+        resp = requests.get(url, timeout=5)
+        data = resp.json()
+        
+        boxscore = data.get('boxscore', {})
+        teams_data = boxscore.get('teams', [])
+        players_data = boxscore.get('players', [])
+        header = data.get('header', {})
+        competitions = header.get('competitions', [{}])[0]
+        status = competitions.get('status', {})
+        
+        result = {
+            'game_id': game_id,
+            'period': status.get('period', 1),
+            'clock': status.get('displayClock', '12:00'),
+            'teams': [],
+            'top_players': []
+        }
+        
+        for team_data in teams_data:
+            team_info = team_data.get('team', {})
+            stats_list = team_data.get('statistics', [])
+            
+            stats_dict = {s.get('name'): s.get('displayValue', '0') for s in stats_list}
+            
+            result['teams'].append({
+                'name': team_info.get('abbreviation', ''),
+                'is_home': team_data.get('homeAway') == 'home',
+                'fg_pct': stats_dict.get('fieldGoalPct', '0%'),
+                'fg_made': stats_dict.get('fieldGoalsMade', '0'),
+                'fg_att': stats_dict.get('fieldGoalsAttempted', '0'),
+                'three_pct': stats_dict.get('threePointPct', '0%'),
+                'three_made': stats_dict.get('threePointFieldGoalsMade', '0'),
+                'three_att': stats_dict.get('threePointFieldGoalsAttempted', '0'),
+                'turnovers': stats_dict.get('turnovers', '0'),
+                'rebounds': stats_dict.get('totalRebounds', '0'),
+                'assists': stats_dict.get('assists', '0'),
+                'steals': stats_dict.get('steals', '0'),
+                'personalFouls': stats_dict.get('fouls', '0')
+            })
+        
+        # Extract top players by minutes
+        for team_players in players_data:
+            team_abbr = team_players.get('team', {}).get('abbreviation', '')
+            stats_categories = team_players.get('statistics', [])
+            
+            for category in stats_categories:
+                athletes = category.get('athletes', [])
+                for player in athletes:
+                    athlete = player.get('athlete', {})
+                    stats = player.get('stats', [])
+                    
+                    if len(stats) >= 1:
+                        minutes = stats[0] if len(stats) > 0 else '0'
+                        points = stats[1] if len(stats) > 1 else '0'
+                        plus_minus = stats[12] if len(stats) > 12 else '0'
+                        jersey = athlete.get('jersey', '')
+                        
+                        # Convert minutes to seconds for sorting
+                        try:
+                            if ':' in str(minutes):
+                                parts = str(minutes).split(':')
+                                min_seconds = int(parts[0]) * 60 + int(parts[1])
+                            else:
+                                min_seconds = int(float(minutes) * 60)
+                        except:
+                            min_seconds = 0
+                        
+                        result['top_players'].append({
+                            'name': athlete.get('displayName', ''),
+                            'jersey': jersey,
+                            'minutes': minutes,
+                            'min_seconds': min_seconds,
+                            'points': points,
+                            'plus_minus': plus_minus,
+                            'team': team_abbr
+                        })
+        
+        # Sort by minutes and take top 6
+        result['top_players'].sort(key=lambda x: x['min_seconds'], reverse=True)
+        result['top_players'] = result['top_players'][:6]
+        
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+def get_nhl_stats(game_id):
+    """Get NHL game stats from ESPN"""
+    url = f"{ESPN_API}/hockey/nhl/summary?event={game_id}"
+    
+    try:
+        resp = requests.get(url, timeout=5)
+        data = resp.json()
+        
+        boxscore = data.get('boxscore', {})
+        teams_data = boxscore.get('teams', [])
+        players_data = boxscore.get('players', [])
+        on_ice_data = data.get('onIce', [])
+        header = data.get('header', {})
+        competitions = header.get('competitions', [{}])[0]
+        
+        result = {
+            'game_id': game_id,
+            'period': header.get('period', 1),
+            'clock': competitions.get('status', {}).get('displayClock', '20:00'),
+            'teams': [],
+            'top_players': [],
+            'on_ice': []
+        }
+        
+        # Build player lookup map with jersey numbers
+        player_map = {}
+        for team_players in players_data:
+            for category in team_players.get('statistics', []):
+                for player in category.get('athletes', []):
+                    athlete = player.get('athlete', {})
+                    player_id = str(athlete.get('id', ''))
+                    player_map[player_id] = {
+                        'name': athlete.get('displayName', ''),
+                        'jersey': athlete.get('jersey', '')
+                    }
+        
+        # Get players currently on ice
+        for team_on_ice in on_ice_data:
+            team_id = team_on_ice.get('teamId', '')
+            entries = team_on_ice.get('entries', [])
+            
+            # Find team abbreviation
+            team_abbr = ''
+            for team_data in teams_data:
+                if str(team_data.get('team', {}).get('id', '')) == str(team_id):
+                    team_abbr = team_data.get('team', {}).get('abbreviation', '')
+                    break
+            
+            players_on_ice = []
+            for entry in entries:
+                athlete_id = entry.get('athleteid', '')
+                player_info = player_map.get(athlete_id, {'name': 'Unknown', 'jersey': ''})
+                player_name = player_info['name']
+                jersey = player_info['jersey']
+                
+                # Format as "#24 Player Name" if jersey available
+                if jersey:
+                    players_on_ice.append(f"#{jersey} {player_name}")
+                else:
+                    players_on_ice.append(player_name)
+            
+            result['on_ice'].append({
+                'team': team_abbr,
+                'players': players_on_ice
+            })
+        
+        for team_data in teams_data:
+            team_info = team_data.get('team', {})
+            stats_list = team_data.get('statistics', [])
+            
+            # Extract stats
+            stats_dict = {s.get('name'): s.get('displayValue', '0') for s in stats_list}
+            
+            result['teams'].append({
+                'name': team_info.get('abbreviation', ''),
+                'is_home': team_data.get('homeAway') == 'home',
+                'shots': stats_dict.get('shotsTotal', '0'),
+                'blocked_shots': stats_dict.get('blockedShots', '0'),
+                'hits': stats_dict.get('hits', '0'),
+                'faceoff_pct': stats_dict.get('faceoffPercent', '0') + '%',
+                'powerplay': stats_dict.get('powerPlayGoals', '0/0'),
+                'penalty_minutes': stats_dict.get('penaltyMinutes', '0')
+            })
+        
+        # Extract top players by ice time
+        for team_players in players_data:
+            team_abbr = team_players.get('team', {}).get('abbreviation', '')
+            stats_categories = team_players.get('statistics', [])
+            
+            all_players = []
+            for category in stats_categories:
+                if category.get('type') in ['', None]:  # Skaters only
+                    athletes = category.get('athletes', [])
+                    for player in athletes:
+                        athlete = player.get('athlete', {})
+                        stats = player.get('stats', [])
+                        
+                        if len(stats) >= 18:
+                            # Parse stats: [G, A, PTS, +/-, TOI, ...]
+                            ice_time = stats[4] if len(stats) > 4 else '0:00'
+                            plus_minus = stats[3] if len(stats) > 3 else '0'
+                            goals = stats[0] if len(stats) > 0 else '0'
+                            
+                            # Convert ice time to seconds for sorting
+                            try:
+                                parts = ice_time.split(':')
+                                ice_seconds = int(parts[0]) * 60 + int(parts[1])
+                            except:
+                                ice_seconds = 0
+                            
+                            all_players.append({
+                                'name': athlete.get('displayName', ''),
+                                'ice_time': ice_time,
+                                'ice_seconds': ice_seconds,
+                                'plus_minus': plus_minus,
+                                'goals': goals,
+                                'team': team_abbr
+                            })
+            
+            # Sort by ice time and take top 3
+            all_players.sort(key=lambda x: x['ice_seconds'], reverse=True)
+            result['top_players'].extend(all_players[:3])
+        
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+def get_ncaa_stats(game_id):
     """Get detailed stats for a game"""
     url = f"{NCAA_API}/game/{game_id}/team-stats"
     
@@ -90,7 +1026,8 @@ def get_game_stats(game_id):
                 'turnovers': team_stats.get('turnovers', '0'),
                 'rebounds': team_stats.get('totalRebounds', '0'),
                 'assists': team_stats.get('assists', '0'),
-                'steals': team_stats.get('steals', '0')
+                'steals': team_stats.get('steals', '0'),
+                'personalFouls': team_stats.get('fouls', '0')
             })
         
         return jsonify(result)
@@ -98,4 +1035,4 @@ def get_game_stats(game_id):
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    app.run(debug=True, host='0.0.0.0', port=5001)

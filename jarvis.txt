@@ -1,0 +1,21 @@
+Access Jarvis API as john@nodes.bio:
+
+Base URL: https://staging.nodes.bio
+Auth Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTZmYjFmOTM4OTQ3ZjJhZCIsImVtYWlsIjoiam9obkBub2Rlcy5iaW8iLCJleHAiOjE3NzU0OTg4MjYsImlhdCI6MTc3MjkwNjgyNn0.8NVXoJByiRCHhOaptfTdbIkcjMpOkMQtCqbKPPIwL2w
+
+Example request:
+curl -X POST https://staging.nodes.bio/api/jarvis/compare \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "Explain CRISPR gene editing",
+    "models": ["openai", "anthropic", "google_gemini"]
+  }'
+
+Available models:
+- openai (GPT-4)
+- anthropic (Claude 3.5)
+- google_gemini (Gemini 1.5)
+- perplexity (Perplexity)
+- grok (Grok)
+

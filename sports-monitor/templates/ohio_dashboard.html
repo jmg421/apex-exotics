@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ohio Sports Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #000;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #333;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            color: #BB0000;
+            margin-bottom: 5px;
+        }
+
+        .header .subtitle {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .game-card {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 20px;
+            border: 2px solid #333;
+            transition: all 0.3s ease;
+        }
+
+        .game-card.live {
+            border-color: #4CAF50;
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.3);
+        }
+
+        .game-card:hover {
+            border-color: #BB0000;
+            transform: translateY(-2px);
+        }
+
+        .sport-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .sport-nba { background: #1D428A; }
+        .sport-nfl { background: #013369; }
+        .sport-mlb { background: #041E42; }
+        .sport-nhl { background: #002654; }
+        .sport-ncaa-football { background: #BB0000; }
+        .sport-ncaa-basketball { background: #BB0000; }
+
+        .matchup {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .team {
+            flex: 1;
+            text-align: center;
+        }
+
+        .team-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #e0e0e0;
+            margin-bottom: 5px;
+        }
+
+        .team-name.ohio {
+            color: #BB0000;
+        }
+
+        .score {
+            font-size: 36px;
+            font-weight: 700;
+            color: #4CAF50;
+        }
+
+        .vs {
+            font-size: 18px;
+            color: #666;
+            margin: 0 15px;
+        }
+
+        .game-status {
+            text-align: center;
+            padding: 10px;
+            background: #0f0f0f;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .game-status.live {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+            font-weight: 600;
+        }
+
+        .no-games {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+            font-size: 18px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+            font-size: 16px;
+        }
+
+        .live-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #4CAF50;
+            border-radius: 50%;
+            margin-right: 6px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏈 Ohio Sports Hub</h1>
+        <div class="subtitle">Cavs • Browns • Bengals • Reds • Guardians • Blue Jackets • Buckeyes</div>
+    </div>
+
+    <div id="games-container" class="games-grid">
+        <div class="loading">Loading Ohio sports...</div>
+    </div>
+
+    <script>
+        const SPORT_NAMES = {
+            'nba': 'NBA',
+            'nfl': 'NFL',
+            'mlb': 'MLB',
+            'nhl': 'NHL',
+            'ncaa-football': 'NCAA Football',
+            'ncaa-basketball': 'NCAA Basketball'
+        };
+
+        const OHIO_TEAMS = ['CLE', 'CIN', 'CBJ', 'OHIO'];
+
+        async function loadGames() {
+            try {
+                const resp = await fetch('/api/ohio-games');
+                const games = await resp.json();
+
+                const container = document.getElementById('games-container');
+
+                if (games.length === 0) {
+                    container.innerHTML = '<div class="no-games">No Ohio games scheduled right now. Check back later!</div>';
+                    return;
+                }
+
+                container.innerHTML = games.map(game => {
+                    const isLive = game.state === 'live' || game.state === 'in';
+                    const awayIsOhio = OHIO_TEAMS.some(team => game.away.includes(team));
+                    const homeIsOhio = OHIO_TEAMS.some(team => game.home.includes(team));
+                    const splitSquad = game.split_squad ? ' <span style="font-size: 9px; color: #FFC107;">(Split Squad)</span>' : '';
+
+                    return `
+                        <div class="game-card ${isLive ? 'live' : ''}">
+                            <div class="sport-badge sport-${game.sport}">
+                                ${isLive ? '<span class="live-indicator"></span>' : ''}
+                                ${SPORT_NAMES[game.sport]}${splitSquad}
+                            </div>
+                            
+                            <div class="matchup">
+                                <div class="team">
+                                    <div class="team-name ${awayIsOhio ? 'ohio' : ''}">${game.away}</div>
+                                    <div class="score">${game.away_score}</div>
+                                </div>
+                                
+                                <div class="vs">@</div>
+                                
+                                <div class="team">
+                                    <div class="team-name ${homeIsOhio ? 'ohio' : ''}">${game.home}</div>
+                                    <div class="score">${game.home_score}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="game-status ${isLive ? 'live' : ''}">
+                                ${game.status}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (err) {
+                console.error('Error loading games:', err);
+                document.getElementById('games-container').innerHTML = 
+                    '<div class="no-games">Error loading games. Please refresh.</div>';
+            }
+        }
+
+        // Load immediately
+        loadGames();
+
+        // Refresh every 10 seconds
+        setInterval(loadGames, 10000);
+    </script>
+</body>
+</html>

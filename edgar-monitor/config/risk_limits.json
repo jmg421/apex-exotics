@@ -1,0 +1,7 @@
+{
+  "max_daily_loss": 100,
+  "max_positions": 3,
+  "max_risk_per_trade": 10,
+  "max_account_risk_pct": 2.0,
+  "auto_stop_trading": true
+}

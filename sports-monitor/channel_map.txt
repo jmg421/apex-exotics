@@ -1,0 +1,11 @@
+# VSeeBox Channel Mapping
+# Manually discovered channels
+
+1803 = PHI (Philadelphia Flyers)
+1805 = MTL @ LA (Montreal Canadiens @ Los Angeles Kings)
+1806 = UTA @ CBJ (Utah @ Columbus Blue Jackets) - LIVE
+1807 = VAN @ WPG (Vancouver Canucks @ Winnipeg Jets)
+1808 = TB @ TOR (Tampa Bay Lightning @ Toronto Maple Leafs)
+
+# Pattern: 1800 + ESPN event number
+# But games might be in different order than ESPN API

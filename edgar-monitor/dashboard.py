@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Simple web dashboard for portfolio tracking."""
 
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 from pathlib import Path
 import json
 from paper_trading import load_portfolio, get_current_price, STARTING_CAPITAL
@@ -73,6 +73,28 @@ def api_portfolio():
         'positions': positions,
         'demo_mode': demo_mode
     })
+
+@app.route('/api/futures')
+def api_futures():
+    """Get futures price data."""
+    futures_file = DATA_DIR / "futures_data.json"
+    if futures_file.exists():
+        with open(futures_file) as f:
+            return jsonify(json.load(f))
+    
+    # Return empty data
+    return jsonify({"ES": [], "NQ": []})
+
+@app.route('/api/futures/update', methods=['POST'])
+def api_futures_update():
+    """Update futures price data."""
+    data = request.json
+    futures_file = DATA_DIR / "futures_data.json"
+    
+    with open(futures_file, 'w') as f:
+        json.dump(data, f, indent=2)
+    
+    return jsonify({"status": "ok"})
 
 @app.route('/api/scalping')
 def api_scalping():

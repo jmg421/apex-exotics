@@ -1,0 +1,11 @@
+[09:56:23] 🤖 AUTONOMOUS SYSTEM STARTING
+[09:56:23] ============================================================
+[09:56:23] 📊 Fetching market data...
+[09:56:31] ✅ Market data captured
+[09:56:31] 🔍 Running pattern detection...
+[09:56:47] ✅ Patterns detected
+[09:56:47] 🤖 Asking Jarvis for autonomous decision...
+[09:56:52] 📊 DECISION: WAIT
+[09:56:52]    Reasoning: CL=F shows +9.70% spike indicating geopolitical event or supply shock - too extended to chase. ES=F down -1.23% but no clear entry signal yet. ATYR +4.81% violates no-chase rule. Waiting for pullback on oil or clearer setup on equity futures with defined risk/reward.
+[09:56:52] ⏸️  No trade - waiting for better setup
+

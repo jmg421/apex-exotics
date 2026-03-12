@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+"""
+EPG parser for ESPN channels using XMLTV data
+"""
+import requests
+import xml.etree.ElementTree as ET
+from datetime import datetime, timezone
+import pytz
+
+EPG_URL = "https://iptv-epg.org/files/epg-us.xml"
+
+# Map VSeeBox channel numbers to EPG IDs (actual VSeeBox lineup)
+# Note: ESPN2 and ESPNU are swapped compared to EPG data
+CHANNEL_MAP = {
+    809: "ESPN.us",
+    810: "ESPN.us",  # ESPN backup
+    811: "ESPNU.us",  # VSeeBox shows ESPNU content here (not ESPN2)
+    812: "ESPN2.us",  # VSeeBox shows ESPN2 content here (not ESPNU)
+    813: "ESPNDeportes.us",
+    814: "ESPNEWS.us",
+    815: "MLBNetwork.us",
+}
+
+def fetch_epg():
+    """Download and parse EPG XML"""
+    print("📡 Downloading EPG data...")
+    response = requests.get(EPG_URL, timeout=30)
+    return ET.fromstring(response.content)
+
+def get_current_program(epg_root, channel_id):
+    """Get currently airing program for a channel"""
+    now = datetime.now(timezone.utc)
+    
+    for programme in epg_root.findall('programme'):
+        if programme.get('channel') == channel_id:
+            # Parse times (format: 20260311190000 +0000)
+            start_str = programme.get('start')
+            stop_str = programme.get('stop')
+            
+            start = datetime.strptime(start_str[:14], '%Y%m%d%H%M%S').replace(tzinfo=timezone.utc)
+            stop = datetime.strptime(stop_str[:14], '%Y%m%d%H%M%S').replace(tzinfo=timezone.utc)
+            
+            if start <= now < stop:
+                title = programme.find('title').text if programme.find('title') is not None else "N/A"
+                desc = programme.find('desc').text if programme.find('desc') is not None else ""
+                
+                # Convert to Eastern Time
+                eastern = pytz.timezone('America/New_York')
+                start_et = start.astimezone(eastern)
+                stop_et = stop.astimezone(eastern)
+                
+                return {
+                    'title': title,
+                    'description': desc,
+                    'start': start_et.strftime('%I:%M %p'),
+                    'end': stop_et.strftime('%I:%M %p'),
+                }
+    
+    return None
+
+def scan_espn_channels():
+    """Scan all ESPN channels for current programs"""
+    epg = fetch_epg()
+    
+    print("\n📺 Current ESPN Programming")
+    print("=" * 60)
+    
+    for channel_num, epg_id in CHANNEL_MAP.items():
+        program = get_current_program(epg, epg_id)
+        
+        channel_name = epg_id.replace('.us', '').replace('ESPN', 'ESPN ')
+        
+        if program:
+            print(f"\n{channel_name} (Ch {channel_num}):")
+            print(f"  {program['start']} - {program['end']}")
+            print(f"  {program['title']}")
+            if program['description']:
+                print(f"  {program['description'][:100]}...")
+        else:
+            print(f"\n{channel_name} (Ch {channel_num}): No program data")
+
+if __name__ == '__main__':
+    scan_espn_channels()

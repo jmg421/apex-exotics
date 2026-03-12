@@ -53,10 +53,10 @@ def get_current_channel():
 
 @app.route('/stream.m3u8')
 def get_stream():
-    """Serve the most recent HLS stream from Movies folder with only existing segments"""
+    """Redirect to the most recent m3u8 file on the HLS server"""
     import glob
     import os
-    from flask import Response
+    from flask import redirect
     from urllib.parse import quote
     
     movies_dir = os.path.expanduser('/Users/apple/Movies')
@@ -67,35 +67,11 @@ def get_stream():
     
     # Get most recent m3u8 file
     latest = max(m3u8_files, key=os.path.getmtime)
+    filename = os.path.basename(latest)
     
-    # Read m3u8 and filter to only existing segments
-    with open(latest, 'r') as f:
-        lines = f.readlines()
-    
-    # Get list of existing .ts files
-    existing_segments = set(os.path.basename(f) for f in glob.glob(f'{movies_dir}/*.ts'))
-    
-    # Rebuild m3u8 with only existing segments
-    output = []
-    skip_next = False
-    for line in lines:
-        line = line.strip()
-        if line.endswith('.ts'):
-            if line in existing_segments:
-                output.append('/stream/' + quote(line))
-                skip_next = False
-            else:
-                # Skip this segment and its EXTINF line
-                if output and output[-1].startswith('#EXTINF'):
-                    output.pop()
-        elif not skip_next:
-            output.append(line)
-    
-    response = Response('\n'.join(output), mimetype='application/vnd.apple.mpegurl')
-    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '0'
-    return response
+    # Redirect to HLS server
+    return redirect(f'http://localhost:8081/{quote(filename)}')
+
 
 @app.route('/stream/<path:filename>')
 def get_stream_segment(filename):
@@ -117,16 +93,104 @@ def get_stream_segment(filename):
         return response
     return f"Segment not found: {filename}", 404
 
+@app.route('/api/team_roster/<team_name>')
+def get_team_roster(team_name):
+    """Scrape team roster from ESPN"""
+    try:
+        # Search for team on ESPN
+        search_url = f"https://www.espn.com/mens-college-basketball/teams"
+        
+        # For now, return placeholder data
+        # Real scraping would require finding team ID, then roster page
+        return jsonify({
+            'team': team_name,
+            'players': [
+                f'Player 1 - {team_name}',
+                f'Player 2 - {team_name}',
+                f'Player 3 - {team_name}',
+                f'Player 4 - {team_name}',
+                f'Player 5 - {team_name}'
+            ]
+        })
+    except Exception as e:
+        return jsonify({'error': str(e), 'players': []})
+
+@app.route('/api/espn_game')
+def get_espn_game():
+    """Find which game is currently LIVE on ESPN"""
+    try:
+        # Check NCAA basketball
+        resp = requests.get(f'{ESPN_API}/basketball/mens-college-basketball/scoreboard', timeout=5)
+        data = resp.json()
+        
+        for event in data.get('events', []):
+            # Only check live games
+            status = event.get('competitions', [{}])[0].get('status', {})
+            if status.get('type', {}).get('state') != 'in':
+                continue
+                
+            broadcasts = event.get('competitions', [{}])[0].get('broadcasts', [])
+            for broadcast in broadcasts:
+                if 'ESPN' in broadcast.get('names', []):
+                    # This game is LIVE on ESPN
+                    return jsonify({
+                        'id': event.get('id'),
+                        'name': event.get('name'),
+                        'sport': 'ncaa-basketball'
+                    })
+        
+        # Check NBA
+        resp = requests.get(f'{ESPN_API}/basketball/nba/scoreboard', timeout=5)
+        data = resp.json()
+        
+        for event in data.get('events', []):
+            status = event.get('competitions', [{}])[0].get('status', {})
+            if status.get('type', {}).get('state') != 'in':
+                continue
+                
+            broadcasts = event.get('competitions', [{}])[0].get('broadcasts', [])
+            for broadcast in broadcasts:
+                if 'ESPN' in broadcast.get('names', []):
+                    return jsonify({
+                        'id': event.get('id'),
+                        'name': event.get('name'),
+                        'sport': 'nba'
+                    })
+        
+        return jsonify({'id': None, 'name': 'No live ESPN game found'})
+        
+    except Exception as e:
+        return jsonify({'id': None, 'error': str(e)})
+
 @app.route('/api/excitement')
 def get_excitement():
     """Get excitement scores for all live games"""
     import sys
     import os
     sys.path.insert(0, os.path.dirname(__file__))
-    from excitement_engine import get_excitement_rankings
     
-    games = get_excitement_rankings()
-    return jsonify(games)
+    sport = request.args.get('sport', 'ncaa-basketball')
+    
+    try:
+        from excitement_engine import get_excitement_rankings
+        games = get_excitement_rankings()
+        
+        # Map sport names to filter
+        sport_map = {
+            'ncaa-basketball': 'NCAA',
+            'nba': 'NBA',
+            'nhl': 'NHL',
+            'mlb': 'MLB'
+        }
+        
+        # Filter by sport
+        sport_filter = sport_map.get(sport, 'NCAA')
+        filtered_games = [g for g in games if g.get('sport', '').upper() == sport_filter.upper()]
+        
+        return jsonify(filtered_games)
+    except Exception as e:
+        # Return empty list on error
+        return jsonify([])
 
 @app.route('/api/espn_headlines')
 def get_espn_headlines():
@@ -548,13 +612,15 @@ def get_upcoming_games():
             resp = requests.get(f'{ESPN_API}/hockey/nhl/scoreboard', timeout=5)
         elif sport == 'mlb':
             resp = requests.get(f'{ESPN_API}/baseball/mlb/scoreboard', timeout=5)
+        elif sport == 'ncaa-basketball':
+            resp = requests.get(f'{ESPN_API}/basketball/mens-college-basketball/scoreboard', timeout=5)
         else:
             return jsonify([])
         
         data = resp.json()
         upcoming = []
         
-        for event in data.get('events', [])[:10]:
+        for event in data.get('events', [])[:20]:
             competition = event.get('competitions', [{}])[0]
             status = competition.get('status', {})
             
@@ -570,12 +636,16 @@ def get_upcoming_games():
             home = competitors[1] if competitors[1].get('homeAway') == 'home' else competitors[0]
             
             # Calculate excitement based on team records
-            away_record = away.get('records', [{}])[0].get('summary', '0-0')
-            home_record = home.get('records', [{}])[0].get('summary', '0-0')
+            away_record = away.get('records', [{}])[0].get('summary', '0-0') if away.get('records') else '0-0'
+            home_record = home.get('records', [{}])[0].get('summary', '0-0') if home.get('records') else '0-0'
+            
+            # For NCAA, also check rankings
+            away_rank = away.get('curatedRank', {}).get('current', 0) if away.get('curatedRank') else 0
+            home_rank = home.get('curatedRank', {}).get('current', 0) if home.get('curatedRank') else 0
             
             try:
-                away_wins, away_losses = map(int, away_record.split('-'))
-                home_wins, home_losses = map(int, home_record.split('-'))
+                away_wins, away_losses = map(int, away_record.split('-')[:2])
+                home_wins, home_losses = map(int, home_record.split('-')[:2])
                 
                 # Win percentage
                 away_pct = away_wins / (away_wins + away_losses) if (away_wins + away_losses) > 0 else 0.5
@@ -590,15 +660,30 @@ def get_upcoming_games():
                 # Playoff implications: winning teams = higher stakes
                 stakes = min(away_wins, home_wins) * 0.5
                 
-                excitement = int(quality + closeness + stakes)
+                # Ranking bonus for NCAA (ranked matchups are huge)
+                ranking_bonus = 0
+                if away_rank > 0 and home_rank > 0:
+                    ranking_bonus = 30  # Both ranked = March Madness preview
+                elif away_rank > 0 or home_rank > 0:
+                    ranking_bonus = 15  # One ranked = upset potential
+                
+                excitement = int(quality + closeness + stakes + ranking_bonus)
                 excitement = min(100, max(20, excitement))
             except:
                 excitement = 50
             
+            # Format team names with rankings
+            away_name = away.get('team', {}).get('displayName', 'TBD')
+            home_name = home.get('team', {}).get('displayName', 'TBD')
+            if away_rank > 0:
+                away_name = f"#{away_rank} {away_name}"
+            if home_rank > 0:
+                home_name = f"#{home_rank} {home_name}"
+            
             upcoming.append({
                 'id': event.get('id'),
-                'away_team': away.get('team', {}).get('displayName', 'TBD'),
-                'home_team': home.get('team', {}).get('displayName', 'TBD'),
+                'away_team': away_name,
+                'home_team': home_name,
                 'start_time': status.get('type', {}).get('shortDetail', 'TBD'),
                 'excitement': excitement,
                 'away_record': away_record,
@@ -608,6 +693,60 @@ def get_upcoming_games():
         # Sort by excitement
         upcoming.sort(key=lambda x: x['excitement'], reverse=True)
         return jsonify(upcoming[:5])
+        
+    except Exception as e:
+        return jsonify([])
+
+
+@app.route('/api/recent_games')
+def get_recent_games():
+    """Get recent completed games from multiple sports"""
+    sport = request.args.get('sport', 'nba')
+    
+    try:
+        all_recent = []
+        
+        # Fetch from multiple sports
+        sports_apis = [
+            ('nba', f'{ESPN_API}/basketball/nba/scoreboard'),
+            ('ncaa', f'{ESPN_API}/basketball/mens-college-basketball/scoreboard'),
+            ('nhl', f'{ESPN_API}/hockey/nhl/scoreboard'),
+            ('mlb', f'{ESPN_API}/baseball/mlb/scoreboard'),
+            ('mls', f'{ESPN_API}/soccer/usa.1/scoreboard')
+        ]
+        
+        for sport_name, url in sports_apis:
+            try:
+                resp = requests.get(url, timeout=3)
+                data = resp.json()
+                
+                for event in data.get('events', [])[:5]:
+                    competition = event.get('competitions', [{}])[0]
+                    status = competition.get('status', {})
+                    
+                    # Only show completed games
+                    if status.get('type', {}).get('state') != 'post':
+                        continue
+                    
+                    competitors = competition.get('competitors', [])
+                    if len(competitors) < 2:
+                        continue
+                    
+                    away = competitors[0] if competitors[0].get('homeAway') == 'away' else competitors[1]
+                    home = competitors[1] if competitors[1].get('homeAway') == 'home' else competitors[0]
+                    
+                    all_recent.append({
+                        'id': event.get('id'),
+                        'sport': sport_name.upper(),
+                        'away_team': away.get('team', {}).get('abbreviation', 'TBD'),
+                        'home_team': home.get('team', {}).get('abbreviation', 'TBD'),
+                        'away_score': away.get('score', '0'),
+                        'home_score': home.get('score', '0')
+                    })
+            except:
+                continue
+        
+        return jsonify(all_recent[:15])
         
     except Exception as e:
         return jsonify([])
@@ -1034,5 +1173,109 @@ def get_ncaa_stats(game_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/change_channel', methods=['POST'])
+def change_channel():
+    """Change TV channel via Broadlink IR"""
+    try:
+        data = request.get_json()
+        channel = data.get('channel')
+        
+        if not channel:
+            return jsonify({'success': False, 'error': 'No channel specified'}), 400
+        
+        # Run channel switcher
+        import subprocess
+        result = subprocess.run(
+            ['./venv/bin/python3', 'channel_switcher.py', str(channel)],
+            capture_output=True,
+            text=True,
+            timeout=10
+        )
+        
+        if result.returncode == 0:
+            return jsonify({'success': True, 'channel': channel})
+        else:
+            return jsonify({'success': False, 'error': result.stderr}), 500
+            
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/espn_epg')
+def get_espn_epg():
+    """Get current ESPN programming from EPG"""
+    try:
+        from epg_parser import fetch_epg, get_current_program, CHANNEL_MAP
+        import json
+        
+        epg = fetch_epg()
+        programs = []
+        
+        # Get current channel
+        current_channel = None
+        try:
+            with open('current_channel.json', 'r') as f:
+                current_channel = json.load(f).get('channel')
+        except:
+            pass
+        
+        for channel_num, epg_id in CHANNEL_MAP.items():
+            program = get_current_program(epg, epg_id)
+            channel_name = epg_id.replace('.us', '').replace('ESPN', 'ESPN ')
+            
+            if program:
+                programs.append({
+                    'channel': channel_num,
+                    'name': channel_name,
+                    'title': program['title'],
+                    'description': program['description'],
+                    'start': program['start'],
+                    'end': program['end'],
+                    'is_live': 'ᴸᶦᵛᵉ' in program['title'],
+                    'is_current': channel_num == current_channel
+                })
+        
+        return jsonify({'success': True, 'programs': programs, 'current_channel': current_channel})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/save_clip', methods=['POST'])
+def save_clip():
+    """Save last 5 minutes of video"""
+    try:
+        import subprocess
+        result = subprocess.run(
+            ['./venv/bin/python3', '-c', '''
+import os, shutil, time
+from pathlib import Path
+movies = Path.home() / "Movies"
+saved = Path("~/apex-exotics/sports-monitor/saved_clips").expanduser()
+saved.mkdir(exist_ok=True)
+
+# Get last 60 segments (5 min at 5 sec each)
+segments = sorted(movies.glob("*.ts"), key=lambda x: x.stat().st_mtime, reverse=True)[:60]
+timestamp = time.strftime("%Y%m%d_%H%M%S")
+
+for i, seg in enumerate(reversed(segments)):
+    shutil.copy(seg, saved / f"clip_{timestamp}_{i:03d}.ts")
+
+print(f"{len(segments)},{len(segments)*5/60:.1f}")
+'''],
+            capture_output=True,
+            text=True,
+            timeout=30
+        )
+        
+        if result.returncode == 0:
+            count, duration = result.stdout.strip().split(',')
+            return jsonify({'success': True, 'segments': count, 'duration': duration})
+        else:
+            return jsonify({'success': False, 'error': result.stderr}), 500
+            
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5001)
+    app.run(debug=False, host='0.0.0.0', port=5001)

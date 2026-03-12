@@ -1,0 +1,21 @@
+# Video segments and saved clips
+*.ts
+*.m3u8
+saved_moment_*
+saved_clips/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Screenshots and captures
+*.png
+*.jpg
+
+# Data files
+headlines.json
+current_channel.json
+
+# Logs
+*.log

@@ -1,0 +1,21 @@
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Logs
+*.log
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Data files
+*.json
+!package.json
+
+# Large data
+*.dylib
+*.so
+*.txt

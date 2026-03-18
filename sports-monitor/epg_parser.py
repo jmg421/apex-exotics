@@ -20,6 +20,12 @@ CHANNEL_MAP = {
     813: "ESPNDeportes.us",
     814: "ESPNEWS.us",
     
+    # March Madness broadcast channels
+    28:  "CBSEast_WCBS.us",  # CBS East
+    156: "TBS.us",          # TBS East
+    162: "TNT.us",          # TNT East
+    166: "truTV.us",        # truTV East
+    
     # Major Sports Networks
     807: "BigTenNetwork.us",
     808: "CBSSportsNetwork.us",
@@ -35,6 +41,9 @@ CHANNEL_MAP = {
     # Other
     912: "GolfChannel.us",
 }
+
+# March Madness channels for quick lookup
+MARCH_MADNESS_CHANNELS = [28, 156, 162, 166]
 
 def fetch_epg():
     """Download and parse EPG XML"""
@@ -93,6 +102,31 @@ def scan_espn_channels():
                 print(f"  {program['description'][:100]}...")
         else:
             print(f"\n{channel_name} (Ch {channel_num}): No program data")
+
+def get_march_madness_now(epg=None):
+    """Get current March Madness games with their VSeeBox channel numbers."""
+    if epg is None:
+        epg = fetch_epg()
+    
+    games = []
+    for ch_num in MARCH_MADNESS_CHANNELS:
+        epg_id = CHANNEL_MAP.get(ch_num)
+        if not epg_id:
+            continue
+        program = get_current_program(epg, epg_id)
+        if program:
+            title = program.get('title', '')
+            # Match NCAA tournament, March Madness, or college basketball
+            if any(kw in title.lower() for kw in ['ncaa', 'march madness', 'first four', 'tournament']):
+                games.append({
+                    'channel': ch_num,
+                    'title': title,
+                    'description': program.get('description', ''),
+                    'start': program['start'],
+                    'end': program['end'],
+                })
+    return games
+
 
 if __name__ == '__main__':
     scan_espn_channels()

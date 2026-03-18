@@ -10,6 +10,35 @@ ESPN_NCAA_API = "http://site.api.espn.com/apis/site/v2/sports/basketball/mens-co
 ESPN_NHL_API = "http://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard"
 ESPN_NBA_API = "http://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard"
 
+
+def load_tossup_boosts():
+    """Load toss-up priority boosts from r1_schedule.json"""
+    import json, os
+    path = os.path.join(os.path.dirname(__file__), 'data', 'r1_schedule.json')
+    try:
+        with open(path) as f:
+            data = json.load(f)
+        boosts = {}
+        for g in data['games']:
+            if g.get('tossup'):
+                # Key by both team names (lowercase) for matching
+                for team in [g['away'], g['home']]:
+                    key = team.lower().replace('.', '').replace("'", '').strip()
+                    boosts[key] = 25 if g.get('priority') == 'highest' else 15
+        return boosts
+    except Exception:
+        return {}
+
+_tossup_boosts = None
+
+def get_tossup_boost(team_abbr):
+    """Get toss-up excitement boost for a team abbreviation."""
+    global _tossup_boosts
+    if _tossup_boosts is None:
+        _tossup_boosts = load_tossup_boosts()
+    key = team_abbr.lower().replace('.', '').replace("'", '').strip()
+    return _tossup_boosts.get(key, 0)
+
 def calculate_excitement(game):
     """Calculate excitement score (0-100) for a game"""
     score = 0
@@ -74,6 +103,13 @@ def get_excitement_rankings():
                 home = comp['competitors'][0]['team']
                 away = comp['competitors'][1]['team']
                 
+                # Apply toss-up boost for NCAA
+                boost = max(get_tossup_boost(home['abbreviation']),
+                            get_tossup_boost(home.get('displayName', '')),
+                            get_tossup_boost(away['abbreviation']),
+                            get_tossup_boost(away.get('displayName', '')))
+                excitement = min(excitement + boost, 100)
+                
                 # Get players on court
                 players = get_players_in_game(event['id'], 'basketball/mens-college-basketball')
                 
@@ -87,7 +123,9 @@ def get_excitement_rankings():
                     'status': event['status']['type']['detail'],
                     'sport': 'NCAA Basketball',
                     'channel': None,
-                    'players': players
+                    'players': players,
+                    'home_full': home.get('displayName', home['abbreviation']),
+                    'away_full': away.get('displayName', away['abbreviation']),
                 })
     except Exception as e:
         print(f"Error fetching NCAA: {e}")

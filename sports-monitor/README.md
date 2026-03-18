@@ -1,53 +1,26 @@
-# Sports Stats Monitor
+# Sports Monitor
 
-**Live NCAA basketball margins - attention arbitrage in real-time**
+Basketball IQ trainer using NBA play-by-play data. Train your pattern recognition the same way you train your trading edge — deliberate reps with feedback.
 
-## The Edge
+See [SPEC.md](SPEC.md) for full architecture.
 
-Everyone watches the score. You watch the margins.
-
-## What It Shows
-
-**Score = Stock Price** (what everyone reacts to)
-**Field Goal % = Gross Margin** (efficiency predicts future)
-**Turnovers = Operating Expenses** (waste kills performance)
-**Rebounds = Competitive Advantage** (control = moat)
-**3-Point % = High-Margin Products** (50% more value per shot)
-
-## The Pattern
-
-Same as ENIS:
-- Free public data (NCAA stats via free API)
-- Systematic attention (automated monitoring)
-- Margin analysis (efficiency over headlines)
-- Predict outcomes before the market (score) reflects it
-
-## Usage
+## Quick Start
 
 ```bash
-cd sports-monitor
-../venv/bin/python dashboard.py
+pip install nba_api
+
+# Browse annotated plays
+python trainer.py library pick-and-roll
+
+# Quiz yourself
+python trainer.py quiz --tier 1
+
+# Watch a live game with annotations
+python scanner.py --game LAL-BOS
+
+# Review a completed game
+python trainer.py film --game 0022500892
+
+# Check your progress
+python progress.py
 ```
-
-Open http://localhost:5001
-
-Dashboard auto-refreshes every 30 seconds with live game margins.
-
-## Data Source
-
-Free NCAA API: https://github.com/henrygd/ncaa-api
-- Live scores
-- Team stats (FG%, 3PT%, turnovers, rebounds)
-- No authentication required
-- 5 requests/second rate limit
-
-## Next Steps
-
-1. Add betting odds (show arbitrage opportunity)
-2. Historical margin analysis (which margins predict best)
-3. Alert system (when margins diverge from score)
-4. Pattern recognition (comeback indicators)
-
----
-
-**Attention arbitrage works everywhere:** Stocks, sports, car auctions. Find the stats nobody's watching systematically.

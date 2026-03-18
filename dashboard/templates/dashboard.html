@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apex Exotics</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #0a0a0a; color: #e0e0e0;
+}
+
+/* ── Tab bar ─────────────────────────────────────── */
+.tab-bar {
+  display: flex; align-items: center;
+  background: #111; border-bottom: 1px solid #333;
+  padding: 0 20px; gap: 0;
+  position: sticky; top: 0; z-index: 100;
+}
+.tab-bar .logo {
+  font-weight: 700; font-size: 1.1em; margin-right: 24px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.tab-bar button {
+  background: none; border: none; color: #888;
+  padding: 14px 20px; font-size: 0.95em; cursor: pointer;
+  border-bottom: 2px solid transparent; transition: all 0.2s;
+}
+.tab-bar button:hover { color: #ccc; }
+.tab-bar button.active { color: #fff; border-bottom-color: #667eea; }
+.tab-bar .status {
+  margin-left: auto; font-size: 0.8em; color: #555;
+}
+.tab-bar .status .dot {
+  display: inline-block; width: 8px; height: 8px;
+  border-radius: 50%; margin-right: 4px; vertical-align: middle;
+}
+.tab-bar .status .dot.on  { background: #10b981; }
+.tab-bar .status .dot.off { background: #ef4444; }
+
+/* ── Tab content ─────────────────────────────────── */
+.tab-content { display: none; padding: 20px; }
+.tab-content.active { display: block; }
+
+/* ── Shared card styles ──────────────────────────── */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.card {
+  background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 16px;
+}
+.card .label { color: #888; font-size: 0.85em; margin-bottom: 4px; }
+.card .value { font-size: 1.6em; font-weight: 700; }
+.positive { color: #10b981; }
+.negative { color: #ef4444; }
+.neutral  { color: #888; }
+
+/* ── Sports tab ──────────────────────────────────── */
+#sports-tab .game-list { display: flex; flex-direction: column; gap: 12px; }
+.game-card {
+  background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 16px;
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px;
+}
+.game-card .team { text-align: center; }
+.game-card .team .name { font-weight: 600; font-size: 1.1em; }
+.game-card .team .score { font-size: 2em; font-weight: 700; }
+.game-card .vs { color: #555; font-size: 0.9em; text-align: center; }
+.game-card .vs .status { font-size: 0.8em; }
+.live-badge { background: #ef4444; color: #fff; font-size: 0.7em; padding: 2px 6px; border-radius: 3px; font-weight: 600; }
+
+/* ── Markets tab ─────────────────────────────────── */
+.positions-table { width: 100%; border-collapse: collapse; }
+.positions-table th { text-align: left; color: #888; font-size: 0.85em; padding: 8px 12px; border-bottom: 1px solid #333; }
+.positions-table td { padding: 10px 12px; border-bottom: 1px solid #222; }
+.positions-table .ticker { color: #667eea; font-weight: 600; }
+
+/* ── Bracket tab ─────────────────────────────────── */
+.upset-card {
+  background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 16px; margin-bottom: 12px;
+}
+.upset-card .matchup { font-weight: 600; font-size: 1.1em; margin-bottom: 6px; }
+.upset-card .flags { display: flex; gap: 6px; flex-wrap: wrap; }
+.upset-card .flag {
+  background: #333; color: #fbbf24; font-size: 0.75em; padding: 2px 8px; border-radius: 3px;
+}
+.upset-card .score-badge {
+  float: right; background: #ef4444; color: #fff; font-weight: 700;
+  padding: 4px 10px; border-radius: 4px; font-size: 0.9em;
+}
+
+/* ── Headlines ───────────────────────────────────── */
+.headline-list { list-style: none; }
+.headline-list li {
+  padding: 10px 0; border-bottom: 1px solid #222; font-size: 0.95em;
+}
+.headline-list li:last-child { border-bottom: none; }
+.headline-list .source { color: #667eea; font-size: 0.8em; }
+
+/* ── Loading / Error ─────────────────────────────── */
+.loading { text-align: center; color: #555; padding: 40px; }
+.error { color: #ef4444; padding: 20px; text-align: center; }
+
+/* ── Section headers ─────────────────────────────── */
+h2 { font-size: 1.2em; margin-bottom: 16px; color: #ccc; }
+h3 { font-size: 1em; margin-bottom: 12px; color: #999; }
+.section { margin-bottom: 32px; }
+</style>
+</head>
+<body>
+
+<div class="tab-bar">
+  <span class="logo">Apex Exotics</span>
+  <button class="active" onclick="switchTab('sports')">🏀 Sports</button>
+  <button onclick="switchTab('markets')">📈 Markets</button>
+  <button onclick="switchTab('bracket')">🏆 Bracket</button>
+  <button onclick="window.open('/markets/trainer','_blank')" style="margin-left:8px;border-left:1px solid #333;padding-left:20px">📊 Chart Trainer</button>
+  <span class="status">
+    <span class="dot" id="sports-dot"></span>Sports
+    <span class="dot" id="markets-dot" style="margin-left:12px"></span>Markets
+  </span>
+</div>
+
+<!-- ── Sports Tab ──────────────────────────────── -->
+<div id="sports-tab" class="tab-content active">
+  <div class="section">
+    <h2>Live Games</h2>
+    <div id="sports-games" class="game-list"><div class="loading">Loading games...</div></div>
+  </div>
+  <div class="section">
+    <h2>Headlines</h2>
+    <ul id="sports-headlines" class="headline-list"><li class="loading">Loading...</li></ul>
+  </div>
+</div>
+
+<!-- ── Markets Tab ─────────────────────────────── -->
+<div id="markets-tab" class="tab-content">
+  <div class="cards" id="markets-summary"></div>
+  <div class="section">
+    <h2>Positions</h2>
+    <table class="positions-table" id="markets-positions">
+      <thead><tr><th>Ticker</th><th>Shares</th><th>Avg Price</th><th>Current</th><th>P&L</th><th>%</th></tr></thead>
+      <tbody><tr><td colspan="6" class="loading">Loading...</td></tr></tbody>
+    </table>
+  </div>
+  <div class="section">
+    <h2>News Alerts</h2>
+    <ul id="markets-news" class="headline-list"><li class="loading">Loading...</li></ul>
+  </div>
+  <div class="section">
+    <h2>🧠 Psychology</h2>
+    <div class="cards" id="psych-cards"></div>
+    <div id="psych-violations"></div>
+  </div>
+</div>
+
+<!-- ── Bracket Tab ─────────────────────────────── -->
+<div id="bracket-tab" class="tab-content">
+  <div class="section">
+    <h2>🚨 Upset Alerts</h2>
+    <div id="bracket-upsets"><div class="loading">Loading...</div></div>
+  </div>
+  <div class="section">
+    <h2>⚕️ Injury Watch</h2>
+    <div id="bracket-injuries"><div class="loading">Loading...</div></div>
+  </div>
+</div>
+
+<script>
+const SPORTS  = '/sports';
+const MARKETS = '/markets';
+
+// ── Tab switching ────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-bar button').forEach(b => b.classList.remove('active'));
+  document.getElementById(name + '-tab').classList.add('active');
+  document.querySelector(`.tab-bar button[onclick="switchTab('${name}')"]`).classList.add('active');
+  if (name === 'sports')  loadSports();
+  if (name === 'markets') loadMarkets();
+  if (name === 'bracket') loadBracket();
+}
+
+// ── Helpers ──────────────────────────────────────
+async function api(url) {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`${r.status}`);
+  return r.json();
+}
+function pnlClass(v) { return v > 0 ? 'positive' : v < 0 ? 'negative' : 'neutral'; }
+function fmt(v, d=2) { return Number(v).toFixed(d); }
+function fmtUsd(v) { return '$' + Number(v).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}); }
+
+// ── Sports ──────────────────────────────────────
+async function loadSports() {
+  try {
+    const games = await api(SPORTS + '/api/games');
+    const el = document.getElementById('sports-games');
+    if (!games.length) { el.innerHTML = '<div class="loading">No live games</div>'; return; }
+    el.innerHTML = games.slice(0, 8).map(g => `
+      <div class="game-card">
+        <div class="team"><div class="name">${g.away_team || g.away || ''}</div><div class="score">${g.away_score ?? ''}</div></div>
+        <div class="vs">${g.status || ''}<br>${g.time || ''} ${g.is_live ? '<span class="live-badge">LIVE</span>' : ''}</div>
+        <div class="team"><div class="name">${g.home_team || g.home || ''}</div><div class="score">${g.home_score ?? ''}</div></div>
+      </div>`).join('');
+    document.getElementById('sports-dot').className = 'dot on';
+  } catch(e) {
+    document.getElementById('sports-games').innerHTML = '<div class="error">Sports backend offline</div>';
+    document.getElementById('sports-dot').className = 'dot off';
+  }
+
+  try {
+    const headlines = await api(SPORTS + '/api/espn_headlines');
+    const el = document.getElementById('sports-headlines');
+    if (Array.isArray(headlines) && headlines.length) {
+      el.innerHTML = headlines.slice(0, 10).map(h =>
+        `<li>${h.headline || h.title || h}<br><span class="source">${h.source || ''}</span></li>`
+      ).join('');
+    } else { el.innerHTML = '<li class="loading">No headlines</li>'; }
+  } catch(e) {}
+}
+
+// ── Markets ─────────────────────────────────────
+async function loadMarkets() {
+  try {
+    const p = await api(MARKETS + '/api/portfolio');
+    document.getElementById('markets-summary').innerHTML = `
+      <div class="card"><div class="label">Portfolio Value</div><div class="value">${fmtUsd(p.total_value)}</div></div>
+      <div class="card"><div class="label">Cash</div><div class="value">${fmtUsd(p.cash)}</div></div>
+      <div class="card"><div class="label">Total Return</div><div class="value ${pnlClass(p.total_return)}">${fmtUsd(p.total_return)} (${fmt(p.total_return_pct)}%)</div></div>
+      ${p.demo_mode ? '<div class="card"><div class="label">Mode</div><div class="value neutral">Demo</div></div>' : ''}
+    `;
+    const tbody = document.querySelector('#markets-positions tbody');
+    if (p.positions && p.positions.length) {
+      tbody.innerHTML = p.positions.map(pos => `
+        <tr>
+          <td class="ticker">${pos.ticker}</td>
+          <td>${pos.shares}</td>
+          <td>${fmtUsd(pos.avg_price)}</td>
+          <td>${fmtUsd(pos.current_price)}</td>
+          <td class="${pnlClass(pos.pnl)}">${fmtUsd(pos.pnl)}</td>
+          <td class="${pnlClass(pos.pnl_pct)}">${fmt(pos.pnl_pct)}%</td>
+        </tr>`).join('');
+    } else { tbody.innerHTML = '<tr><td colspan="6" class="loading">No positions</td></tr>'; }
+    document.getElementById('markets-dot').className = 'dot on';
+  } catch(e) {
+    document.getElementById('markets-summary').innerHTML = '<div class="error">Markets backend offline</div>';
+    document.getElementById('markets-dot').className = 'dot off';
+  }
+
+  try {
+    const news = await api(MARKETS + '/api/news');
+    const el = document.getElementById('markets-news');
+    if (Array.isArray(news) && news.length) {
+      el.innerHTML = news.map(n => `<li>${n.headline || n.message || JSON.stringify(n)}</li>`).join('');
+    } else { el.innerHTML = '<li class="loading">No alerts</li>'; }
+  } catch(e) {}
+
+  // Psychology panel
+  try {
+    const ps = await api(MARKETS + '/api/psychology');
+    const stateColors = {CLEAR:'#10b981', CAUTION:'#fbbf24', TILT:'#ef4444'};
+    document.getElementById('psych-cards').innerHTML = `
+      <div class="card"><div class="label">Emotional State</div><div class="value" style="color:${stateColors[ps.emotional_state]||'#888'}">${ps.emotional_state}</div></div>
+      <div class="card"><div class="label">Consistency</div><div class="value">${ps.consistency_score} <span style="font-size:0.6em;color:#888">(${ps.consistency_grade})</span></div></div>
+      <div class="card"><div class="label">Trades Today</div><div class="value">${ps.trade_count} / ${ps.max_daily_trades}</div></div>
+    `;
+    const vEl = document.getElementById('psych-violations');
+    if (ps.recent_violations && ps.recent_violations.length) {
+      vEl.innerHTML = '<h3 style="color:#ef4444">⚠️ Violations</h3><ul class="headline-list">' +
+        ps.recent_violations.map(v => `<li>${v}</li>`).join('') + '</ul>';
+    } else { vEl.innerHTML = ''; }
+  } catch(e) {}
+}
+
+// ── Bracket ─────────────────────────────────────
+async function loadBracket() {
+  try {
+    const data = await api(SPORTS + '/api/march_madness');
+    const uEl = document.getElementById('bracket-upsets');
+    if (data.upsets && data.upsets.length) {
+      uEl.innerHTML = data.upsets.map(u => `
+        <div class="upset-card">
+          <span class="score-badge">Score: ${u.Upset_Score || u.upset_score || '?'}</span>
+          <div class="matchup">${u.Matchup || u.matchup || ''}</div>
+          <div style="color:#888;font-size:0.9em;margin-bottom:6px">
+            Fav EM: ${u.Fav_EM || ''} | Dog EM: ${u.Dog_EM || ''}
+            ${u.channel ? ' | 📺 CH' + u.channel : ''}
+            ${u.live ? ' <span class="live-badge">LIVE</span>' : ''}
+          </div>
+          <div class="flags">${(u.Flags || u.flags || '').split(',').map(f => '<span class="flag">' + f.trim() + '</span>').join('')}</div>
+        </div>`).join('');
+    } else { uEl.innerHTML = '<div class="loading">No upset alerts</div>'; }
+
+    const iEl = document.getElementById('bracket-injuries');
+    if (data.injury_watch && data.injury_watch.length) {
+      iEl.innerHTML = data.injury_watch.map(t => `<span class="flag" style="margin:3px">${t}</span>`).join('');
+    } else { iEl.innerHTML = '<div class="loading">No injury data</div>'; }
+  } catch(e) {
+    document.getElementById('bracket-upsets').innerHTML = '<div class="error">Could not load bracket data</div>';
+  }
+}
+
+// ── Init ────────────────────────────────────────
+loadSports();
+
+// Auto-refresh every 30s for active tab
+setInterval(() => {
+  const active = document.querySelector('.tab-content.active')?.id;
+  if (active === 'sports-tab')  loadSports();
+  if (active === 'markets-tab') loadMarkets();
+  if (active === 'bracket-tab') loadBracket();
+}, 30000);
+</script>
+</body>
+</html>

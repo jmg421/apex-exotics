@@ -12,13 +12,28 @@ EPG_URL = "https://iptv-epg.org/files/epg-us.xml"
 # Map VSeeBox channel numbers to EPG IDs (actual VSeeBox lineup)
 # Note: ESPN2 and ESPNU are swapped compared to EPG data
 CHANNEL_MAP = {
+    # ESPN Family
     809: "ESPN.us",
     810: "ESPN.us",  # ESPN backup
-    811: "ESPNU.us",  # VSeeBox shows ESPNU content here (not ESPN2)
-    812: "ESPN2.us",  # VSeeBox shows ESPN2 content here (not ESPNU)
+    811: "ESPN2.us",
+    812: "ESPNU.us",
     813: "ESPNDeportes.us",
     814: "ESPNEWS.us",
+    
+    # Major Sports Networks
+    807: "BigTenNetwork.us",
+    808: "CBSSportsNetwork.us",
     815: "MLBNetwork.us",
+    816: "NBATV.us",
+    817: "NFLNetwork.us",
+    820: "SECNetwork.us",
+    
+    # Fox Sports
+    860: "FS1.us",
+    862: "FS2.us",
+    
+    # Other
+    912: "GolfChannel.us",
 }
 
 def fetch_epg():

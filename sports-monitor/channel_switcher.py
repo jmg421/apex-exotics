@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/Users/apple/apex-exotics/venv/bin/python
 """
 Channel switcher for VSeeBox via Broadlink
 """
@@ -10,15 +10,21 @@ from broadlink_config import IR_CODES, BROADLINK_HOST
 # Global device connection
 _device = None
 
-def get_device():
-    """Get or create Broadlink device connection"""
+def get_device(retries=3):
+    """Get or create Broadlink device connection, with retry on failure"""
     global _device
     if _device is None:
-        devices = broadlink.discover(timeout=3)
-        if not devices:
-            raise Exception("Broadlink device not found")
-        _device = devices[0]
-        _device.auth()
+        for attempt in range(retries):
+            try:
+                _device = broadlink.hello(BROADLINK_HOST)
+                _device.auth()
+                return _device
+            except Exception as e:
+                if attempt < retries - 1:
+                    print(f"⚠️  Connection failed ({e}), retrying in 5s... ({attempt+1}/{retries})")
+                    time.sleep(5)
+                else:
+                    raise
     return _device
 
 def send_ir_code(code_hex):
@@ -74,14 +80,14 @@ def save_current_channel(channel):
     sport = channel_sport_map.get(channel, 'ncaa-basketball')
     
     try:
-        with open('current_channel.json', 'w') as f:
+        with open('data/current_channel.json', 'w') as f:
             json.dump({
                 'channel': channel, 
                 'sport': sport,
                 'timestamp': time.time()
             }, f)
-    except:
-        pass
+    except Exception as e:
+        print(f"Error saving channel state: {e}")
 
 def send_command(command):
     """Send a single command (UP, DOWN, LEFT, RIGHT, OK, etc)"""
@@ -97,18 +103,34 @@ def send_command(command):
         return False
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print("Usage: python3 channel_switcher.py <channel_number|command>")
-        print("Commands: UP, DOWN, LEFT, RIGHT, OK, HOME, BACK, MENU, EPG, CHANNEL-UP, CHANNEL-DOWN")
+    import argparse
+    
+    parser = argparse.ArgumentParser(
+        description='Control VSeeBox via Broadlink IR',
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    subparsers = parser.add_subparsers(dest='action', help='Action to perform')
+    
+    # Channel subcommand
+    channel_parser = subparsers.add_parser('channel', help='Change to a channel')
+    channel_parser.add_argument('number', type=int, help='Channel number (e.g., 809)')
+    channel_parser.add_argument('--ok', action='store_true', help='Send OK after digits')
+    
+    # Command subcommand
+    cmd_parser = subparsers.add_parser('command', help='Send remote control command')
+    cmd_parser.add_argument('name', choices=list(IR_CODES.keys()), help='Command name')
+    
+    args = parser.parse_args()
+    
+    if not args.action:
+        parser.print_help()
         sys.exit(1)
     
-    arg = sys.argv[1]
     try:
-        # Check if it's a command or channel number
-        if arg.upper() in IR_CODES:
-            send_command(arg)
-        else:
-            change_channel(arg)
+        if args.action == 'channel':
+            change_channel(args.number, send_ok=args.ok)
+        elif args.action == 'command':
+            send_command(args.name)
     except Exception as e:
         print(f"❌ Error: {e}")
         sys.exit(1)

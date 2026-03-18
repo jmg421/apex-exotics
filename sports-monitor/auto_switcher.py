@@ -1,17 +1,63 @@
 #!/usr/bin/env python3
 """
-Auto-Switcher - Changes VSeeBox channel based on excitement scores
+Auto-Switcher - Changes VSeeBox channel based on upset alerts
 Uses Broadlink RM4 Mini to send IR commands
 """
 import broadlink
 import time
 import json
-from excitement_engine import get_excitement_rankings
 
-# Channel mapping (you'll need to map game IDs to VSeeBox channels)
-CHANNEL_MAP = {
-    # Example: 'game_id': 1805
-}
+def should_auto_switch(game):
+    """Check if game meets auto-switch criteria"""
+    if not game.get('live', False):
+        return False, None
+    
+    upset_score = game.get('Upset_Score', 0)
+    if upset_score >= 7:
+        return True, f"High upset potential (score: {upset_score})"
+    
+    return False, None
+
+def get_top_upset_game(games, min_score=7):
+    """Get highest priority game for auto-switching"""
+    live_games = [g for g in games if g.get('live', False) and g.get('Upset_Score', 0) >= min_score]
+    
+    if not live_games:
+        return None
+    
+    # Sort by upset score (highest first)
+    return max(live_games, key=lambda g: g.get('Upset_Score', 0))
+
+def check_and_switch(current_channel=None, auto_enabled=True):
+    """Check for high-priority games and switch if needed"""
+    if not auto_enabled:
+        return {'switched': False, 'reason': 'Auto-switching disabled'}
+    
+    from march_madness_integration import get_upset_alerts
+    
+    games = get_upset_alerts()
+    top_game = get_top_upset_game(games, min_score=7)
+    
+    if not top_game:
+        return {'switched': False, 'reason': 'No high-priority games'}
+    
+    target_channel = top_game.get('channel')
+    
+    if not target_channel:
+        return {'switched': False, 'reason': 'Game not on mapped channel'}
+    
+    if target_channel == current_channel:
+        return {'switched': False, 'reason': 'Already on target channel'}
+    
+    # Return switch recommendation (actual switching done by frontend)
+    return {
+        'switched': True,
+        'from_channel': current_channel,
+        'to_channel': target_channel,
+        'game': top_game['Matchup'],
+        'upset_score': top_game['Upset_Score'],
+        'reason': f"High upset potential (score: {top_game['Upset_Score']})"
+    }
 
 def discover_broadlink():
     """Find Broadlink device on network"""

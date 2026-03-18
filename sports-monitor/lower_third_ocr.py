@@ -37,6 +37,36 @@ def capture_lower_third():
         print(f"Error capturing frame: {e}")
         return None
 
+def capture_main_content():
+    """Capture upper 2/3 of video stream (where commercials appear)"""
+    output_path = '/Users/apple/apex-exotics/sports-monitor/main_content.png'
+    
+    # Find latest m3u8 file
+    import glob
+    m3u8_files = glob.glob('/Users/apple/Movies/*.m3u8')
+    if not m3u8_files:
+        return None
+    
+    latest_m3u8 = max(m3u8_files, key=os.path.getmtime)
+    
+    # Use ffmpeg to capture upper 2/3 of frame
+    cmd = [
+        'ffmpeg',
+        '-i', latest_m3u8,
+        '-vf', 'crop=iw:ih*2/3:0:0',  # Crop to top 2/3
+        '-frames:v', '1',
+        '-update', '1',
+        '-y',
+        output_path
+    ]
+    
+    try:
+        subprocess.run(cmd, capture_output=True, timeout=5)
+        return output_path if os.path.exists(output_path) else None
+    except Exception as e:
+        print(f"Error capturing frame: {e}")
+        return None
+
 def extract_game_info(image_path):
     """Use kiro-cli to extract game info from lower third - two pass approach"""
     

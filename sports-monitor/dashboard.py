@@ -15,7 +15,7 @@ app = Flask(__name__)
 NCAA_API = "https://ncaa-api.henrygd.me"
 ESPN_API = "http://site.api.espn.com/apis/site/v2/sports"
 JARVIS_API = "https://staging.nodes.bio/api/jarvis"
-JARVIS_TOKEN = os.getenv('JARVIS_TOKEN', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTZmYjFmMzItNzU5Zi00ZTk5LWI5YzAtNzU5ZjRlOTliOWMwIiwiaWF0IjoxNzQxNTg0NTI3fQ.Ql_CtLxJqJqJqJqJqJqJqJqJqJqJqJqJqJqJqJqJqJo')
+JARVIS_TOKEN = os.getenv('JARVIS_TOKEN', '')
 
 def filter_headlines_with_jarvis(headlines):
     """Filter headlines to only important/interesting ones"""
@@ -48,15 +48,18 @@ def get_current_channel():
     try:
         with open('data/current_channel.json', 'r') as f:
             return jsonify(json.load(f))
-    except:
+    except FileNotFoundError:
         return jsonify({'channel': 'UNKNOWN', 'timestamp': None, 'peer_count': 0})
+    except Exception as e:
+        print(f"Error reading channel state: {e}")
+        return jsonify({'channel': 'ERROR', 'timestamp': None, 'peer_count': 0})
 
 @app.route('/stream.m3u8')
 def get_stream():
     """Redirect to the most recent m3u8 file on the HLS server"""
     import glob
     import os
-    from flask import redirect
+    from flask import redirect, make_response
     from urllib.parse import quote
     
     movies_dir = os.path.expanduser('/Users/apple/Movies')
@@ -65,12 +68,17 @@ def get_stream():
     if not m3u8_files:
         return "No stream available", 404
     
-    # Get most recent m3u8 file
-    latest = max(m3u8_files, key=os.path.getmtime)
-    filename = os.path.basename(latest)
+    # Get most recent m3u8 that still has .ts segments
+    m3u8_files.sort(key=os.path.getmtime, reverse=True)
+    for m3u8 in m3u8_files:
+        basename = os.path.splitext(os.path.basename(m3u8))[0]
+        if glob.glob(f'{movies_dir}/{basename}*.ts'):
+            filename = os.path.basename(m3u8)
+            response = redirect(f'http://localhost:8081/{quote(filename)}')
+            response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+            return response
     
-    # Redirect to HLS server
-    return redirect(f'http://localhost:8081/{quote(filename)}')
+    return "No stream with segments available", 404
 
 
 @app.route('/stream/<path:filename>')
@@ -536,6 +544,29 @@ def get_stream_ocr():
             'success': False,
             'error': str(e)
         })
+
+@app.route('/api/commercial_check')
+def check_commercial():
+    """Check if stream is currently showing commercials"""
+    try:
+        from commercial_integration import check_commercial_break
+        
+        # Will auto-capture main content area
+        result = check_commercial_break()
+        return jsonify({'success': True, **result})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/api/smart_commercial_switch', methods=['POST'])
+def smart_commercial_switch():
+    """Detect commercial and auto-switch to best game"""
+    try:
+        from smart_commercial_handler import handle_commercial_break
+        
+        result = handle_commercial_break()
+        return jsonify({'success': True, **result})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
         
         # If we have credentials, use official Twitch API
         # (implement later if needed)
@@ -1214,10 +1245,12 @@ def get_espn_epg():
         # Get current channel
         current_channel = None
         try:
-            with open('current_channel.json', 'r') as f:
+            with open('data/current_channel.json', 'r') as f:
                 current_channel = json.load(f).get('channel')
-        except:
+        except FileNotFoundError:
             pass
+        except Exception as e:
+            print(f"Error reading channel state: {e}")
         
         for channel_num, epg_id in CHANNEL_MAP.items():
             program = get_current_program(epg, epg_id)
@@ -1275,6 +1308,41 @@ print(f"{len(segments)},{len(segments)*5/60:.1f}")
             
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/march_madness')
+def march_madness():
+    """Get March Madness upset alerts and injury watch"""
+    try:
+        from march_madness_integration import get_upset_alerts, get_injury_watch_teams
+        return jsonify({
+            'upsets': get_upset_alerts(),
+            'injury_watch': get_injury_watch_teams()
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/auto_switch_check')
+def auto_switch_check():
+    """Check if auto-switching should occur"""
+    from auto_switcher import check_and_switch
+    import json
+    
+    # Get current channel
+    current_channel = None
+    try:
+        with open('data/current_channel.json', 'r') as f:
+            current_channel = json.load(f).get('channel')
+    except FileNotFoundError:
+        pass
+    except Exception as e:
+        print(f"Error reading channel state: {e}")
+    
+    # Check auto-switch setting (default: disabled for safety)
+    auto_enabled = request.args.get('enabled', 'false').lower() == 'true'
+    
+    result = check_and_switch(current_channel, auto_enabled)
+    return jsonify(result)
 
 
 if __name__ == '__main__':

@@ -75,11 +75,19 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            transition: opacity 0.3s ease;
+        }
+        .excitement-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
         }
         .control-panel {
             display: flex;
             gap: 6px;
             align-items: center;
+        }
+        #current-channel-display {
+            transition: opacity 0.3s ease;
         }
         .control-panel select {
             padding: 4px 8px;
@@ -456,6 +464,19 @@
             position: relative;
             z-index: 1;
         }
+        .live-score-overlay {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 3px 6px;
+            border-radius: 2px;
+            font-size: 10px;
+            font-weight: 500;
+            color: #999;
+            font-family: 'Courier New', monospace;
+            z-index: 10;
+        }
         .ticker-label {
             color: #888;
             font-size: 10px;
@@ -467,7 +488,6 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
-            animation: tickerScroll 20s linear infinite;
         }
         .ticker-item {
             font-size: 12px;
@@ -477,14 +497,21 @@
             border-radius: 3px;
             border-left: 2px solid #BB0000;
             white-space: nowrap;
+            animation: slideIn 0.3s ease-out;
         }
         .ticker-item.milestone {
             color: #BB0000;
             font-weight: 600;
         }
-        @keyframes tickerScroll {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-50%); }
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
         .detail-panel h2 {
             color: #BB0000;
@@ -541,7 +568,19 @@
                         </div>
                     </div>
                 </div>
+                
+                <div id="auto-switch-notification" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(255, 107, 53, 0.95); padding: 30px; border-radius: 12px; z-index: 2000; text-align: center; min-width: 400px;">
+                    <div style="font-size: 48px; margin-bottom: 15px;">🚨</div>
+                    <div style="font-size: 24px; color: white; font-weight: bold; margin-bottom: 10px;">UPSET ALERT!</div>
+                    <div id="switch-game-info" style="font-size: 18px; color: white; margin-bottom: 15px;"></div>
+                    <div id="switch-countdown" style="font-size: 48px; color: white; font-weight: bold; margin-bottom: 15px;">3</div>
+                    <button onclick="cancelAutoSwitch()" style="padding: 10px 20px; background: white; color: #FF6B35; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer;">Cancel</button>
+                </div>
+                
                 <video id="video" controls playsinline muted allow="autoplay"></video>
+                <div id="current-channel-display" style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.8); padding: 8px 12px; border-radius: 6px; font-size: 14px; font-weight: bold; color: #4A90E2; border: 1px solid #4A90E2; z-index: 100;">
+                    Channel: <span id="channel-number">--</span>
+                </div>
                 <div class="excitement-overlay" id="excitement-score">
                     <span id="excitement-value">--</span>
                     <div class="control-panel">
@@ -549,6 +588,8 @@
                         <button onclick="showStreamers()" style="padding: 4px 8px; background: #1a1a1a; color: #e0e0e0; border: 1px solid #333; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 6px;" title="Streamer Feed">🎮</button>
                         <button onclick="showPersonalized()" style="padding: 4px 8px; background: #1a1a1a; color: #e0e0e0; border: 1px solid #333; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 6px;" title="For You">✨</button>
                         <button onclick="switchToChannel(119)" style="padding: 4px 8px; background: #4A90E2; color: #fff; border: 1px solid #4A90E2; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 6px;" title="Today Show">☀️ Today</button>
+                        <button onclick="showMarchMadness()" style="padding: 4px 8px; background: #FF6B35; color: #fff; border: 1px solid #FF6B35; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 6px;" title="March Madness">🏀 Bracket</button>
+                        <button id="auto-switch-toggle" onclick="toggleAutoSwitch()" style="padding: 4px 8px; background: #666; color: #fff; border: 1px solid #666; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 6px;" title="Auto-Switch Disabled">🤖 Auto: OFF</button>
                         <button onclick="saveClip()" style="padding: 4px 8px; background: #E74C3C; color: #fff; border: 1px solid #E74C3C; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 6px;" title="Save Last 5 Minutes">💾 Save</button>
                         <button onclick="showESPNGuide()" style="padding: 4px 8px; background: #BB0000; color: #fff; border: 1px solid #BB0000; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 6px;" title="ESPN Guide">📡 ESPN</button>
                         <select id="sport-selector" title="Select Sport">
@@ -571,6 +612,7 @@
                 </div>
             </div>
             <div class="detail-panel" id="detail-panel">
+                <div class="live-score-overlay" id="live-score">--</div>
                 <div class="player-column" id="away-players">
                     <h3 id="away-team-name">ESPN</h3>
                     <div id="away-player-list" class="player-list"></div>
@@ -1809,6 +1851,10 @@
                     updateStreamOCR();
                 }
             }, 30000);
+            
+            // Update channel display
+            updateChannelDisplay();
+            setInterval(updateChannelDisplay, 5000);
         }
         
         function stopIntervals() {
@@ -1817,8 +1863,35 @@
             });
         }
         
+        async function updateChannelDisplay() {
+            try {
+                const response = await fetch('/api/current_channel');
+                const data = await response.json();
+                const channelEl = document.getElementById('channel-number');
+                if (channelEl && data.channel) {
+                    channelEl.textContent = data.channel;
+                }
+            } catch (error) {
+                console.error('Error updating channel display:', error);
+            }
+        }
+        
         // Cleanup on page unload
         window.addEventListener('beforeunload', stopIntervals);
+        
+        // Toggle control panel with 't' key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 't' || e.key === 'T') {
+                const overlay = document.querySelector('.excitement-overlay');
+                const channelDisplay = document.getElementById('current-channel-display');
+                
+                overlay.classList.toggle('hidden');
+                
+                if (channelDisplay) {
+                    channelDisplay.style.opacity = overlay.classList.contains('hidden') ? '0' : '1';
+                }
+            }
+        });
         
         // Pause updates when tab is hidden
         document.addEventListener('visibilitychange', () => {
@@ -2007,6 +2080,213 @@
             }
         }
         // ===== END ESPN GUIDE =====
+
+        // ===== MARCH MADNESS =====
+        function showMarchMadness() {
+            loadMarchMadness();
+        }
+        
+        function closeMarchMadness() {
+            // Return to normal game view
+            if (currentGameId) {
+                selectGame(currentGameId);
+            }
+        }
+        
+        async function loadMarchMadness() {
+            try {
+                const data = await fetch('/api/march_madness').then(r => r.json());
+                
+                // Replace sidebar content
+                document.getElementById('away-team-name').textContent = '🏀 March Madness';
+                document.getElementById('home-team-name').textContent = 'Tournament Intel';
+                
+                let awayHtml = '<div style="color: #e0e0e0; font-size: 12px;">';
+                awayHtml += '<h4 style="color: #FF6B35; margin-top: 0;">🚨 Upset Alerts</h4>';
+                
+                if (data.upsets && data.upsets.length > 0) {
+                    data.upsets.forEach(upset => {
+                        awayHtml += `<div style="background: #2a2a2a; padding: 8px; margin-bottom: 8px; border-radius: 4px; border-left: 3px solid #FF6B35;">`;
+                        awayHtml += `<div style="font-weight: bold; margin-bottom: 4px;">${upset.Matchup}</div>`;
+                        awayHtml += `<div style="color: #888; font-size: 10px;">Score: ${upset.Upset_Score}</div>`;
+                        awayHtml += `<div style="color: #888; font-size: 10px;">${upset.Flags}</div>`;
+                        if (upset.channel) {
+                            awayHtml += `<button onclick="switchToChannel(${upset.channel})" style="margin-top: 5px; padding: 3px 8px; background: #FF6B35; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;">📺 CH${upset.channel}</button>`;
+                        }
+                        awayHtml += `</div>`;
+                    });
+                } else {
+                    awayHtml += '<p style="color: #666;">No major upset alerts</p>';
+                }
+                awayHtml += '</div>';
+                
+                let homeHtml = '<div style="color: #e0e0e0; font-size: 12px;">';
+                homeHtml += '<h4 style="color: #FF6B35; margin-top: 0;">⚕️ Injury Watch</h4>';
+                homeHtml += '<p style="font-size: 10px; color: #888; margin-bottom: 10px;">Monitor before bracket:</p>';
+                
+                data.injury_watch.forEach(team => {
+                    homeHtml += `<div style="background: #2a2a2a; padding: 5px; margin-bottom: 5px; border-radius: 3px; font-size: 11px;">📋 ${team}</div>`;
+                });
+                
+                homeHtml += '</div>';
+                
+                document.getElementById('away-player-list').innerHTML = awayHtml;
+                document.getElementById('home-player-list').innerHTML = homeHtml;
+                
+            } catch (error) {
+                document.getElementById('away-player-list').innerHTML = 
+                    '<p style="color: #FF6B35;">Error loading March Madness data</p>';
+            }
+        }
+        // ===== END MARCH MADNESS =====
+        
+        // ===== AUTO-SWITCHING =====
+        let autoSwitchEnabled = localStorage.getItem('autoSwitchEnabled') === 'true';
+        let autoSwitchTimer = null;
+        let switchCountdownInterval = null;
+        
+        function toggleAutoSwitch() {
+            autoSwitchEnabled = !autoSwitchEnabled;
+            localStorage.setItem('autoSwitchEnabled', autoSwitchEnabled);
+            
+            const btn = document.getElementById('auto-switch-toggle');
+            if (autoSwitchEnabled) {
+                btn.style.background = '#4CAF50';
+                btn.style.borderColor = '#4CAF50';
+                btn.textContent = '🤖 Auto: ON';
+                btn.title = 'Auto-Switch Enabled';
+            } else {
+                btn.style.background = '#666';
+                btn.style.borderColor = '#666';
+                btn.textContent = '🤖 Auto: OFF';
+                btn.title = 'Auto-Switch Disabled';
+            }
+        }
+        
+        function checkAutoSwitch() {
+            if (!autoSwitchEnabled) return;
+            
+            fetch(`/api/auto_switch_check?enabled=true`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.switched) {
+                        showSwitchNotification(data);
+                    }
+                });
+        }
+        
+        function showSwitchNotification(data) {
+            const notification = document.getElementById('auto-switch-notification');
+            document.getElementById('switch-game-info').textContent = 
+                `${data.game} (Score: ${data.upset_score}) on CH${data.to_channel}`;
+            
+            notification.style.display = 'block';
+            
+            let countdown = 3;
+            document.getElementById('switch-countdown').textContent = countdown;
+            
+            switchCountdownInterval = setInterval(() => {
+                countdown--;
+                if (countdown > 0) {
+                    document.getElementById('switch-countdown').textContent = countdown;
+                } else {
+                    clearInterval(switchCountdownInterval);
+                    notification.style.display = 'none';
+                    switchToChannel(data.to_channel);
+                }
+            }, 1000);
+        }
+        
+        function cancelAutoSwitch() {
+            if (switchCountdownInterval) {
+                clearInterval(switchCountdownInterval);
+            }
+            document.getElementById('auto-switch-notification').style.display = 'none';
+        }
+        
+        // Check every 30 seconds
+        setInterval(checkAutoSwitch, 30000);
+        // ===== END AUTO-SWITCHING =====
+        
+        // ===== LIVE SCORE OVERLAY =====
+        async function updateLiveScore() {
+            try {
+                // Get current channel
+                const channelResp = await fetch('/api/current_channel');
+                const channelData = await channelResp.json();
+                const currentChannel = channelData.channel;
+                
+                // Get live scores from ESPN (including Big Ten conference tournament)
+                const resp = await fetch('http://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard?groups=7&limit=100', {timeout: 5000});
+                const data = await resp.json();
+                const games = data.events || [];
+                
+                // Try to match via EPG first
+                if (currentChannel) {
+                    const epgResp = await fetch('/api/espn_epg');
+                    const epgData = await epgResp.json();
+                    
+                    if (epgData.success) {
+                        const currentProgram = epgData.programs.find(p => p.channel === currentChannel);
+                        if (currentProgram && currentProgram.title) {
+                            const vsMatch = currentProgram.title.match(/(.+?)\s+(?:vs\.?|@)\s+(.+)/i);
+                            if (vsMatch) {
+                                const awayTeam = vsMatch[1].trim();
+                                const homeTeam = vsMatch[2].trim();
+                                
+                                for (const game of games) {
+                                    const comp = game.competitions?.[0];
+                                    const teams = comp?.competitors || [];
+                                    if (teams.length !== 2) continue;
+                                    
+                                    const away = teams.find(t => t.homeAway === 'away');
+                                    const home = teams.find(t => t.homeAway === 'home');
+                                    
+                                    const awayName = away?.team?.displayName || '';
+                                    const homeName = home?.team?.displayName || '';
+                                    
+                                    const awayFirst = awayTeam.split(' ')[0].toLowerCase();
+                                    const homeFirst = homeTeam.split(' ')[0].toLowerCase();
+                                    
+                                    if (awayName.toLowerCase().includes(awayFirst) &&
+                                        homeName.toLowerCase().includes(homeFirst)) {
+                                        const awayScore = away?.score || '0';
+                                        const homeScore = home?.score || '0';
+                                        const scoreDisplay = `${awayScore}${homeScore}K`;
+                                        document.getElementById('live-score').textContent = scoreDisplay;
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // Fallback: show first live game
+                for (const game of games) {
+                    const comp = game.competitions?.[0];
+                    if (comp?.status?.type?.state !== 'in') continue; // Only in-progress games
+                    
+                    const teams = comp?.competitors || [];
+                    if (teams.length !== 2) continue;
+                    
+                    const away = teams.find(t => t.homeAway === 'away');
+                    const home = teams.find(t => t.homeAway === 'home');
+                    
+                    const awayScore = away?.score || '0';
+                    const homeScore = home?.score || '0';
+                    const scoreDisplay = `${awayScore}${homeScore}K`;
+                    document.getElementById('live-score').textContent = scoreDisplay;
+                    return;
+                }
+                
+                // No live games found
+                document.getElementById('live-score').textContent = '--';
+            } catch (error) {
+                console.log('Live score update failed:', error);
+            }
+        }
+        // ===== END LIVE SCORE OVERLAY =====
         
         // Load games immediately
         loadExcitement();
@@ -2018,6 +2298,10 @@
 
         // Start refresh intervals
         startIntervals();
+        
+        // Start live score polling
+        setInterval(updateLiveScore, 5000);
+        updateLiveScore();
         
         async function autoSelectESPNGame() {
             if (appState.manualMode) return; // Don't override manual selection
@@ -2642,7 +2926,7 @@
     <script>
         // Initialize HLS video stream
         var video = document.getElementById('video');
-        var streamUrl = 'http://localhost:5001/stream.m3u8?t=' + Date.now();
+        var streamUrl = window.location.origin + '/stream.m3u8?t=' + Date.now();
         
         console.log('Attempting to load stream from:', streamUrl);
             
@@ -2660,6 +2944,14 @@
                 fragLoadingTimeOut: 30000,
                 fragLoadingMaxRetry: 10
             });
+            // Check if stream exists before loading
+            fetch(streamUrl, {method: 'HEAD'}).then(r => {
+                if (!r.ok && !r.redirected) {
+                    document.getElementById('buffer-progress').textContent = 'No stream available — start recording to begin';
+                    document.getElementById('buffer-bar').style.width = '0%';
+                }
+            }).catch(() => {});
+
             hls.loadSource(streamUrl);
             hls.attachMedia(video);
             
@@ -2673,13 +2965,16 @@
                     const buffered = video.buffered;
                     if (buffered.length > 0) {
                         const bufferEnd = buffered.end(buffered.length - 1);
-                        const percent = Math.min(100, (bufferEnd / 60) * 100);
+                        const displaySeconds = Math.floor(bufferEnd);
+                        const duration = video.duration || 60;
+                        const targetBuffer = Math.min(10, duration * 0.5);
+                        const percent = (bufferEnd / targetBuffer) * 100;
                         
-                        document.getElementById('buffer-progress').textContent = `Buffering ${Math.floor(bufferEnd)}s / 60s`;
-                        document.getElementById('buffer-bar').style.width = percent + '%';
+                        document.getElementById('buffer-progress').textContent = `Buffering ${displaySeconds}s / ${Math.floor(targetBuffer)}s`;
+                        document.getElementById('buffer-bar').style.width = Math.min(100, percent) + '%';
                         
-                        // Once we have 60+ seconds buffered, start at beginning
-                        if (bufferEnd >= 60) {
+                        // Once we have enough buffered, start at beginning
+                        if (bufferEnd >= targetBuffer) {
                             clearInterval(bufferCheck);
                             
                             // Seek to start
@@ -2721,9 +3016,10 @@
                             hls.recoverMediaError();
                             break;
                         default:
-                            console.log('Fatal error, reloading stream...');
+                            console.log('Fatal error, stream unavailable');
                             hls.destroy();
-                            setTimeout(() => location.reload(), 2000);
+                            document.getElementById('buffer-progress').textContent = 'No stream available — start recording to begin';
+                            document.getElementById('buffer-bar').style.width = '0%';
                             break;
                     }
                 } else {

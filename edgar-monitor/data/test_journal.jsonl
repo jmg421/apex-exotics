@@ -1,0 +1,1 @@
+{"timestamp": "2026-03-13T16:38:47.733272", "symbol": "AAPL", "direction": "LONG", "entry_price": 100.0, "stop_loss": 98.0, "shares": 50, "risk_accepted": true, "adherence_score": 100, "violations": [], "emotional_state": "CLEAR", "followed_plan": true, "outcome": "WIN", "pnl": 150.0, "exit_price": null, "exit_reason": null}

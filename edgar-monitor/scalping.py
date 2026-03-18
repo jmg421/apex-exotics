@@ -32,6 +32,12 @@ def save_scalping_account(account):
 
 def open_position(contract, side, price, contracts=1):
     """Open a futures position (LONG or SHORT)."""
+    # ZONE GUARD: All futures trades must go through zone_trader.py
+    print("❌ Direct position opening disabled.")
+    print("   Use zone_trader.py — the single gateway for all trades.")
+    print(f"   python3 zone_trader.py {side.lower()} {price} <signal>")
+    return
+
     account = load_scalping_account()
     
     if account['position']:

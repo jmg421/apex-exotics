@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Ask Jarvis to vet the go-live trading plan"""
-import requests
-import time
+import json
+import sys
+from pathlib import Path
 
-JARVIS_URL = "https://staging.nodes.bio/api/jarvis/generate"
-JARVIS_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTZmYjFmOTM4OTQ3ZjJhZCIsImVtYWlsIjoiam9obkBub2Rlcy5iaW8iLCJleHAiOjE3NzU0OTg4MjYsImlhdCI6MTc3MjkwNjgyNn0.8NVXoJByiRCHhOaptfTdbIkcjMpOkMQtCqbKPPIwL2w"
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from shared.jarvis_client import jarvis_ask
 
 prompt = """I'm about to go live with a systematic trading system. Vet this plan and tell me what I'm missing:
 
@@ -45,77 +46,36 @@ prompt = """I'm about to go live with a systematic trading system. Vet this plan
 ## MY QUESTIONS
 
 1. **What am I missing?** What risks or failure modes am I not seeing?
-
 2. **Is $2,000-5,000 enough capital?** Or am I undercapitalized?
-
 3. **Risk management holes?** Are my limits too tight or too loose?
-
 4. **Data quality concerns?** Yahoo Finance vs paid feeds - does it matter for 5-min scans?
-
 5. **Execution risks?** What can go wrong between signal and order fill?
-
 6. **Realistic expectations?** If I target $200-500/mo profit, am I delusional?
-
 7. **What should I test first?** Paper trade for 30 days or start small with real money?
-
 8. **Red flags?** Any part of this plan that screams "bad idea"?
 
 Be brutally honest. I want to know what will break before it breaks.
 """
 
-def ask_jarvis(prompt):
-    """Query Jarvis API"""
-    headers = {
-        "Authorization": f"Bearer {JARVIS_TOKEN}",
-        "Content-Type": "application/json"
-    }
-    
-    resp = requests.post(JARVIS_URL, headers=headers, 
-                        json={"prompt": prompt, "models": ["anthropic", "openai"]}, timeout=30)
-    result = resp.json()
-    
-    poll_url = f"https://staging.nodes.bio{result['poll_url']}"
-    
-    print("Waiting for Jarvis analysis", end='', flush=True)
-    for _ in range(60):
-        time.sleep(1)
-        print('.', end='', flush=True)
-        poll_resp = requests.get(poll_url, headers=headers, timeout=10)
-        poll_data = poll_resp.json()
-        
-        if poll_data['status'] == 'completed':
-            print(" Done!\n")
-            return poll_data['models']
-    
-    print(" Timeout!")
-    return None
-
 if __name__ == '__main__':
     print("🤖 ASKING JARVIS TO VET THE TRADING PLAN")
     print("="*60)
-    print()
     
-    response = ask_jarvis(prompt)
+    result = jarvis_ask(prompt, models=["anthropic_claude", "openai_gpt"])
     
-    if response:
+    if result.get("synthesis"):
+        print("\n🧠 SYNTHESIZED REVIEW")
         print("="*60)
-        print("📊 ANTHROPIC (CLAUDE) ANALYSIS")
+        print(result["synthesis"].get("unified_answer", ""))
+        print(f"\nConfidence: {result['synthesis'].get('confidence_score', 'N/A')}")
+    
+    for model, data in result.get("models", {}).items():
+        print(f"\n📊 {model.upper()}")
         print("="*60)
-        if 'anthropic' in response:
-            print(response['anthropic'].get('response', 'No response'))
-        
-        print("\n" + "="*60)
-        print("📊 OPENAI (GPT-4) ANALYSIS")
-        print("="*60)
-        if 'openai' in response:
-            print(response['openai'].get('response', 'No response'))
-        
-        # Save
-        import json
-        with open('data/jarvis_plan_review.json', 'w') as f:
-            json.dump(response, f, indent=2)
-        
-        print("\n" + "="*60)
-        print("💾 Saved to data/jarvis_plan_review.json")
-    else:
-        print("❌ Failed to get response from Jarvis")
+        if isinstance(data, dict):
+            print(data.get('response', 'No response'))
+    
+    with open('data/jarvis_plan_review.json', 'w') as f:
+        json.dump(result, f, indent=2)
+    
+    print("\n💾 Saved to data/jarvis_plan_review.json")

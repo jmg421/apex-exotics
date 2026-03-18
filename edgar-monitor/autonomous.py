@@ -1,35 +1,26 @@
 #!/usr/bin/env python3
 """Autonomous Trading System - Unsupervised, no human input needed"""
 import json
+import sys
 import time
-import requests
 from datetime import datetime
 import subprocess
+from pathlib import Path
 
-JARVIS_URL = "https://staging.nodes.bio/api/jarvis/generate"
-JARVIS_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTZmYjFmOTM4OTQ3ZjJhZCIsImVtYWlsIjoiam9obkBub2Rlcy5iaW8iLCJleHAiOjE3NzU0OTg4MjYsImlhdCI6MTc3MjkwNjgyNn0.8NVXoJByiRCHhOaptfTdbIkcjMpOkMQtCqbKPPIwL2w"
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from shared.jarvis_client import jarvis_ask
+from trading_psychology import validate_trade, TradeJournal
 
-def ask_jarvis(prompt, models=["anthropic"]):
-    """Query Jarvis"""
-    headers = {
-        "Authorization": f"Bearer {JARVIS_TOKEN}",
-        "Content-Type": "application/json"
-    }
-    
-    resp = requests.post(JARVIS_URL, headers=headers, 
-                        json={"prompt": prompt, "models": models}, timeout=30)
-    result = resp.json()
-    
-    poll_url = f"https://staging.nodes.bio{result['poll_url']}"
-    
-    for _ in range(60):
-        time.sleep(1)
-        poll_resp = requests.get(poll_url, headers=headers, timeout=10)
-        poll_data = poll_resp.json()
-        
-        if poll_data['status'] == 'completed':
-            return poll_data['models'].get('anthropic', {}).get('response', '')
-    
+
+def ask_jarvis(prompt, models=["anthropic_claude"]):
+    """Query Jarvis with synthesis."""
+    result = jarvis_ask(prompt, models=models)
+    # Return synthesis unified answer, fall back to first model response
+    if result.get("synthesis"):
+        return result["synthesis"].get("unified_answer", "")
+    for m in result.get("models", {}).values():
+        if isinstance(m, dict) and m.get("response"):
+            return m["response"]
     return None
 
 def autonomous_scan():
@@ -150,16 +141,65 @@ Make the decision. No human approval needed.
         log_action(f"   Confidence: {decision.get('confidence')}/10")
         log_action(f"   Reasoning: {decision.get('reasoning')}")
         
-        # Save trade signal
-        with open('data/autonomous_signals.json', 'a') as f:
-            signal = {
-                'timestamp': datetime.now().isoformat(),
-                'decision': decision
-            }
-            f.write(json.dumps(signal) + '\n')
+        # ── Psychology gate ──────────────────────────────
+        trade_plan = {
+            'symbol': decision.get('symbol'),
+            'direction': decision.get('direction'),
+            'entry_price': decision.get('entry'),
+            'stop_loss': decision.get('stop'),
+            'shares': decision.get('size', 1),
+        }
         
-        log_action("💾 Trade signal saved to data/autonomous_signals.json")
-        log_action("⚠️  PAPER TRADING MODE - No real orders executed")
+        journal = TradeJournal()
+        recent_trades = journal.get_recent_trades()
+        
+        # Load account balance from risk config
+        risk_cfg = json.loads((Path(__file__).parent / 'config' / 'risk_limits.json').read_text())
+        account_balance = risk_cfg.get('account_balance', 5000)
+        
+        can_trade, psych_data = validate_trade(trade_plan, account_balance, recent_trades)
+        
+        if not can_trade:
+            reason = psych_data.get('reason', 'Unknown')
+            log_action(f"🚫 REJECTED by psychology gate: {reason}")
+            if psych_data.get('violations'):
+                for v in psych_data['violations']:
+                    log_action(f"   ⚠️  {v}")
+            if psych_data.get('warnings'):
+                for w in psych_data['warnings']:
+                    log_action(f"   ⚠️  {w}")
+            
+            # Log rejection to journal
+            journal.log_trade(
+                {**trade_plan, 'outcome': 'REJECTED'},
+                {**psych_data, 'rejected': True}
+            )
+            
+            # Halt session on TILT
+            if 'TILT' in reason:
+                log_action("🛑 TILT STATE — halting all trading for this session")
+                with open('data/autonomous_log.txt', 'a') as f:
+                    f.write('\n'.join(log) + '\n\n')
+                return log
+        else:
+            log_action(f"✅ Psychology gate PASSED")
+            log_action(f"   Adherence: {psych_data.get('adherence_score', 'N/A')}")
+            log_action(f"   Emotional state: {psych_data.get('emotional_state', 'N/A')}")
+            
+            # Log approved trade to journal
+            journal.log_trade(trade_plan, psych_data)
+            
+            # Save trade signal
+            with open('data/autonomous_signals.json', 'a') as f:
+                signal = {
+                    'timestamp': datetime.now().isoformat(),
+                    'decision': decision,
+                    'psychology': psych_data,
+                }
+                f.write(json.dumps(signal) + '\n')
+            
+            log_action("💾 Trade signal saved to data/autonomous_signals.json")
+            log_action("⚠️  PAPER TRADING MODE - No real orders executed")
         
     elif decision.get('action') == 'WAIT':
         log_action(f"   Reasoning: {decision.get('reasoning')}")

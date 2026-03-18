@@ -241,7 +241,11 @@
         </div>
 
         <div class="candlestick-container">
-            <h2>Live Candlestick Chart</h2>
+            <h2>Live Candlestick Chart
+                <button onclick="toggleChartMode()" id="chart-mode-btn" style="float: right; background: #333; color: #888; border: 1px solid #555; padding: 6px 16px; border-radius: 4px; cursor: pointer; font-size: 0.7em;">
+                    Switch to Heikin-Ashi
+                </button>
+            </h2>
             <div class="ticker-tabs" id="ticker-tabs"></div>
             <canvas id="candlestick-chart"></canvas>
             <div style="margin-top: 15px; padding: 15px; background: #0a0a0a; border-radius: 4px; font-size: 0.9em; color: #888;">
@@ -447,6 +451,41 @@
         let lastTradeCount = 0;
         let selectedDirection = 'LONG';
         let volatilityMode = 'stable'; // 'stable' or 'volatile'
+        let chartMode = 'standard'; // 'standard' or 'heikin-ashi'
+
+        function toggleChartMode() {
+            chartMode = chartMode === 'standard' ? 'heikin-ashi' : 'standard';
+            const btn = document.getElementById('chart-mode-btn');
+            if (chartMode === 'heikin-ashi') {
+                btn.textContent = 'Switch to Standard';
+                btn.style.background = '#764ba2';
+                btn.style.color = '#fff';
+            } else {
+                btn.textContent = 'Switch to Heikin-Ashi';
+                btn.style.background = '#333';
+                btn.style.color = '#888';
+            }
+            updateCandlestickChart();
+        }
+
+        function toHeikinAshi(candles) {
+            if (candles.length === 0) return [];
+            const ha = [];
+            for (let i = 0; i < candles.length; i++) {
+                const c = candles[i];
+                const prev = ha[i - 1];
+                const haClose = (c.o + c.h + c.l + c.c) / 4;
+                const haOpen = prev ? (prev.o + prev.c) / 2 : (c.o + c.c) / 2;
+                ha.push({
+                    t: c.t,
+                    o: haOpen,
+                    c: haClose,
+                    h: Math.max(c.h, haOpen, haClose),
+                    l: Math.min(c.l, haOpen, haClose)
+                });
+            }
+            return ha;
+        }
 
         function toggleVolatility() {
             volatilityMode = volatilityMode === 'stable' ? 'volatile' : 'stable';
@@ -1136,14 +1175,45 @@
         }
 
         // Detect candlestick patterns
-        function detectPattern(candle, prevCandle) {
+        function detectPattern(candle, prevCandle, isHA) {
             const body = Math.abs(candle.c - candle.o);
             const range = candle.h - candle.l;
             const upperWick = candle.h - Math.max(candle.o, candle.c);
             const lowerWick = Math.min(candle.o, candle.c) - candle.l;
             
             if (range === 0) return null;
+
+            if (isHA) {
+                // Heikin-Ashi specific patterns
+                const bullish = candle.c > candle.o;
+
+                // HA Doji: tiny body, long wicks both sides — indecision / reversal
+                if (body / range < 0.1 && upperWick > range * 0.25 && lowerWick > range * 0.25)
+                    return 'HA Doji';
+
+                // HA Shaved Bottom: no lower wick on bullish candle — strong uptrend
+                if (bullish && lowerWick < range * 0.02 && body > range * 0.3)
+                    return 'HA Strong Bull';
+
+                // HA Shaved Top: no upper wick on bearish candle — strong downtrend
+                if (!bullish && upperWick < range * 0.02 && body > range * 0.3)
+                    return 'HA Strong Bear';
+
+                // HA Spinning Top: small body, wicks both sides — weakening trend
+                if (body / range < 0.25 && upperWick > body && lowerWick > body)
+                    return 'HA Spinning Top';
+
+                // Trend change: color flip with engulfing body
+                if (prevCandle) {
+                    const prevBullish = prevCandle.c > prevCandle.o;
+                    if (bullish && !prevBullish && body > range * 0.4) return 'HA Bullish Reversal';
+                    if (!bullish && prevBullish && body > range * 0.4) return 'HA Bearish Reversal';
+                }
+
+                return null;
+            }
             
+            // Standard patterns
             // Doji: tiny body, long wicks
             if (body / range < 0.1) return 'Doji';
             
@@ -1185,11 +1255,13 @@
             }
             
             // Detect patterns on last candle
-            const lastPattern = detectPattern(data[data.length - 1], data[data.length - 2]);
-            const patternText = lastPattern ? ` | ${lastPattern}` : '';
+            const isHA = chartMode === 'heikin-ashi';
+            const rawSlice = data.slice(-30);
+            const displayData = isHA ? toHeikinAshi(rawSlice) : rawSlice;
             
-            // Keep only last 30 candles for readability
-            const displayData = data.slice(-30);
+            const lastPattern = detectPattern(displayData[displayData.length - 1], displayData[displayData.length - 2], isHA);
+            const patternText = lastPattern ? ` | ${lastPattern}` : '';
+            const modeLabel = isHA ? ' [Heikin-Ashi]' : '';
             
             const entryPrice = data[0].o;
             const currentPrice = data[data.length - 1].c;
@@ -1292,7 +1364,7 @@
                 const bodyWidth = Math.max(candleWidth * 0.7, 8);
                 
                 // Detect pattern for this candle
-                const pattern = detectPattern(candle, displayData[i - 1]);
+                const pattern = detectPattern(candle, displayData[i - 1], isHA);
                 
                 // Draw upper wick (high to top of body)
                 if (highY < bodyTop - 1) {
@@ -1351,7 +1423,7 @@
             ctx.fillStyle = priceChange >= 0 ? '#10b981' : '#ef4444';
             ctx.font = 'bold 18px sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText(`${currentTicker} - ${priceChange > 0 ? '+' : ''}${priceChange}% from entry${patternText}`, displayWidth / 2, 25);
+            ctx.fillText(`${currentTicker}${modeLabel} - ${priceChange > 0 ? '+' : ''}${priceChange}% from entry${patternText}`, displayWidth / 2, 25);
             
             ctx.fillStyle = '#888';
             ctx.font = '14px sans-serif';

@@ -2,25 +2,23 @@
 """Live Trading Dashboard with Jarvis Commentary"""
 import json
 import os
+import sys
 import time
-import requests
 from datetime import datetime
+from pathlib import Path
 
-JARVIS_URL = "https://staging.nodes.bio/api/jarvis/generate"
-JARVIS_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTZmYjFmOTM4OTQ3ZjJhZCIsImVtYWlsIjoiam9obkBub2Rlcy5iaW8iLCJleHAiOjE3NzU0OTg4MjYsImlhdCI6MTc3MjkwNjgyNn0.8NVXoJByiRCHhOaptfTdbIkcjMpOkMQtCqbKPPIwL2w"
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from shared.jarvis_client import jarvis_ask
+
 
 def ask_jarvis(prompt):
-    """Get Jarvis commentary"""
-    headers = {"Authorization": f"Bearer {JARVIS_TOKEN}", "Content-Type": "application/json"}
-    resp = requests.post(JARVIS_URL, headers=headers, json={"prompt": prompt, "models": ["anthropic"]}, timeout=30)
-    poll_url = f"https://staging.nodes.bio{resp.json()['poll_url']}"
-    
-    for _ in range(30):
-        time.sleep(1)
-        poll_resp = requests.get(poll_url, headers=headers, timeout=10)
-        data = poll_resp.json()
-        if data['status'] == 'completed':
-            return data['models'].get('anthropic', {}).get('response', '')
+    """Get Jarvis commentary with synthesis."""
+    result = jarvis_ask(prompt, models=["anthropic_claude"])
+    if result.get("synthesis"):
+        return result["synthesis"].get("unified_answer", "...")
+    for m in result.get("models", {}).values():
+        if isinstance(m, dict) and m.get("response"):
+            return m["response"]
     return "..."
 
 def load_news():

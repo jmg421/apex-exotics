@@ -1,50 +1,11 @@
 #!/usr/bin/env python3
 """Ask Jarvis to analyze pattern detection results"""
 import json
-import requests
+import sys
+from pathlib import Path
 
-JARVIS_URL = "https://staging.nodes.bio/api/jarvis/generate"
-JARVIS_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTZmYjFmOTM4OTQ3ZjJhZCIsImVtYWlsIjoiam9obkBub2Rlcy5iaW8iLCJleHAiOjE3NzU0OTg4MjYsImlhdCI6MTc3MjkwNjgyNn0.8NVXoJByiRCHhOaptfTdbIkcjMpOkMQtCqbKPPIwL2w"
-
-def ask_jarvis(prompt, models=["anthropic", "openai"]):
-    """Query Jarvis API"""
-    headers = {
-        "Authorization": f"Bearer {JARVIS_TOKEN}",
-        "Content-Type": "application/json"
-    }
-    data = {
-        "prompt": prompt,
-        "models": models
-    }
-    
-    # Submit request
-    resp = requests.post(JARVIS_URL, headers=headers, json=data, timeout=30)
-    result = resp.json()
-    
-    if resp.status_code != 200:
-        return result
-    
-    # Poll for results
-    poll_url = f"https://staging.nodes.bio{result['poll_url']}"
-    request_id = result['request_id']
-    
-    print(f"Request ID: {request_id}")
-    print("Waiting for responses...", end='', flush=True)
-    
-    import time
-    for _ in range(30):  # Poll for up to 30 seconds
-        time.sleep(1)
-        print('.', end='', flush=True)
-        
-        poll_resp = requests.get(poll_url, headers=headers, timeout=10)
-        poll_data = poll_resp.json()
-        
-        if poll_data['status'] == 'completed':
-            print(" Done!")
-            return poll_data['models']
-    
-    print(" Timeout!")
-    return result
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from shared.jarvis_client import jarvis_ask
 
 if __name__ == '__main__':
     # Load pattern detection results
@@ -78,20 +39,27 @@ Keep it concise and actionable."""
     print("🤖 Asking Jarvis...")
     print("="*60)
     
-    response = ask_jarvis(prompt)
+    result = jarvis_ask(prompt, models=["anthropic_claude", "openai_gpt"])
     
-    # Display responses
-    for model, result in response.items():
+    # Show synthesis first
+    if result.get("synthesis"):
+        print("\n🧠 SYNTHESIS")
+        print("-"*60)
+        print(result["synthesis"].get("unified_answer", ""))
+        print(f"\nConfidence: {result['synthesis'].get('confidence_score', 'N/A')}")
+    
+    # Show individual model responses
+    for model, data in result.get("models", {}).items():
         print(f"\n📊 {model.upper()}")
         print("-"*60)
-        if isinstance(result, dict):
-            print(result.get('response', result.get('error', 'No response')))
+        if isinstance(data, dict):
+            print(data.get('response', data.get('error', 'No response')))
         else:
-            print(result)
+            print(data)
     
     # Save
     with open('data/jarvis_analysis.json', 'w') as f:
-        json.dump(response, f, indent=2)
+        json.dump(result, f, indent=2)
     
     print("\n" + "="*60)
     print("💾 Saved to data/jarvis_analysis.json")

@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """Futures Pattern Detection + Jarvis Analysis"""
 import json
+import sys
 import numpy as np
 from sklearn.cluster import DBSCAN
 from sklearn.preprocessing import StandardScaler
-import requests
-import time
+from pathlib import Path
 
-JARVIS_URL = "https://staging.nodes.bio/api/jarvis/generate"
-JARVIS_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTZmYjFmOTM4OTQ3ZjJhZCIsImVtYWlsIjoiam9obkBub2Rlcy5iaW8iLCJleHAiOjE3NzU0OTg4MjYsImlhdCI6MTc3MjkwNjgyNn0.8NVXoJByiRCHhOaptfTdbIkcjMpOkMQtCqbKPPIwL2w"
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from shared.jarvis_client import jarvis_ask
 
 def detect_patterns(quotes):
     """Detect patterns in futures data"""
@@ -41,26 +41,13 @@ def detect_patterns(quotes):
     return anomalies, clusters
 
 def ask_jarvis(prompt):
-    """Query Jarvis API"""
-    headers = {
-        "Authorization": f"Bearer {JARVIS_TOKEN}",
-        "Content-Type": "application/json"
-    }
-    
-    resp = requests.post(JARVIS_URL, headers=headers, 
-                        json={"prompt": prompt, "models": ["anthropic"]}, timeout=30)
-    result = resp.json()
-    
-    poll_url = f"https://staging.nodes.bio{result['poll_url']}"
-    
-    for _ in range(30):
-        time.sleep(1)
-        poll_resp = requests.get(poll_url, headers=headers, timeout=10)
-        poll_data = poll_resp.json()
-        
-        if poll_data['status'] == 'completed':
-            return poll_data['models']['anthropic']
-    
+    """Query Jarvis API with synthesis."""
+    result = jarvis_ask(prompt, models=["anthropic_claude"])
+    if result.get("synthesis"):
+        return result["synthesis"].get("unified_answer", "")
+    for m in result.get("models", {}).values():
+        if isinstance(m, dict) and m.get("response"):
+            return m["response"]
     return "Timeout"
 
 if __name__ == '__main__':

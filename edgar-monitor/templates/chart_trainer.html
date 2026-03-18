@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chart Trainer — Apex Exotics</title>
+<script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #e0e0e0; }
+
+.header { display: flex; align-items: center; padding: 16px 24px; border-bottom: 1px solid #222; gap: 20px; }
+.header h1 { font-size: 1.3em; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.header .mode-btns { display: flex; gap: 8px; }
+.header button { background: #1a1a1a; border: 1px solid #333; color: #ccc; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9em; }
+.header button:hover { border-color: #667eea; }
+.header button.active { background: #667eea; color: #fff; border-color: #667eea; }
+.score-display { margin-left: auto; font-size: 1.1em; }
+.score-display .num { font-weight: 700; color: #10b981; }
+
+.main { display: grid; grid-template-columns: 1fr 340px; height: calc(100vh - 60px); }
+
+#chart-container { background: #0a0a0a; }
+
+.sidebar { background: #111; border-left: 1px solid #222; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+
+.info-card { background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 14px; }
+.info-card .label { color: #888; font-size: 0.8em; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+.info-card .value { font-size: 1.3em; font-weight: 600; }
+.info-card .value.up { color: #10b981; }
+.info-card .value.down { color: #ef4444; }
+.info-card .value.range { color: #fbbf24; }
+
+.patterns { display: flex; flex-direction: column; gap: 6px; }
+.pattern-tag { background: #333; color: #fbbf24; padding: 4px 10px; border-radius: 4px; font-size: 0.85em; }
+.pattern-meaning { color: #888; font-size: 0.8em; margin-top: 2px; }
+
+.predict-section { margin-top: auto; }
+.predict-section h3 { margin-bottom: 12px; color: #ccc; }
+.predict-btns { display: flex; gap: 10px; }
+.predict-btns button { flex: 1; padding: 16px; border: 2px solid #333; border-radius: 8px; font-size: 1.1em; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.btn-up { background: #0a2e1a; color: #10b981; border-color: #10b981; }
+.btn-up:hover { background: #10b981; color: #000; }
+.btn-down { background: #2e0a0a; color: #ef4444; border-color: #ef4444; }
+.btn-down:hover { background: #ef4444; color: #fff; }
+.predict-btns button:disabled { opacity: 0.3; cursor: default; }
+
+.result-box { padding: 16px; border-radius: 8px; text-align: center; font-size: 1.1em; font-weight: 600; margin-top: 12px; }
+.result-box.correct { background: #0a2e1a; border: 1px solid #10b981; color: #10b981; }
+.result-box.wrong { background: #2e0a0a; border: 1px solid #ef4444; color: #ef4444; }
+.result-box .explanation { font-size: 0.85em; font-weight: 400; color: #ccc; margin-top: 8px; }
+
+.next-btn { width: 100%; padding: 14px; background: #667eea; color: #fff; border: none; border-radius: 8px; font-size: 1em; font-weight: 600; cursor: pointer; margin-top: 10px; }
+.next-btn:hover { background: #5a6fd6; }
+
+.lesson-card { background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 16px; }
+.lesson-card h3 { color: #667eea; margin-bottom: 8px; }
+.lesson-card p { color: #ccc; font-size: 0.9em; line-height: 1.6; white-space: pre-line; }
+
+.sr-line-legend { display: flex; gap: 16px; font-size: 0.85em; margin-top: 8px; }
+.sr-line-legend span { display: flex; align-items: center; gap: 4px; }
+.sr-line-legend .dot { width: 10px; height: 3px; border-radius: 1px; }
+.sr-line-legend .dot.support { background: #10b981; }
+.sr-line-legend .dot.resistance { background: #ef4444; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📊 Chart Trainer</h1>
+  <div class="mode-btns">
+    <button id="btn-learn" onclick="startLearn()">Learn</button>
+    <button id="btn-quiz" class="active" onclick="startQuiz()">Quiz</button>
+  </div>
+  <div class="score-display" id="score-display"></div>
+</div>
+
+<div class="main">
+  <div id="chart-container"></div>
+  <div class="sidebar" id="sidebar"></div>
+</div>
+
+<script>
+let chart, candleSeries, volumeSeries;
+let quizData = null;
+let session = { correct: 0, total: 0 };
+let srLines = [];
+let markers = [];
+
+function initChart() {
+  const container = document.getElementById('chart-container');
+  chart = LightweightCharts.createChart(container, {
+    layout: { background: { color: '#0a0a0a' }, textColor: '#888' },
+    grid: { vertLines: { color: '#1a1a1a' }, horzLines: { color: '#1a1a1a' } },
+    crosshair: { mode: 0 },
+    rightPriceScale: { borderColor: '#333' },
+    timeScale: { borderColor: '#333', timeVisible: true },
+    width: container.clientWidth,
+    height: container.clientHeight,
+  });
+  candleSeries = chart.addCandlestickSeries({
+    upColor: '#10b981', downColor: '#ef4444',
+    borderUpColor: '#10b981', borderDownColor: '#ef4444',
+    wickUpColor: '#10b981', wickDownColor: '#ef4444',
+  });
+  volumeSeries = chart.addHistogramSeries({
+    priceFormat: { type: 'volume' },
+    priceScaleId: 'vol',
+    scaleMargins: { top: 0.85, bottom: 0 },
+  });
+  chart.priceScale('vol').applyOptions({ scaleMargins: { top: 0.85, bottom: 0 } });
+  window.addEventListener('resize', () => {
+    chart.applyOptions({ width: container.clientWidth, height: container.clientHeight });
+  });
+
+  chart.subscribeClick(param => {
+    if (!param.time) return;
+    const d = param.seriesData.get(candleSeries);
+    if (!d) return;
+    const dt = new Date(param.time * 1000);
+    const timeStr = dt.toLocaleString();
+    const txt = `${timeStr} | O:${d.open} H:${d.high} L:${d.low} C:${d.close}`;
+    navigator.clipboard.writeText(txt);
+    const toast = document.createElement('div');
+    toast.textContent = '📋 ' + txt;
+    toast.style.cssText = 'position:fixed;top:12px;left:50%;transform:translateX(-50%);background:#667eea;color:#fff;padding:8px 16px;border-radius:6px;font-size:0.85em;z-index:99;';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 1500);
+  });
+}
+
+function toTimestamp(timeStr) {
+  // "03/17 14:15" → unix timestamp
+  const [md, hm] = timeStr.split(' ');
+  const [month, day] = md.split('/');
+  const [hour, min] = hm.split(':');
+  const d = new Date(2026, parseInt(month)-1, parseInt(day), parseInt(hour), parseInt(min));
+  return Math.floor(d.getTime() / 1000);
+}
+
+function setCandles(candles) {
+  const cdata = candles.map(c => ({
+    time: toTimestamp(c.time), open: c.open, high: c.high, low: c.low, close: c.close
+  }));
+  const vdata = candles.map(c => ({
+    time: toTimestamp(c.time), value: c.volume,
+    color: c.close >= c.open ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'
+  }));
+  candleSeries.setData(cdata);
+  volumeSeries.setData(vdata);
+  chart.timeScale().fitContent();
+}
+
+function clearSRLines() {
+  srLines.forEach(l => candleSeries.removePriceLine(l));
+  srLines = [];
+  markers = [];
+  candleSeries.setMarkers([]);
+}
+
+function drawSR(support, resistance) {
+  clearSRLines();
+  support.forEach(s => {
+    const lvl = typeof s === 'number' ? s : s.price;
+    const touches = s.touches || '';
+    srLines.push(candleSeries.createPriceLine({
+      price: lvl, color: '#10b981', lineWidth: 1, lineStyle: 2, axisLabelVisible: true,
+      title: 'S' + (touches ? ' ×' + touches : '')
+    }));
+    // Add markers at bounce points
+    if (s.times) {
+      s.times.forEach(t => {
+        markers.push({ time: toTimestamp(t), position: 'belowBar', color: '#10b981', shape: 'arrowUp', text: 'bounce' });
+      });
+    }
+  });
+  resistance.forEach(r => {
+    const lvl = typeof r === 'number' ? r : r.price;
+    const touches = r.touches || '';
+    srLines.push(candleSeries.createPriceLine({
+      price: lvl, color: '#ef4444', lineWidth: 1, lineStyle: 2, axisLabelVisible: true,
+      title: 'R' + (touches ? ' ×' + touches : '')
+    }));
+    if (r.times) {
+      r.times.forEach(t => {
+        markers.push({ time: toTimestamp(t), position: 'aboveBar', color: '#ef4444', shape: 'arrowDown', text: 'reject' });
+      });
+    }
+  });
+  if (markers.length) {
+    markers.sort((a, b) => a.time - b.time);
+    candleSeries.setMarkers(markers);
+  }
+}
+
+function updateScore() {
+  const el = document.getElementById('score-display');
+  if (session.total === 0) { el.innerHTML = ''; return; }
+  const pct = Math.round(session.correct / session.total * 100);
+  el.innerHTML = `<span class="num">${session.correct}</span>/${session.total} (${pct}%)`;
+}
+
+// ── Quiz Mode ──────────────────────────────────────────
+
+async function startQuiz() {
+  document.getElementById('btn-quiz').classList.add('active');
+  document.getElementById('btn-learn').classList.remove('active');
+  await loadQuizQuestion();
+}
+
+async function loadQuizQuestion() {
+  const resp = await fetch('/api/trainer/chart?mode=quiz');
+  quizData = await resp.json();
+
+  setCandles(quizData.candles);
+  drawSR(quizData.support, quizData.resistance);
+
+  const trendClass = quizData.trend === 'UPTREND' ? 'up' : quizData.trend === 'DOWNTREND' ? 'down' : 'range';
+
+  let patternsHtml = '';
+  if (quizData.patterns && quizData.patterns.length) {
+    patternsHtml = '<div class="patterns">' + quizData.patterns.map(p =>
+      `<div class="pattern-tag">${p.name}</div><div class="pattern-meaning">${p.meaning || ''}</div>`
+    ).join('') + '</div>';
+  }
+
+  document.getElementById('sidebar').innerHTML = `
+    <div class="info-card">
+      <div class="label">Last Price</div>
+      <div class="value">${quizData.last_price.toFixed(2)}</div>
+    </div>
+    <div class="info-card">
+      <div class="label">Trend</div>
+      <div class="value ${trendClass}">${quizData.trend}</div>
+    </div>
+    <div class="info-card">
+      <div class="label">Support / Resistance</div>
+      <div class="sr-line-legend">
+        <span><span class="dot support"></span>${quizData.support.map(s => (s.price || s).toFixed(0)).join(', ') || '—'}</span>
+        <span><span class="dot resistance"></span>${quizData.resistance.map(r => (r.price || r).toFixed(0)).join(', ') || '—'}</span>
+      </div>
+    </div>
+    ${patternsHtml ? `<div class="info-card"><div class="label">Patterns</div>${patternsHtml}</div>` : ''}
+    <div class="predict-section">
+      <h3>Next hour — price goes?</h3>
+      <div class="predict-btns">
+        <button class="btn-up" id="btn-predict-up" onclick="predict('UP')">📈 UP</button>
+        <button class="btn-down" id="btn-predict-down" onclick="predict('DOWN')">📉 DOWN</button>
+      </div>
+      <div id="result-area"></div>
+    </div>
+  `;
+}
+
+function predict(direction) {
+  document.getElementById('btn-predict-up').disabled = true;
+  document.getElementById('btn-predict-down').disabled = true;
+
+  const correct = direction === quizData.answer;
+  session.total++;
+  if (correct) session.correct++;
+  updateScore();
+
+  let explanation = '';
+  if (quizData.trend === 'UPTREND' && quizData.answer === 'UP')
+    explanation = 'Trend continuation — in an uptrend, the default is UP. Trade with the trend.';
+  else if (quizData.trend === 'DOWNTREND' && quizData.answer === 'DOWN')
+    explanation = 'Trend continuation — in a downtrend, the default is DOWN. Trade with the trend.';
+  else if (quizData.trend === 'RANGE')
+    explanation = 'In a range, price oscillates between support and resistance. Where was price relative to those levels?';
+  else
+    explanation = 'Counter-trend move. These happen — the goal isn\'t 100%, it\'s recognizing the higher-probability direction.';
+
+  if (quizData.patterns.length) {
+    const p = quizData.patterns[quizData.patterns.length - 1];
+    explanation += `<br><br>Pattern: <strong>${p.name}</strong> — ${p.meaning || ''}`;
+  }
+
+  document.getElementById('result-area').innerHTML = `
+    <div class="result-box ${correct ? 'correct' : 'wrong'}">
+      ${correct ? '✅ Correct!' : '❌ Wrong'}
+      — Price went ${quizData.answer} (${quizData.move > 0 ? '+' : ''}${quizData.move.toFixed(2)} pts)
+      <div class="explanation">${explanation}</div>
+    </div>
+    <button class="next-btn" onclick="loadQuizQuestion()">Next Question →</button>
+  `;
+}
+
+// ── Learn Mode ─────────────────────────────────────────
+
+async function startLearn() {
+  document.getElementById('btn-learn').classList.add('active');
+  document.getElementById('btn-quiz').classList.remove('active');
+
+  const resp = await fetch('/api/trainer/chart?mode=learn');
+  const data = await resp.json();
+
+  setCandles(data.candles);
+  drawSR(data.support, data.resistance);
+
+  // Build S/R explanation from actual data
+  let srExplain = '';
+  data.support.forEach(s => {
+    srExplain += 'Support ' + s.price.toFixed(0) + ': price bounced here ' + s.touches + '× (' + s.times.join(', ') + ')\n';
+  });
+  data.resistance.forEach(r => {
+    srExplain += 'Resistance ' + r.price.toFixed(0) + ': price rejected here ' + r.touches + '× (' + r.times.join(', ') + ')\n';
+  });
+  if (!srExplain) srExplain = 'No clear S/R levels detected.';
+  srExplain += '\nArrows on the chart mark each bounce/rejection.';
+
+  const lessons = [
+    { title: '🕯️ Candlesticks', text: 'Green = buyers won (close > open)\nRed = sellers won (close < open)\nLong wick = rejection\nBig body = conviction\nSmall body = indecision' },
+    { title: '📏 Support & Resistance', text: srExplain },
+    { title: '📈 Trend', text: 'Current: ' + data.trend + '\n\nUptrend = Higher Highs + Higher Lows\nDowntrend = Lower Highs + Lower Lows\nRange = Sideways\n\nTrade WITH the trend, not against it.' },
+    { title: '📊 Volume', text: 'Volume bars at bottom.\n\nHigh vol + price move = real (continuation)\nLow vol + price move = fake (reversal likely)\nHigh vol at S/R = strong level' },
+    { title: '🔍 Patterns', text: data.patterns.map(p => p.name + ': ' + (p.meaning || '')).join('\n') || 'No patterns detected right now.' },
+  ];
+
+  document.getElementById('sidebar').innerHTML = lessons.map(l => `
+    <div class="lesson-card"><h3>${l.title}</h3><p>${l.text.replace(/\n/g, '<br>')}</p></div>
+  `).join('');
+}
+
+// ── Init ───────────────────────────────────────────────
+initChart();
+startQuiz();
+</script>
+</body>
+</html>

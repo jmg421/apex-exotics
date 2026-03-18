@@ -36,9 +36,11 @@ def calculate_targets(contract, entry_price, side):
 
 def open_managed_position(contract, side, entry_price, contracts=1):
     """Open position with automatic stop loss and profit target."""
-    
-    # Open the position
-    open_position(contract, side, entry_price, contracts)
+    # ZONE GUARD: All trades must go through zone_trader.py
+    print("❌ Direct trading disabled.")
+    print("   Use zone_trader.py — the single gateway for all trades.")
+    print(f"   python3 zone_trader.py {side.lower()} {entry_price} <signal>")
+    return None, None
     
     # Calculate targets
     stop_loss, profit_target = calculate_targets(contract, entry_price, side)

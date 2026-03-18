@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Ask Jarvis: What should I do RIGHT NOW with the CL oil trade?"""
-import requests
-import time
 import json
+import sys
+from pathlib import Path
 
-JARVIS_URL = "https://staging.nodes.bio/api/jarvis/generate"
-JARVIS_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTZmYjFmOTM4OTQ3ZjJhZCIsImVtYWlsIjoiam9obkBub2Rlcy5iaW8iLCJleHAiOjE3NzU0OTg4MjYsImlhdCI6MTc3MjkwNjgyNn0.8NVXoJByiRCHhOaptfTdbIkcjMpOkMQtCqbKPPIwL2w"
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from shared.jarvis_client import jarvis_ask
 
 prompt = """I need a decision RIGHT NOW. It's 9:53 AM ET on Monday, March 9, 2026.
 
@@ -48,57 +48,30 @@ Give me ONE clear action:
 Be specific. I'm about to place an order. What's the move?
 """
 
-def ask_jarvis(prompt):
-    headers = {
-        "Authorization": f"Bearer {JARVIS_TOKEN}",
-        "Content-Type": "application/json"
-    }
-    
-    resp = requests.post(JARVIS_URL, headers=headers, 
-                        json={"prompt": prompt, "models": ["anthropic", "openai"]}, timeout=30)
-    result = resp.json()
-    
-    poll_url = f"https://staging.nodes.bio{result['poll_url']}"
-    
-    print("🤖 Asking Jarvis for trading decision", end='', flush=True)
-    for _ in range(60):
-        time.sleep(1)
-        print('.', end='', flush=True)
-        poll_resp = requests.get(poll_url, headers=headers, timeout=10)
-        poll_data = poll_resp.json()
-        
-        if poll_data['status'] == 'completed':
-            print(" Done!\n")
-            return poll_data['models']
-    
-    return None
-
 if __name__ == '__main__':
     print("⚡ JARVIS: WHAT'S MY MOVE?")
     print("="*60)
-    print("Time: 9:53 AM ET")
-    print("CL (Crude Oil): $99.18 (+9.11%)")
-    print("="*60)
-    print()
     
-    response = ask_jarvis(prompt)
+    result = jarvis_ask(prompt, models=["anthropic_claude", "openai_gpt"])
     
-    if response:
+    # Show synthesis (the unified decision)
+    if result.get("synthesis"):
+        print("\n🧠 SYNTHESIZED DECISION")
         print("="*60)
-        print("📊 CLAUDE'S DECISION")
+        print(result["synthesis"].get("unified_answer", ""))
+        print(f"\nConfidence: {result['synthesis'].get('confidence_score', 'N/A')}")
+        if result["synthesis"].get("disagreements"):
+            print(f"⚠️  Disagreements: {result['synthesis']['disagreements']}")
+    
+    # Show individual models
+    for model, data in result.get("models", {}).items():
+        print(f"\n📊 {model.upper()}")
         print("="*60)
-        if 'anthropic' in response:
-            print(response['anthropic'].get('response', 'No response'))
-        
-        print("\n" + "="*60)
-        print("📊 GPT-4'S DECISION")
-        print("="*60)
-        if 'openai' in response:
-            print(response['openai'].get('response', 'No response'))
-        
-        # Save
-        with open('data/jarvis_trading_decision.json', 'w') as f:
-            json.dump(response, f, indent=2)
-        
-        print("\n" + "="*60)
-        print("💾 Saved to data/jarvis_trading_decision.json")
+        if isinstance(data, dict):
+            print(data.get('response', 'No response'))
+    
+    # Save
+    with open('data/jarvis_trading_decision.json', 'w') as f:
+        json.dump(result, f, indent=2)
+    
+    print("\n💾 Saved to data/jarvis_trading_decision.json")

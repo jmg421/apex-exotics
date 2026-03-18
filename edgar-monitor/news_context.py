@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """News Context for Trading Signals - Ask Jarvis about market news"""
-import requests
-import time
+import sys
 import json
 from datetime import datetime
+from pathlib import Path
 
-JARVIS_URL = "https://staging.nodes.bio/api/jarvis/generate"
-JARVIS_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTZmYjFmOTM4OTQ3ZjJhZCIsImVtYWlsIjoiam9obkBub2Rlcy5iaW8iLCJleHAiOjE3NzU0OTg4MjYsImlhdCI6MTc3MjkwNjgyNn0.8NVXoJByiRCHhOaptfTdbIkcjMpOkMQtCqbKPPIwL2w"
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from shared.jarvis_client import jarvis_ask
 
-def ask_jarvis_news(symbols, models=["grok", "perplexity"]):
-    """Ask Jarvis (with Grok/Perplexity) for real-time news context"""
+
+def ask_jarvis_news(symbols, models=["xai_grok", "perplexity"]):
+    """Ask Jarvis (with Grok/Perplexity) for real-time news context. Returns full result with synthesis."""
     
     prompt = f"""What's happening in the markets RIGHT NOW that explains these moves?
 
@@ -38,32 +39,9 @@ Give me ACTIONABLE context:
 Be specific. I need to decide whether to go LONG CL right now.
 """
     
-    headers = {
-        "Authorization": f"Bearer {JARVIS_TOKEN}",
-        "Content-Type": "application/json"
-    }
-    
     print(f"🤖 Asking Jarvis ({', '.join(models)}) for news context...")
-    
-    resp = requests.post(JARVIS_URL, headers=headers, 
-                        json={"prompt": prompt, "models": models}, timeout=30)
-    result = resp.json()
-    
-    poll_url = f"https://staging.nodes.bio{result['poll_url']}"
-    
-    print("Waiting for response", end='', flush=True)
-    for _ in range(60):
-        time.sleep(1)
-        print('.', end='', flush=True)
-        poll_resp = requests.get(poll_url, headers=headers, timeout=10)
-        poll_data = poll_resp.json()
-        
-        if poll_data['status'] == 'completed':
-            print(" Done!\n")
-            return poll_data['models']
-    
-    print(" Timeout!")
-    return None
+    result = jarvis_ask(prompt, models=models)
+    return result
 
 if __name__ == '__main__':
     print("📰 NEWS CONTEXT ANALYSIS")
@@ -71,55 +49,38 @@ if __name__ == '__main__':
     print()
     
     # Get news context from Jarvis (Grok + Perplexity have real-time web access)
-    response = ask_jarvis_news(['CL', 'ES', 'NG'], models=["grok", "perplexity"])
+    result = ask_jarvis_news(['CL', 'ES', 'NG'], models=["xai_grok", "perplexity"])
     
-    if response:
-        # Display Grok response (real-time Twitter/X data)
-        if 'grok' in response:
+    if result and result.get("models"):
+        models = result["models"]
+        
+        for name, data in models.items():
             print("="*60)
-            print("🤖 GROK ANALYSIS (Real-time X/Twitter data)")
+            print(f"🤖 {name.upper()}")
             print("="*60)
-            print(response['grok'].get('response', 'No response'))
+            if isinstance(data, dict):
+                print(data.get('response', 'No response'))
             print()
         
-        # Display Perplexity response (real-time web search)
-        if 'perplexity' in response:
+        # Show synthesis
+        if result.get("synthesis"):
             print("="*60)
-            print("🔍 PERPLEXITY ANALYSIS (Real-time web search)")
+            print("🧠 SYNTHESIS")
             print("="*60)
-            print(response['perplexity'].get('response', 'No response'))
-            print()
+            print(result["synthesis"].get("unified_answer", ""))
+            print(f"\nConfidence: {result['synthesis'].get('confidence_score', 'N/A')}")
         
         # Save
         news_context = {
             'timestamp': datetime.now().isoformat(),
             'symbols_analyzed': ['CL', 'ES', 'NG'],
-            'news_analysis': response
+            'models': models,
+            'synthesis': result.get("synthesis"),
         }
         
         with open('data/news_context.json', 'w') as f:
             json.dump(news_context, f, indent=2)
         
-        print("="*60)
-        print("💾 Saved to data/news_context.json")
-        
-        # Quick summary
-        print("\n📊 TRADING DECISION:")
-        print("="*60)
-        
-        # Check if responses mention specific catalysts
-        all_text = str(response).lower()
-        
-        if 'geopolitical' in all_text or 'middle east' in all_text or 'opec' in all_text:
-            print("⚠️  GEOPOLITICAL CATALYST - High risk, could reverse quickly")
-        
-        if 'supply' in all_text or 'production' in all_text:
-            print("✅ SUPPLY-DRIVEN - More sustainable move")
-        
-        if 'fade' in all_text or 'spike' in all_text:
-            print("🔴 RECOMMENDATION: Wait for pullback or fade the move")
-        elif 'momentum' in all_text or 'breakout' in all_text:
-            print("🟢 RECOMMENDATION: Ride the momentum with tight stops")
-        
+        print("\n💾 Saved to data/news_context.json")
     else:
         print("❌ Failed to get news context")

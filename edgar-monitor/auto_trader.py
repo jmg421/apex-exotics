@@ -8,8 +8,12 @@ async def auto_trade():
     """
     Run batch analyzer and automatically execute actionable signals.
     """
-    print("🔍 Running batch analysis...")
-    results = analyze_all_companies()
+    # ZONE GUARD: Automated trading disabled.
+    # The zone trader enforces single-instrument, fixed-size, psychology-gated trades.
+    print("❌ Auto-trading disabled.")
+    print("   Use zone_trader.py — the single gateway for all trades.")
+    print("   python3 zone_trader.py long/short PRICE SIGNAL")
+    return
     
     print(f"📊 Analyzed {len(results)} companies")
     

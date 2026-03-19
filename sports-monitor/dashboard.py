@@ -56,28 +56,38 @@ def get_current_channel():
 
 @app.route('/stream.m3u8')
 def get_stream():
-    """Redirect to the most recent m3u8 file on the HLS server"""
+    """Proxy the most recent m3u8 from HLS server"""
     import glob
     import os
-    from flask import redirect, make_response
+    from flask import make_response
     from urllib.parse import quote
-    
+
     movies_dir = os.path.expanduser('/Users/apple/Movies')
     m3u8_files = glob.glob(f'{movies_dir}/*.m3u8')
-    
+
     if not m3u8_files:
         return "No stream available", 404
-    
-    # Get most recent m3u8 that still has .ts segments
+
     m3u8_files.sort(key=os.path.getmtime, reverse=True)
     for m3u8 in m3u8_files:
         basename = os.path.splitext(os.path.basename(m3u8))[0]
         if glob.glob(f'{movies_dir}/{basename}*.ts'):
-            filename = os.path.basename(m3u8)
-            response = redirect(f'http://localhost:8081/{quote(filename)}')
+            # Read and rewrite m3u8 to use relative /stream/ paths
+            with open(m3u8, 'r') as f:
+                content = f.read()
+            # Replace bare filenames with /stream/ prefix
+            lines = []
+            for line in content.splitlines():
+                if line and not line.startswith('#'):
+                    lines.append(f'/stream/{line}')
+                else:
+                    lines.append(line)
+            response = make_response('\n'.join(lines))
+            response.headers['Content-Type'] = 'application/vnd.apple.mpegurl'
             response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+            response.headers['Access-Control-Allow-Origin'] = '*'
             return response
-    
+
     return "No stream with segments available", 404
 
 
@@ -90,14 +100,11 @@ def get_stream_segment(filename):
     movies_dir = os.path.expanduser('/Users/apple/Movies')
     file_path = os.path.join(movies_dir, filename)
     
-    print(f"Requested segment: {filename}")
-    print(f"Full path: {file_path}")
-    print(f"Exists: {os.path.exists(file_path)}")
-    
     if os.path.exists(file_path):
-        response = send_file(file_path, mimetype='video/mp2t')
+        mimetype = 'application/vnd.apple.mpegurl' if filename.endswith('.m3u8') else 'video/mp2t'
+        response = send_file(file_path, mimetype=mimetype)
         response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Cache-Control'] = 'no-cache'
+        response.headers['Cache-Control'] = 'no-cache' if filename.endswith('.m3u8') else 'public, max-age=60'
         return response
     return f"Segment not found: {filename}", 404
 

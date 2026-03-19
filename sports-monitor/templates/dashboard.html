@@ -132,25 +132,34 @@
             bottom: 0; left: 0;
             width: 100vw;
             z-index: 100;
-            background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 70%, transparent 100%);
-            padding: 40px 40px 20px 40px;
-            transform: translateY(100%);
-            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        #smart-ticker.visible {
-            transform: translateY(0);
+            background: rgba(0,0,0,0.8);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            overflow: hidden;
+            height: 38px;
+            display: flex;
+            align-items: center;
         }
         .ticker-items {
             display: flex;
-            gap: 40px;
-            overflow: hidden;
+            white-space: nowrap;
+            animation: tickerScroll var(--ticker-duration, 30s) linear infinite;
+        }
+        @keyframes tickerScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
         .ticker-item {
             flex-shrink: 0;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
+            padding: 0 30px;
             opacity: 0.9;
+        }
+        .ticker-sep {
+            color: rgba(255,255,255,0.2);
+            padding: 0 10px;
+            font-size: 10px;
         }
         .ticker-badge {
             font-size: 10px;
@@ -309,6 +318,7 @@
         // === HLS STREAM ===
         const video = document.getElementById('video');
         if (Hls.isSupported()) {
+          (async () => {
             const hls = new Hls({
                 liveSyncDurationCount: 2,
                 liveMaxLatencyDurationCount: 4,
@@ -327,12 +337,22 @@
             });
             const isRemote = window.location.hostname !== 'localhost' && window.location.hostname !== '192.168.0.180';
             const remoteParam = isRemote ? '&remote=true' : '';
-            const streamUrl = window.location.origin + '/stream.m3u8?t=' + Date.now() + (isRemote ? '&quality=remote' : '');
+            let streamUrl;
+            if (isRemote) {
+                streamUrl = window.location.origin + '/stream.m3u8?t=' + Date.now() + '&quality=remote';
+            } else {
+                // LAN: go direct to HLS server, bypass Flask to avoid saturating gunicorn
+                const hlsPort = 8081;
+                const resp = await fetch('/api/stream_source');
+                const src = await resp.json();
+                streamUrl = `http://${window.location.hostname}:${hlsPort}/${encodeURIComponent(src.filename)}`;
+            }
             hls.loadSource(streamUrl);
             hls.attachMedia(video);
             hls.on(Hls.Events.MANIFEST_PARSED, () => {
                 video.play().catch(() => {});
             });
+          })();
         }
         document.body.addEventListener('click', () => { video.muted = false; }, {once: true});
 
@@ -420,7 +440,7 @@
         // === SMART TICKER ===
         function showTicker(items) {
             const container = document.getElementById('ticker-items');
-            container.innerHTML = items.map(item => {
+            const html = items.map(item => {
                 let badgeClass = 'live';
                 if (item.upset) badgeClass = 'upset';
                 else if (item.margin <= 5) badgeClass = 'close';
@@ -428,16 +448,13 @@
                     <span class="ticker-badge ${badgeClass}">${item.badge}</span>
                     <span class="ticker-text">${item.text}<span class="ticker-score">${item.score}</span></span>
                 </div>`;
-            }).join('');
-            document.getElementById('smart-ticker').classList.add('visible');
-            clearTimeout(tickerTimeout);
-            // Auto-hide after 12s unless it's upcoming games (no score = countdown)
-            const hasLiveScores = items.some(i => i.score && !i.score.includes('m'));
-            if (hasLiveScores) {
-                tickerTimeout = setTimeout(() => {
-                    document.getElementById('smart-ticker').classList.remove('visible');
-                }, 12000);
-            }
+            }).join('<span class="ticker-sep">◆</span>');
+            // Duplicate for seamless loop
+            container.innerHTML = html + '<span class="ticker-sep">◆</span>' + html + '<span class="ticker-sep">◆</span>';
+            // Adjust speed based on content width
+            const halfWidth = container.scrollWidth / 2;
+            const duration = Math.max(20, halfWidth / 50); // ~50px/sec
+            container.style.setProperty('--ticker-duration', duration + 's');
         }
 
         // === PARTICLES on scoring runs ===
@@ -652,94 +669,73 @@
         let upsetCache = [];
         let otherScoresCache = [];
 
+        let finalScoresCache = [];
         async function fetchTickerContent() {
-            // Refresh all content sources
             try {
-                const [headlines, mm, scores] = await Promise.all([
+                const [headlines, mm, scores, finals] = await Promise.all([
                     fetch('/api/espn_headlines').then(r => r.json()).catch(() => []),
                     fetch('/api/march_madness').then(r => r.json()).catch(() => ({})),
-                    fetch('/api/excitement').then(r => r.json()).catch(() => [])
+                    fetch('/api/excitement?sport=all').then(r => r.json()).catch(() => []),
+                    fetch('/api/final_scores').then(r => r.json()).catch(() => [])
                 ]);
                 headlinesCache = headlines.filter(h => h.headline && h.headline !== 'Error loading headlines');
                 upsetCache = (mm.upsets || []).filter(u => u.Upset_Score >= 4 && !u.Matchup?.includes('TBA'));
                 otherScoresCache = scores.filter(g => g.sport !== 'NCAA Basketball');
+                finalScoresCache = finals;
             } catch(e) {}
         }
 
         function smartTicker() {
-            tickerCycle++;
-            const phase = tickerCycle % 6;
+            const items = [];
 
-            // Phase 0-1: Dad joke (question then answer)
-            if (phase === 0) {
-                const joke = dadJokes[jokeIndex % dadJokes.length];
-                showTicker([{ badge: '🤔', text: joke[0], score: '', margin: 99, upset: false }]);
-                jokeUntil = Date.now() + 8000;
-                return;
-            }
-            if (phase === 1) {
-                const joke = dadJokes[jokeIndex % dadJokes.length];
-                showTicker([{ badge: '😂', text: joke[1], score: '', margin: 99, upset: false }]);
-                jokeUntil = Date.now() + 10000;
-                jokeIndex++;
-                return;
-            }
-
-            // Phase 2: ESPN headline
-            if (phase === 2 && headlinesCache.length > 0) {
-                const h = headlinesCache[headlineIndex % headlinesCache.length];
-                headlineIndex++;
-                showTicker([{ badge: '📰', text: h.headline, score: '', margin: 99, upset: false }]);
-                jokeUntil = Date.now() + 10000;
-                return;
-            }
-
-            // Phase 3: Upcoming game (SOON)
-            if (phase === 3) {
-                jokeUntil = 0; // Let updateDashboard show SOON
-                return;
-            }
-
-            // Phase 4: March Madness upset watch
-            if (phase === 4 && upsetCache.length > 0) {
-                const u = upsetCache[Math.floor(Math.random() * upsetCache.length)];
-                showTicker([{ badge: '🚨', text: `Upset Watch: ${u.Matchup} — Upset Score: ${u.Upset_Score}`, score: '', margin: 2, upset: true }]);
-                jokeUntil = Date.now() + 10000;
-                return;
-            }
-
-            // Phase 5: Other live scores (NHL, NBA, MLB)
-            if (phase === 5 && otherScoresCache.length > 0) {
-                const items = otherScoresCache.slice(0, 3).map(g => {
-                    const m = Math.abs((parseInt(g.away_score)||0) - (parseInt(g.home_score)||0));
-                    return {
-                        badge: g.sport || 'LIVE',
-                        text: `${g.away || g.away_full} vs ${g.home || g.home_full}`,
-                        score: ` ${g.away_score}-${g.home_score}`,
-                        margin: m, upset: false
-                    };
-                });
-                showTicker(items);
-                jokeUntil = Date.now() + 10000;
-                return;
-            }
-
-            // Fallback: dad joke
+            // Dad joke
             const joke = dadJokes[jokeIndex % dadJokes.length];
-            showTicker([{ badge: '🤔', text: joke[0], score: '', margin: 99, upset: false }]);
-            jokeUntil = Date.now() + 8000;
+            items.push({ badge: '🤔', text: joke[0], score: '', margin: 99, upset: false });
+            items.push({ badge: '😂', text: joke[1], score: '', margin: 99, upset: false });
+            jokeIndex++;
+
+            // ESPN headlines
+            headlinesCache.slice(0, 3).forEach(h => {
+                items.push({ badge: '📰', text: h.headline, score: '', margin: 99, upset: false });
+            });
+
+            // Upset watch
+            upsetCache.slice(0, 2).forEach(u => {
+                items.push({ badge: '🚨', text: `Upset Watch: ${u.Matchup} — Upset Score: ${u.Upset_Score}`, score: '', margin: 2, upset: true });
+            });
+
+            // Other live scores
+            otherScoresCache.slice(0, 4).forEach(g => {
+                const m = Math.abs((parseInt(g.away_score)||0) - (parseInt(g.home_score)||0));
+                items.push({
+                    badge: g.sport?.replace(' Basketball','').replace(' Hockey','') || 'LIVE',
+                    text: `${g.away || g.away_full} vs ${g.home || g.home_full}`,
+                    score: ` ${g.away_score}-${g.home_score}`,
+                    margin: m, upset: false
+                });
+            });
+
+            // Final scores
+            finalScoresCache.slice(0, 4).forEach(g => {
+                items.push({
+                    badge: 'FINAL',
+                    text: `${g.away} ${g.away_score}, ${g.home} ${g.home_score}`,
+                    score: '', margin: 99, upset: false
+                });
+            });
+
+            if (items.length > 0) showTicker(items);
         }
 
         // === BOOT ===
         updateChannel();
         updateDashboard();
         checkTipOff();
-        fetchTickerContent();
+        fetchTickerContent().then(() => smartTicker());
         setInterval(updateDashboard, 5000);
         setInterval(updateChannel, 10000);
         setInterval(checkTipOff, 30000);
-        setInterval(fetchTickerContent, 60000);
-        setInterval(smartTicker, 10000);
+        setInterval(() => fetchTickerContent().then(() => smartTicker()), 60000);
     </script>
 </body>
 </html>

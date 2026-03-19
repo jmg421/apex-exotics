@@ -43,8 +43,8 @@ JARVIS_TOKEN = os.getenv('JARVIS_TOKEN', '')
 def filter_headlines_with_jarvis(headlines):
     """Filter headlines to only important/interesting ones"""
     # Simple keyword-based filter
-    important_keywords = ['trade', 'sign', 'deal', 'injury', 'injured', 'out', 'return', 'fire', 'hire', 'suspend', 'fine', 'record', 'mvp', 'playoff']
-    skip_keywords = ['host', 'face', 'play the', 'takes on', 'looks to', 'game preview', 'live updates', 'grades', 'tracker', 'offseason', 'free agency', 'mock draft', 'predictions', 'odds', 'power rankings', 'what to know', 'how to watch', 'preview:', 'picks:', 'best bets']
+    important_keywords = ['trade', 'traded', 'sign', 'signing', 'deal', 'injury', 'injured', 'out for', 'torn', 'return', 'fire', 'hire', 'suspend', 'fine', 'mvp', 'playoff', 'shut down', 'waive', 'release', 'cut', 'retire', 'arrest', 'ban', 'upset', 'buzzer', 'overtime', 'walk-off', 'no-hitter', 'record-breaking', 'scores', 'scored', 'top ', 'beat', 'defeat', 'win ', 'wins ', 'rout', 'clinch', 'eliminate', 'advance', 'double-double', 'triple-double']
+    skip_keywords = ['host', 'face', 'play the', 'takes on', 'looks to', 'game preview', 'live updates', 'grades', 'tracker', 'offseason', 'free agency', 'mock draft', 'predictions', 'odds', 'power rankings', 'what to know', 'how to watch', 'preview:', 'picks:', 'best bets', 'game highlights', 'highlights:', 'full highlights', 'recap:', 'records to know', 'streaks:', 'rule change', 'propose', 'all-time', 'history of']
     
     filtered = []
     for h in headlines:
@@ -77,6 +77,18 @@ def get_current_channel():
     except Exception as e:
         print(f"Error reading channel state: {e}")
         return jsonify({'channel': 'ERROR', 'timestamp': None, 'peer_count': 0})
+
+@app.route('/api/stream_source')
+def get_stream_source():
+    """Return the current active m3u8 filename for direct HLS access"""
+    import glob
+    movies_dir = os.path.expanduser('/Users/apple/Movies')
+    m3u8_files = sorted(glob.glob(f'{movies_dir}/*.m3u8'), key=os.path.getmtime, reverse=True)
+    for m in m3u8_files:
+        basename = os.path.splitext(os.path.basename(m))[0]
+        if glob.glob(f'{movies_dir}/{basename}*.ts'):
+            return jsonify({'filename': os.path.basename(m)})
+    return jsonify({'filename': ''})
 
 @app.route('/stream.m3u8')
 @requires_auth
@@ -334,13 +346,35 @@ def get_excitement():
     except Exception as e:
         return jsonify([])
 
+@app.route('/api/final_scores')
+def get_final_scores():
+    """Get today's final scores across sports"""
+    finals = []
+    try:
+        for path in ['basketball/mens-college-basketball', 'basketball/nba', 'hockey/nhl']:
+            data = requests.get(f'http://site.api.espn.com/apis/site/v2/sports/{path}/scoreboard', timeout=5).json()
+            for e in data.get('events', []):
+                if e['status']['type'].get('state') == 'post':
+                    c = e['competitions'][0]['competitors']
+                    away = next(t for t in c if t['homeAway'] == 'away')
+                    home = next(t for t in c if t['homeAway'] == 'home')
+                    finals.append({
+                        'away': away['team']['shortDisplayName'],
+                        'home': home['team']['shortDisplayName'],
+                        'away_score': int(away.get('score', 0)),
+                        'home_score': int(home.get('score', 0)),
+                    })
+    except:
+        pass
+    return jsonify(finals)
+
 @app.route('/api/espn_headlines')
 def get_espn_headlines():
     """Get ESPN top headlines filtered by Jarvis"""
     try:
         # Collect headlines
         headlines = []
-        for sport in ['football/nfl', 'basketball/nba', 'hockey/nhl']:
+        for sport in ['basketball/nba', 'hockey/nhl', 'basketball/mens-college-basketball']:
             resp = requests.get(f'http://site.api.espn.com/apis/site/v2/sports/{sport}/news', timeout=3)
             data = resp.json()
             

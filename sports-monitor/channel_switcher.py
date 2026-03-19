@@ -40,12 +40,16 @@ def change_channel(channel, send_ok=False):
     
     print(f"Changing to channel {channel_str}...")
     
+    # Wake up Broadlink connection
+    get_device()
+    time.sleep(0.3)
+    
     # Send each digit
     for digit in channel_str:
         if digit in IR_CODES:
             print(f"  Sending digit: {digit}")
             send_ir_code(IR_CODES[digit])
-            time.sleep(0.8)  # VseeBox needs time between digits
+            time.sleep(0.5)  # Fast enough to stay in VSeeBox input window
         else:
             print(f"  ❌ Digit {digit} not in IR_CODES!")
     

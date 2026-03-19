@@ -41,7 +41,7 @@ CRUNCH_MINUTES = 2.0  # Last N minutes of game
 CRUNCH_MARGIN = 5     # Score margin must be <= this
 
 # Pinned teams get excitement boost + longer rotation time
-PINNED_TEAMS = {'OSU'}
+PINNED_TEAMS = {'DUKE'}
 PINNED_BOOST = 30
 PINNED_ROTATION_SECONDS = 120
 

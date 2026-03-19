@@ -453,8 +453,9 @@
         // === SMART TICKER ===
         let tickerPos = 0;
         let tickerWidth = 0;
+        let lastTickerHtml = '';
+        let pendingTickerHtml = '';
         function showTicker(items) {
-            const container = document.getElementById('ticker-items');
             const html = items.map(item => {
                 let badgeClass = 'live';
                 if (item.upset) badgeClass = 'upset';
@@ -464,13 +465,33 @@
                     <span class="ticker-text">${item.text}<span class="ticker-score">${item.score}</span></span>
                 </div>`;
             }).join('<span class="ticker-sep">◆</span>');
+            if (html === lastTickerHtml) return;
+            if (!lastTickerHtml) {
+                // First load — render immediately
+                _applyTicker(html);
+            } else {
+                // Queue for seamless swap at loop seam
+                pendingTickerHtml = html;
+            }
+        }
+        function _applyTicker(html) {
+            const container = document.getElementById('ticker-items');
+            lastTickerHtml = html;
             container.innerHTML = html + '<span class="ticker-sep">◆</span>' + html;
-            tickerWidth = container.scrollWidth / 2;
+            tickerPos = 0;
+            tickerWidth = Math.ceil(container.scrollWidth / 2);
         }
         // Lightweight scroll via rAF
         function tickerFrame() {
             tickerPos -= 0.8;
-            if (tickerPos <= -tickerWidth) tickerPos += tickerWidth;
+            if (tickerPos <= -tickerWidth) {
+                tickerPos += tickerWidth;
+                // Swap in pending content at the seam — invisible transition
+                if (pendingTickerHtml) {
+                    _applyTicker(pendingTickerHtml);
+                    pendingTickerHtml = '';
+                }
+            }
             const el = document.getElementById('ticker-items');
             if (el) el.style.transform = `translate3d(${tickerPos}px,0,0)`;
             requestAnimationFrame(tickerFrame);
@@ -774,7 +795,7 @@
         setInterval(updateDashboard, 5000);
         setInterval(updateChannel, 10000);
         setInterval(checkTipOff, 30000);
-        setInterval(() => fetchTickerContent().then(() => smartTicker()), 60000);
+        setInterval(() => fetchTickerContent().then(() => smartTicker()), 120000);
     </script>
 </body>
 </html>

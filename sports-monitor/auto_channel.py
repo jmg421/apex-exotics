@@ -36,6 +36,10 @@ ROTATION_SECONDS = 60  # Time on each game before rotating
 PREGAME_MINUTES = 5  # Switch this many minutes before tip-off
 CLOCK_STALL_SECONDS = 25  # If game clock unchanged this long, likely commercial
 
+# End-of-game lock: no switching during crunch time
+CRUNCH_MINUTES = 2.0  # Last N minutes of game
+CRUNCH_MARGIN = 5     # Score margin must be <= this
+
 # Pinned teams get excitement boost + longer rotation time
 PINNED_TEAMS = {'OSU'}
 PINNED_BOOST = 30
@@ -121,6 +125,22 @@ def is_clock_stalled(game):
     return (now - prev[1]) >= CLOCK_STALL_SECONDS
 
 
+def is_crunch_time(game):
+    """Detect if game is in crunch time: close game in final minutes."""
+    status = game.get('status', '')
+    margin = abs(game.get('away_score', 0) - game.get('home_score', 0))
+    if margin > CRUNCH_MARGIN:
+        return False
+    # Parse clock like "2:30 - 2nd Half" or "1:45 - 4th"
+    import re
+    m = re.match(r'(\d+):(\d+)\s*-\s*(2nd Half|4th|OT|2OT|3OT)', status)
+    if not m:
+        return False
+    mins, secs = int(m.group(1)), int(m.group(2))
+    remaining = mins + secs / 60.0
+    return remaining <= CRUNCH_MINUTES
+
+
 def run():
     """Main loop with round-robin rotation across exciting games."""
     # Read current channel from disk so we don't switch on startup
@@ -188,8 +208,15 @@ def run():
         current_game = next((g for g in switchable if g['channel'] == current_channel), None)
         current_stalled = current_game['stalled'] if current_game else False
         current_pinned = current_game.get('pinned', False) if current_game else False
+        current_crunch = is_crunch_time(current_game) if current_game else False
         rot_time = PINNED_ROTATION_SECONDS if current_pinned else ROTATION_SECONDS
         time_on_current = now - last_switch
+
+        if current_crunch:
+            ts2 = datetime.now().strftime('%H:%M:%S')
+            print(f"  [{ts2}] 🔒 CRUNCH TIME — locked on ch {current_channel}")
+            time.sleep(15)
+            continue
 
         if current_stalled and not current_pinned and len(switchable) >= 2:
             # Commercial/timeout — jump to next live game after broadcast delay

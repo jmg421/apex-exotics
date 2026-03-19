@@ -271,7 +271,7 @@
                 <div class="score-team-score" id="home-score"></div>
             </div>
         </div>
-        <div class="score-meta" id="game-clock"></div>
+        <div class="score-meta" id="game-clock" style="display:none"></div>
     </div>
 
     <!-- Smart ticker -->
@@ -320,6 +320,7 @@
                 fragLoadingMaxRetry: 10
             });
             const isRemote = window.location.hostname !== 'localhost' && window.location.hostname !== '192.168.0.180';
+            const remoteParam = isRemote ? '&remote=true' : '';
             const streamUrl = window.location.origin + '/stream.m3u8?t=' + Date.now() + (isRemote ? '&quality=remote' : '');
             hls.loadSource(streamUrl);
             hls.attachMedia(video);
@@ -462,10 +463,10 @@
         async function updateDashboard() {
             try {
                 const sport = 'ncaa-basketball';
-                let games = await (await fetch(`/api/excitement?sport=${sport}`)).json();
+                let games = await (await fetch(`/api/excitement?sport=${sport}${remoteParam}`)).json();
                 // Fallback to all sports if no NCAA games
                 if (!games || !Array.isArray(games) || games.length === 0) {
-                    games = await (await fetch('/api/excitement?sport=all')).json();
+                    games = await (await fetch(`/api/excitement?sport=all${remoteParam}`)).json();
                 }
                 if (!games || !Array.isArray(games) || games.length === 0) {
                     // No live games — hide score bug, show upcoming in ticker briefly
@@ -587,7 +588,7 @@
                 }
                 // Check live game excitement (2 min cooldown)
                 if (Date.now() - lastAutoSwitch < 120000) return;
-                const exc = await (await fetch('/api/excitement?sport=all')).json();
+                const exc = await (await fetch(`/api/excitement?sport=all${remoteParam}`)).json();
                 if (!exc.length) return;
                 const best = exc[0];
                 if (best.excitement < 40 || !best.channel) return;

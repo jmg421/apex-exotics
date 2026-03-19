@@ -8,6 +8,7 @@ from functools import wraps
 import requests
 from datetime import datetime
 import os
+import time
 from headline_storage import save_headline, get_recent_headlines
 from headline_source import find_source_url
 
@@ -235,6 +236,9 @@ def get_espn_game():
     except Exception as e:
         return jsonify({'id': None, 'error': str(e)})
 
+SCORE_DELAY_SECONDS = 65  # delay for remote viewers to avoid spoilers
+score_history = []  # list of (timestamp, games_data)
+
 @app.route('/api/excitement')
 def get_excitement():
     """Get excitement scores for all live games"""
@@ -243,6 +247,7 @@ def get_excitement():
     sys.path.insert(0, os.path.dirname(__file__))
     
     sport = request.args.get('sport', 'ncaa-basketball')
+    is_remote = request.args.get('remote', 'false').lower() == 'true'
     
     try:
         from excitement_engine import get_excitement_rankings
@@ -274,9 +279,26 @@ def get_excitement():
         except:
             pass
         
+        # Store snapshot for delayed serving
+        now = time.time()
+        score_history.append((now, filtered_games))
+        # Prune old entries (keep 2 min)
+        while score_history and score_history[0][0] < now - 120:
+            score_history.pop(0)
+        
+        # Remote viewers get delayed scores
+        if is_remote and score_history:
+            target = now - SCORE_DELAY_SECONDS
+            delayed = score_history[0][1]  # oldest available
+            for ts, data in score_history:
+                if ts <= target:
+                    delayed = data
+                else:
+                    break
+            return jsonify(delayed)
+        
         return jsonify(filtered_games)
     except Exception as e:
-        # Return empty list on error
         return jsonify([])
 
 @app.route('/api/espn_headlines')

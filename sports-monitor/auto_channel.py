@@ -47,6 +47,8 @@ PINNED_ROTATION_SECONDS = 120
 
 # Track game clocks for stall detection
 _clock_history = {}  # game_id -> (clock_str, timestamp_of_last_change)
+_crunch_lock_until = 0  # timestamp — don't switch until this time
+CRUNCH_HOLDOVER = 30    # seconds to hold after game ends (broadcast delay)
 
 def get_broadcasts():
     """Fetch broadcast info for all live games from ESPN."""
@@ -128,7 +130,7 @@ def is_clock_stalled(game):
 def is_crunch_time(game):
     """Detect if game is in crunch time: close game in final minutes."""
     status = game.get('status', '')
-    margin = abs(game.get('away_score', 0) - game.get('home_score', 0))
+    margin = abs(int(game.get('away_score', 0)) - int(game.get('home_score', 0)))
     if margin > CRUNCH_MARGIN:
         return False
     # Parse clock like "2:30 - 2nd Half" or "1:45 - 4th"
@@ -143,6 +145,7 @@ def is_crunch_time(game):
 
 def run():
     """Main loop with round-robin rotation across exciting games."""
+    global _crunch_lock_until
     # Read current channel from disk so we don't switch on startup
     try:
         import json as _json
@@ -213,8 +216,16 @@ def run():
         time_on_current = now - last_switch
 
         if current_crunch:
+            _crunch_lock_until = now + CRUNCH_HOLDOVER
             ts2 = datetime.now().strftime('%H:%M:%S')
             print(f"  [{ts2}] 🔒 CRUNCH TIME — locked on ch {current_channel}")
+            time.sleep(15)
+            continue
+
+        if now < _crunch_lock_until:
+            ts2 = datetime.now().strftime('%H:%M:%S')
+            remaining = int(_crunch_lock_until - now)
+            print(f"  [{ts2}] 🔒 CRUNCH HOLDOVER — locked on ch {current_channel} ({remaining}s)")
             time.sleep(15)
             continue
 

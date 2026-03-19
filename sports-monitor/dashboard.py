@@ -3,7 +3,8 @@
 Sports Stats Monitor - Live NCAA game margins
 Shows efficiency stats that predict outcomes before the score does
 """
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, Response
+from functools import wraps
 import requests
 from datetime import datetime
 import os
@@ -11,6 +12,27 @@ from headline_storage import save_headline, get_recent_headlines
 from headline_source import find_source_url
 
 app = Flask(__name__)
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+
+# Basic auth for private streaming
+STREAM_USER = os.getenv('STREAM_USER', 'apex')
+STREAM_PASS = os.getenv('STREAM_PASS', 'sports2026')
+
+def check_auth(username, password):
+    return username == STREAM_USER and password == STREAM_PASS
+
+def requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        # Skip auth for local/LAN access
+        remote = request.remote_addr
+        if remote in ('127.0.0.1', '::1') or remote.startswith('192.168.'):
+            return f(*args, **kwargs)
+        auth = request.authorization
+        if not auth or not check_auth(auth.username, auth.password):
+            return Response('Access denied', 401, {'WWW-Authenticate': 'Basic realm="Apex Sports"'})
+        return f(*args, **kwargs)
+    return decorated
 
 NCAA_API = "https://ncaa-api.henrygd.me"
 ESPN_API = "http://site.api.espn.com/apis/site/v2/sports"
@@ -38,6 +60,7 @@ def filter_headlines_with_jarvis(headlines):
     return filtered if filtered else headlines[:5]
 
 @app.route('/')
+@requires_auth
 def index():
     return render_template('dashboard.html')
 
@@ -55,12 +78,31 @@ def get_current_channel():
         return jsonify({'channel': 'ERROR', 'timestamp': None, 'peer_count': 0})
 
 @app.route('/stream.m3u8')
+@requires_auth
 def get_stream():
-    """Proxy the most recent m3u8 from HLS server"""
+    """Proxy HLS - use remote quality if requested"""
     import glob
     import os
     from flask import make_response
-    from urllib.parse import quote
+
+    remote = request.args.get('quality') == 'remote'
+    
+    if remote:
+        remote_m3u8 = os.path.expanduser('/Users/apple/Movies/remote/stream.m3u8')
+        if os.path.exists(remote_m3u8):
+            with open(remote_m3u8, 'r') as f:
+                content = f.read()
+            lines = []
+            for line in content.splitlines():
+                if line and not line.startswith('#'):
+                    lines.append(f'/stream/remote/{line}')
+                else:
+                    lines.append(line)
+            response = make_response('\n'.join(lines))
+            response.headers['Content-Type'] = 'application/vnd.apple.mpegurl'
+            response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+            response.headers['Access-Control-Allow-Origin'] = '*'
+            return response
 
     movies_dir = os.path.expanduser('/Users/apple/Movies')
     m3u8_files = glob.glob(f'{movies_dir}/*.m3u8')
@@ -91,7 +133,23 @@ def get_stream():
     return "No stream with segments available", 404
 
 
+@app.route('/stream/remote/<path:filename>')
+@requires_auth
+def get_remote_segment(filename):
+    """Serve low-bitrate remote HLS segments"""
+    from flask import send_file
+    import os
+    file_path = os.path.join('/Users/apple/Movies/remote', filename)
+    if os.path.exists(file_path):
+        mimetype = 'application/vnd.apple.mpegurl' if filename.endswith('.m3u8') else 'video/mp2t'
+        response = send_file(file_path, mimetype=mimetype)
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Cache-Control'] = 'no-cache'
+        return response
+    return f"Segment not found: {filename}", 404
+
 @app.route('/stream/<path:filename>')
+@requires_auth
 def get_stream_segment(filename):
     """Serve HLS segments"""
     from flask import send_file
@@ -199,8 +257,11 @@ def get_excitement():
         }
         
         # Filter by sport
-        sport_filter = sport_map.get(sport, 'NCAA')
-        filtered_games = [g for g in games if sport_filter.upper() in g.get('sport', '').upper()]
+        if sport == 'all':
+            filtered_games = games
+        else:
+            sport_filter = sport_map.get(sport, 'NCAA')
+            filtered_games = [g for g in games if sport_filter.upper() in g.get('sport', '').upper()]
         
         return jsonify(filtered_games)
     except Exception as e:
@@ -1395,4 +1456,4 @@ def upcoming_tip():
 
 
 if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0', port=5001, use_reloader=True)
+    app.run(debug=False, host='0.0.0.0', port=5001, use_reloader=True, threaded=True)

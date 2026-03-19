@@ -51,10 +51,10 @@
             50% { box-shadow: inset 0 0 120px rgba(255, 50, 50, 0.8), inset 0 0 300px rgba(255, 50, 50, 0.3); }
         }
 
-        /* === HOLOGRAPHIC SCORE BUG — top right with channel === */
+        /* === HOLOGRAPHIC SCORE BUG — top left === */
         #score-bug {
             position: fixed;
-            top: 30px; right: 30px;
+            top: 30px; left: 30px;
             z-index: 100;
             background: linear-gradient(135deg, rgba(10,10,30,0.75) 0%, rgba(20,20,50,0.55) 100%);
             backdrop-filter: blur(20px) saturate(1.5);
@@ -203,9 +203,21 @@
             100% { opacity: 0; transform: translateY(-200px) scale(0); }
         }
 
-        /* === CHANNEL INDICATOR — inside score bug === */
+        /* === CHANNEL INDICATOR — minimal top right === */
         #channel-info {
-            display: none;
+            position: fixed;
+            top: 30px; right: 30px;
+            z-index: 100;
+            font-size: 11px;
+            letter-spacing: 2px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            background: rgba(10,10,30,0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            padding: 6px 12px;
         }
 
         /* === NOTIFICATION TOAST === */
@@ -259,7 +271,7 @@
                 <div class="score-team-score" id="home-score"></div>
             </div>
         </div>
-        <div class="score-meta"><span id="channel-display">CH --</span> · <span id="game-clock"></span></div>
+        <div class="score-meta" id="game-clock"></div>
     </div>
 
     <!-- Smart ticker -->
@@ -307,7 +319,9 @@
                 fragLoadingTimeOut: 10000,
                 fragLoadingMaxRetry: 10
             });
-            hls.loadSource(window.location.origin + '/stream.m3u8?t=' + Date.now());
+            const isRemote = window.location.hostname !== 'localhost' && window.location.hostname !== '192.168.0.180';
+            const streamUrl = window.location.origin + '/stream.m3u8?t=' + Date.now() + (isRemote ? '&quality=remote' : '');
+            hls.loadSource(streamUrl);
             hls.attachMedia(video);
             hls.on(Hls.Events.MANIFEST_PARSED, () => {
                 video.play().catch(() => {});
@@ -438,9 +452,7 @@
         async function updateChannel() {
             try {
                 const data = await (await fetch('/api/current_channel')).json();
-                const ch = data.channel || '--';
-                document.getElementById('channel-number').textContent = ch;
-                document.getElementById('channel-display').textContent = 'CH ' + ch;
+                document.getElementById('channel-number').textContent = data.channel || '--';
             } catch(e) {}
         }
 
@@ -450,7 +462,11 @@
         async function updateDashboard() {
             try {
                 const sport = 'ncaa-basketball';
-                const games = await (await fetch(`/api/excitement?sport=${sport}`)).json();
+                let games = await (await fetch(`/api/excitement?sport=${sport}`)).json();
+                // Fallback to all sports if no NCAA games
+                if (!games || !Array.isArray(games) || games.length === 0) {
+                    games = await (await fetch('/api/excitement?sport=all')).json();
+                }
                 if (!games || !Array.isArray(games) || games.length === 0) {
                     // No live games — hide score bug, show upcoming in ticker briefly
                     document.getElementById('score-bug').classList.remove('visible');

@@ -610,9 +610,7 @@
                 currentExcitement = excitement;
                 updateBreathing(excitement, false);
 
-                // Tension bar from margin
-                const margin = Math.abs((current.away_score || 0) - (current.home_score || 0));
-                updateTension(margin);
+                // Tension bar fetched separately (real-time, never delayed)
 
                 // Upset detection
                 if (current.upset_alert) {
@@ -785,16 +783,25 @@
             if (items.length > 0) showTicker(items);
         }
 
+        async function updateTensionFromAPI() {
+            try {
+                const d = await (await fetch('/api/tension')).json();
+                updateTension(d.margin);
+            } catch(e) {}
+        }
+
         // === BOOT ===
         updateChannel();
         Promise.all([
             updateDashboard(),
-            fetchTickerContent().then(() => smartTicker())
+            fetchTickerContent().then(() => smartTicker()),
+            updateTensionFromAPI()
         ]);
         checkTipOff();
         setInterval(updateDashboard, 5000);
         setInterval(updateChannel, 10000);
         setInterval(checkTipOff, 30000);
+        setInterval(updateTensionFromAPI, 10000);
         setInterval(() => fetchTickerContent().then(() => smartTicker()), 120000);
     </script>
 </body>

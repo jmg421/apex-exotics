@@ -358,6 +358,21 @@ def get_dad_jokes():
         pass
     return jsonify(jokes)
 
+@app.route('/api/tension')
+def get_tension():
+    """Real-time margin for tension bar — never delayed"""
+    try:
+        from excitement_engine import get_excitement_rankings
+        games = get_excitement_rankings()
+        if not games:
+            return jsonify({'margin': 30})
+        games.sort(key=lambda g: g.get('excitement', 0), reverse=True)
+        top = games[0]
+        margin = abs(int(top.get('home_score', 0)) - int(top.get('away_score', 0)))
+        return jsonify({'margin': margin})
+    except:
+        return jsonify({'margin': 30})
+
 @app.route('/api/final_scores')
 def get_final_scores():
     """Get today's final scores across sports"""

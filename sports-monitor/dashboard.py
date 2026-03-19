@@ -263,6 +263,17 @@ def get_excitement():
             sport_filter = sport_map.get(sport, 'NCAA')
             filtered_games = [g for g in games if sport_filter.upper() in g.get('sport', '').upper()]
         
+        # Add channel info from auto_channel broadcasts
+        try:
+            from auto_channel import get_broadcasts, resolve_channel
+            broadcasts = get_broadcasts()
+            for g in filtered_games:
+                nets = broadcasts.get(g['game_id'], [])
+                g['network'] = ', '.join(nets) if nets else ''
+                g['channel'] = resolve_channel(nets)
+        except:
+            pass
+        
         return jsonify(filtered_games)
     except Exception as e:
         # Return empty list on error
@@ -1283,18 +1294,9 @@ def change_channel():
             return jsonify({'success': False, 'error': 'No channel specified'}), 400
         
         # Run channel switcher
-        import subprocess
-        result = subprocess.run(
-            ['./venv/bin/python3', 'channel_switcher.py', str(channel)],
-            capture_output=True,
-            text=True,
-            timeout=10
-        )
-        
-        if result.returncode == 0:
-            return jsonify({'success': True, 'channel': channel})
-        else:
-            return jsonify({'success': False, 'error': result.stderr}), 500
+        from channel_switcher import change_channel as switch_channel
+        switch_channel(int(channel))
+        return jsonify({'success': True, 'channel': channel})
             
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500

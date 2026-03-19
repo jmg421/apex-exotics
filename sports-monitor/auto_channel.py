@@ -32,6 +32,7 @@ SPORT_PATHS = {
 MIN_EXCITEMENT = 40
 COOLDOWN = 120
 STICKINESS = 10
+PREGAME_MINUTES = 5  # Switch this many minutes before tip-off
 
 def get_broadcasts():
     """Fetch broadcast info for all live games from ESPN."""
@@ -53,6 +54,43 @@ def get_broadcasts():
             pass
     return broadcasts
 
+def get_upcoming_tips():
+    """Find games tipping off soon that we should switch to for pregame."""
+    tips = []
+    for sport, path in SPORT_PATHS.items():
+        try:
+            data = requests.get(
+                f'http://site.api.espn.com/apis/site/v2/sports/{path}/scoreboard', timeout=5
+            ).json()
+            for event in data.get('events', []):
+                state = event['status']['type'].get('state', '')
+                if state != 'pre':
+                    continue
+                start = event.get('date', '')
+                if not start:
+                    continue
+                from dateutil import parser as dtparser
+                tip_time = dtparser.isoparse(start)
+                now = datetime.now(tip_time.tzinfo)
+                mins_until = (tip_time - now).total_seconds() / 60
+                if 0 < mins_until <= PREGAME_MINUTES:
+                    networks = []
+                    for comp in event.get('competitions', []):
+                        for b in comp.get('broadcasts', []):
+                            networks.extend(b.get('names', []))
+                    ch = resolve_channel(networks)
+                    if ch:
+                        tips.append({
+                            'game_id': event['id'],
+                            'name': event.get('shortName', ''),
+                            'channel': ch,
+                            'networks': networks,
+                            'mins_until': mins_until,
+                        })
+        except:
+            pass
+    return tips
+
 def resolve_channel(networks):
     """Find the best HEAT channel from a list of broadcast networks."""
     for net in networks:
@@ -73,6 +111,18 @@ def run():
         now = time.time()
         games = get_excitement_rankings()
         broadcasts = get_broadcasts()
+
+        # Check for upcoming tip-offs first
+        tips = get_upcoming_tips()
+        if tips and (now - last_switch) > COOLDOWN:
+            tip = tips[0]
+            if tip['channel'] != current_channel:
+                print(f"\n🏀 PREGAME: {tip['name']} tips off in {tip['mins_until']:.0f}m — switching to ch {tip['channel']}")
+                change_channel(tip['channel'])
+                current_channel = tip['channel']
+                last_switch = now
+                time.sleep(30)
+                continue
 
         # Attach channel info
         for g in games:

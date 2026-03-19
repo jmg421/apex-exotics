@@ -33,11 +33,11 @@ CHANNEL_MAP = {
     'CBS Sports Network': 827,
     'Golf Channel': 835,
     
-    # March Madness
+    # March Madness (verified HEAT channels)
     'truTV': 166,
-    'TBS': 139,
-    'TNT': 138,
-    'CBS': 102,
+    'TBS': 156,
+    'TNT': 162,
+    'CBS': 28,
 }
 
 def get_channel(network_name):

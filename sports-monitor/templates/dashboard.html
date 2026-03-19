@@ -176,16 +176,18 @@
             margin-left: 4px;
         }
 
-        /* === TENSION ARC — thin bar at very top === */
+        /* === TENSION ARC — ambient edge glow === */
         #tension-bar {
             position: fixed;
-            top: 0; left: 0;
-            height: 3px;
-            z-index: 200;
-            background: linear-gradient(90deg, #0066ff, #00ccff);
-            transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1), background 2s;
-            width: 0%;
-            opacity: 0.8;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 50;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 2s, box-shadow 2s;
+            border: 1px solid transparent;
+        }
+        #tension-bar.active {
+            opacity: 1;
         }
 
         /* === MOMENTUM PARTICLES === */
@@ -201,6 +203,10 @@
         @keyframes particle-rise {
             0% { opacity: 0.8; transform: translateY(0) scale(1); }
             100% { opacity: 0; transform: translateY(-200px) scale(0); }
+        }
+        @keyframes tensionPulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
         }
 
         /* === CHANNEL INDICATOR — minimal top right === */
@@ -257,7 +263,7 @@
     <div id="tension-bar"></div>
 
     <!-- Score bug — hidden by default -->
-    <div id="score-bug">
+    <div id="score-bug" style="display:none">>
         <div class="score-teams">
             <div class="score-team">
                 <img class="score-team-logo" id="away-logo" src="" alt="">
@@ -358,18 +364,28 @@
             border.style.setProperty('--pulse-speed', `${speed}s`);
         }
 
-        // === TENSION BAR ===
+        // === TENSION BAR — ambient edge glow ===
         function updateTension(margin) {
             const bar = document.getElementById('tension-bar');
-            // Closer game = wider bar. 0-point margin = 100%, 30+ = 0%
             const pct = Math.max(0, Math.min(100, (1 - margin / 30) * 100));
-            bar.style.width = pct + '%';
+            if (pct < 10) {
+                bar.classList.remove('active');
+                return;
+            }
+            bar.classList.add('active');
+            const spread = Math.round(pct / 100 * 18);
             if (pct > 80) {
-                bar.style.background = 'linear-gradient(90deg, #ff3333, #ff6600)';
+                bar.style.borderColor = 'rgba(255,51,51,0.3)';
+                bar.style.boxShadow = `inset 0 0 ${spread}px ${spread/2}px rgba(255,51,51,0.5), inset 0 0 ${spread*2}px ${spread}px rgba(255,51,51,0.15)`;
+                bar.style.animation = 'tensionPulse 2.5s ease-in-out infinite';
             } else if (pct > 50) {
-                bar.style.background = 'linear-gradient(90deg, #ffaa00, #ffcc00)';
+                bar.style.borderColor = 'rgba(255,170,0,0.2)';
+                bar.style.boxShadow = `inset 0 0 ${spread}px ${spread/2}px rgba(255,170,0,0.35), inset 0 0 ${spread*2}px ${spread}px rgba(255,170,0,0.12)`;
+                bar.style.animation = 'tensionPulse 4s ease-in-out infinite';
             } else {
-                bar.style.background = 'linear-gradient(90deg, #0066ff, #00ccff)';
+                bar.style.borderColor = 'rgba(0,136,255,0.15)';
+                bar.style.boxShadow = `inset 0 0 ${spread}px ${spread/2}px rgba(0,136,255,0.25), inset 0 0 ${spread*2}px ${spread}px rgba(0,136,255,0.08)`;
+                bar.style.animation = 'none';
             }
         }
 
@@ -645,7 +661,7 @@
                     fetch('/api/excitement').then(r => r.json()).catch(() => [])
                 ]);
                 headlinesCache = headlines.filter(h => h.headline && h.headline !== 'Error loading headlines');
-                upsetCache = (mm.upsets || []).filter(u => u.Upset_Score >= 4);
+                upsetCache = (mm.upsets || []).filter(u => u.Upset_Score >= 4 && !u.Matchup?.includes('TBA'));
                 otherScoresCache = scores.filter(g => g.sport !== 'NCAA Basketball');
             } catch(e) {}
         }

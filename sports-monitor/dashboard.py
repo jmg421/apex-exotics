@@ -44,7 +44,7 @@ def filter_headlines_with_jarvis(headlines):
     """Filter headlines to only important/interesting ones"""
     # Simple keyword-based filter
     important_keywords = ['trade', 'sign', 'deal', 'injury', 'injured', 'out', 'return', 'fire', 'hire', 'suspend', 'fine', 'record', 'mvp', 'playoff']
-    skip_keywords = ['host', 'face', 'play the', 'takes on', 'looks to', 'game preview', 'live updates', 'grades']
+    skip_keywords = ['host', 'face', 'play the', 'takes on', 'looks to', 'game preview', 'live updates', 'grades', 'tracker', 'offseason', 'free agency', 'mock draft', 'predictions', 'odds', 'power rankings', 'what to know', 'how to watch', 'preview:', 'picks:', 'best bets']
     
     filtered = []
     for h in headlines:
@@ -236,8 +236,46 @@ def get_espn_game():
     except Exception as e:
         return jsonify({'id': None, 'error': str(e)})
 
-SCORE_DELAY_SECONDS = 65  # delay for remote viewers to avoid spoilers
-score_history = []  # list of (timestamp, games_data)
+SCORE_DELAY_SECONDS = 150 # remote: IPTV delay + transcode + CDN
+SCORE_DELAY_LAN = 45     # IPTV broadcast runs behind real-time
+SCORE_CACHE_FILE = os.path.join(os.path.dirname(__file__), 'data', 'score_history.json')
+
+def _save_score_snapshot(games):
+    """Append score snapshot to shared file cache"""
+    import json
+    try:
+        try:
+            with open(SCORE_CACHE_FILE, 'r') as f:
+                history = json.load(f)
+        except:
+            history = []
+        now = time.time()
+        history.append({'t': now, 'games': games})
+        # Keep 3 minutes
+        history = [h for h in history if h['t'] > now - 180]
+        with open(SCORE_CACHE_FILE, 'w') as f:
+            json.dump(history, f)
+    except:
+        pass
+
+def _get_delayed_scores(delay_seconds):
+    """Get scores from N seconds ago"""
+    import json
+    try:
+        with open(SCORE_CACHE_FILE, 'r') as f:
+            history = json.load(f)
+        if not history:
+            return None
+        target = time.time() - delay_seconds
+        best = history[0]['games']
+        for h in history:
+            if h['t'] <= target:
+                best = h['games']
+            else:
+                break
+        return best
+    except:
+        return None
 
 @app.route('/api/excitement')
 def get_excitement():
@@ -280,21 +318,16 @@ def get_excitement():
             pass
         
         # Store snapshot for delayed serving
-        now = time.time()
-        score_history.append((now, filtered_games))
-        # Prune old entries (keep 2 min)
-        while score_history and score_history[0][0] < now - 120:
-            score_history.pop(0)
+        _save_score_snapshot(filtered_games)
         
+        # LAN viewers get slightly delayed scores
+        if not is_remote:
+            delayed = _get_delayed_scores(SCORE_DELAY_LAN)
+            return jsonify(delayed if delayed else filtered_games)
+
         # Remote viewers get delayed scores
-        if is_remote and score_history:
-            target = now - SCORE_DELAY_SECONDS
-            delayed = score_history[0][1]  # oldest available
-            for ts, data in score_history:
-                if ts <= target:
-                    delayed = data
-                else:
-                    break
+        delayed = _get_delayed_scores(SCORE_DELAY_SECONDS)
+        if delayed:
             return jsonify(delayed)
         
         return jsonify(filtered_games)

@@ -38,6 +38,11 @@ CHANNEL_MAP = {
     'TBS': 156,
     'TNT': 162,
     'CBS': 28,
+    
+    # Local / Broadcast
+    'ABC': 4,
+    'NBC': 119,
+    'NBC West': 120,
 }
 
 def get_channel(network_name):

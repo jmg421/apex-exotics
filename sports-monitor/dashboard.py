@@ -193,7 +193,7 @@ def get_excitement():
         
         # Filter by sport
         sport_filter = sport_map.get(sport, 'NCAA')
-        filtered_games = [g for g in games if g.get('sport', '').upper() == sport_filter.upper()]
+        filtered_games = [g for g in games if sport_filter.upper() in g.get('sport', '').upper()]
         
         return jsonify(filtered_games)
     except Exception as e:
@@ -1345,5 +1345,47 @@ def auto_switch_check():
     return jsonify(result)
 
 
+@app.route('/api/upcoming_tip')
+def upcoming_tip():
+    """Check for upcoming game tips and return channel switch info"""
+    from datetime import datetime, timezone, timedelta
+    from espn_channels import get_channel
+    import requests as req
+
+    try:
+        data = req.get(ESPN_API + '/basketball/mens-college-basketball/scoreboard', timeout=10).json()
+        now = datetime.now(timezone.utc)
+        lead_minutes = int(request.args.get('lead', 3))
+
+        for event in data.get('events', []):
+            comp = event['competitions'][0]
+            status = comp['status']['type']['name']
+            if status != 'STATUS_SCHEDULED':
+                continue
+
+            game_time = datetime.fromisoformat(comp['date'].replace('Z', '+00:00'))
+            minutes_until = (game_time - now).total_seconds() / 60
+
+            if 0 < minutes_until <= lead_minutes:
+                broadcasts = []
+                for b in comp.get('broadcasts', []):
+                    broadcasts.extend(b.get('names', []))
+                network = broadcasts[0] if broadcasts else None
+                channel = get_channel(network) if network else None
+                teams = [t['team']['shortDisplayName'] for t in comp['competitors']]
+
+                return jsonify({
+                    'switch': True,
+                    'channel': channel,
+                    'network': network,
+                    'game': f'{teams[0]} vs {teams[1]}',
+                    'minutes_until': round(minutes_until, 1)
+                })
+
+        return jsonify({'switch': False})
+    except Exception as e:
+        return jsonify({'switch': False, 'error': str(e)})
+
+
 if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0', port=5001)
+    app.run(debug=False, host='0.0.0.0', port=5001, use_reloader=True)

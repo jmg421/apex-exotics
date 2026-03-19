@@ -1,0 +1,3022 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Feature-Policy" content="autoplay 'self'">
+    <title>Sports Stats Monitor - Margins Over Score</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            padding: 15px;
+            margin: 0;
+            transition: background 0.5s ease;
+        }
+        body.team-dominant {
+            background: radial-gradient(ellipse at top left, var(--team-color-dim) 0%, #0a0a0a 50%);
+        }
+        :root {
+            --accent-color: #BB0000;
+            --team-color: #BB0000;
+            --team-color-dim: rgba(187, 0, 0, 0.03);
+            --team-color-rgb: 187, 0, 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        .top-row {
+            display: grid;
+            grid-template-columns: 1.3fr 350px;
+            gap: 15px;
+        }
+        .detail-panel {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid #333;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            max-height: 600px;
+        }
+        .stream-container {
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid #333;
+            position: relative;
+            min-height: 400px;
+        }
+        .stream-container video,
+        .stream-container iframe {
+            width: 100%;
+            height: 100%;
+            min-height: 400px;
+            display: block;
+            object-fit: contain;
+            background: #000;
+        }
+        .excitement-overlay {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #FFC107;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: opacity 0.3s ease;
+        }
+        .excitement-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .control-panel {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        #current-channel-display {
+            transition: opacity 0.3s ease;
+        }
+        .control-panel select {
+            padding: 4px 8px;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            border: 1px solid #333;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        .switch-alert {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 193, 7, 0.95);
+            color: #000;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            display: none;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .player-column {
+            background: #0f0f0f;
+            border-radius: 6px;
+            padding: 12px;
+        }
+        .player-column h3 {
+            color: #BB0000;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .player-list {
+            font-size: 16px;
+            color: #aaa;
+            line-height: 1.8;
+        }
+        .games-bar {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid #333;
+            overflow: hidden;
+            position: relative;
+        }
+        .games-bar-scroll {
+            display: flex;
+            gap: 10px;
+            will-change: transform;
+        }
+        .games-bar-scroll:hover {
+            /* Pause handled by JS */
+        }
+        .game-bar-item {
+            flex-shrink: 0;
+            background: #0f0f0f;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border-left: 3px solid #333;
+            min-width: 200px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .game-bar-item:hover {
+            background: #1a1a1a;
+            border-left-color: #4CAF50;
+        }
+        .game-bar-item.top {
+            border-left-color: #FFC107;
+            background: rgba(255, 193, 7, 0.1);
+        }
+        .game-bar-item.selected {
+            border-left-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+        .games-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .efficiency-panel {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid #333;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .strategy-panel {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid #333;
+            margin-top: 15px;
+        }
+        .strategy-panel h3 {
+            color: var(--accent-color);
+            font-size: 14px;
+            margin-bottom: 12px;
+            transition: color 0.5s ease;
+        }
+        .strategy-alert {
+            padding: 10px;
+            margin-bottom: 8px;
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 3px solid #FFC107;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .strategy-alert.strong {
+            background: rgba(76, 175, 80, 0.1);
+            border-left-color: var(--accent-color);
+        }
+        .strategy-alert .label {
+            color: #FFC107;
+            font-weight: 600;
+            font-size: 10px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .strategy-alert.strong .label {
+            color: var(--accent-color);
+        }
+        .strategy-alert .message {
+            color: #e0e0e0;
+            line-height: 1.4;
+        }
+        .efficiency-panel h3 {
+            color: var(--accent-color);
+            font-size: 14px;
+            margin-bottom: 12px;
+            transition: color 0.5s ease;
+        }
+        .efficiency-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 8px;
+            margin-bottom: 4px;
+            background: #0f0f0f;
+            border-radius: 4px;
+            font-size: 12px;
+            border-left: 3px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+        .efficiency-item.top {
+            border-left-color: var(--accent-color);
+        }
+        .efficiency-rank {
+            color: #666;
+            font-weight: 600;
+            min-width: 25px;
+        }
+        .efficiency-team {
+            flex: 1;
+            color: #e0e0e0;
+        }
+        .efficiency-score {
+            color: var(--accent-color);
+            font-weight: 600;
+            transition: color 0.5s ease;
+        }
+        .header {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .header h1 { 
+            color: var(--accent-color); 
+            margin-bottom: 5px;
+            font-size: 24px;
+            transition: color 0.5s ease;
+        }
+        .header p { 
+            color: #888; 
+            font-size: 13px;
+            margin: 0;
+        }
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .game-card {
+            background: #1a1a1a;
+            border-radius: 6px;
+            padding: 10px;
+            border: 1px solid #333;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .game-card:hover {
+            border-color: var(--accent-color);
+        }
+        .game-card.selected {
+            border-color: var(--accent-color);
+            background: #1f1f1f;
+        }
+        .game-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+        .game-details {
+            display: none;
+        }
+        .teams-compact {
+            flex: 1;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .scores-compact {
+            display: flex;
+            gap: 8px;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-color);
+            transition: color 0.5s ease;
+        }
+        .clock-compact {
+            font-size: 11px;
+            color: #888;
+            white-space: nowrap;
+        }
+        .game-details {
+            display: none;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #333;
+        }
+        .game-card.expanded .game-details {
+            display: block;
+        }
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+        }
+        .matchup { font-size: 14px; font-weight: 600; }
+        .status { 
+            color: #4CAF50;
+            font-size: 11px;
+            background: rgba(76, 175, 80, 0.1);
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+        .score-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .team { display: flex; align-items: center; gap: 6px; }
+        .team-name { min-width: 100px; font-size: 13px; }
+        .score { 
+            color: #4CAF50;
+            font-size: 24px;
+            min-width: 40px;
+            text-align: right;
+        }
+        .margins {
+            background: #0f0f0f;
+            border-radius: 4px;
+            padding: 10px;
+        }
+        .margins h3 {
+            color: #888;
+            font-size: 10px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+        .stat-row {
+            display: grid;
+            grid-template-columns: 90px 1fr 1fr;
+            gap: 6px;
+            margin-bottom: 5px;
+            font-size: 11px;
+        }
+        .stat-label { color: #888; font-weight: 600; }
+        .stat-value {
+            text-align: right;
+            font-weight: 600;
+        }
+        .stat-value.better { color: #4CAF50; }
+        .stat-value.worse { color: #666; }
+        .insight {
+            margin-top: 8px;
+            padding: 6px;
+            background: rgba(76, 175, 80, 0.1);
+            border-left: 2px solid #4CAF50;
+            border-radius: 3px;
+            font-size: 10px;
+            color: #aaa;
+            line-height: 1.4;
+        }
+        .insight.warning {
+            background: rgba(255, 193, 7, 0.1);
+            border-left-color: #FFC107;
+        }
+        .insight.danger {
+            background: rgba(244, 67, 54, 0.1);
+            border-left-color: #F44336;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .btn {
+            flex: 1;
+            padding: 6px;
+            border: 1px solid #333;
+            background: #0f0f0f;
+            color: #e0e0e0;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn:hover {
+            border-color: #4CAF50;
+            background: #1a1a1a;
+        }
+        .btn.active {
+            background: #4CAF50;
+            border-color: #4CAF50;
+            color: #000;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+        .detail-panel {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #333;
+            position: sticky;
+            top: 15px;
+            max-height: calc(100vh - 30px);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            z-index: 1;
+        }
+        .detail-content-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            z-index: 2;
+        }
+        .live-ticker {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #333;
+            height: 180px;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+        .live-score-overlay {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 3px 6px;
+            border-radius: 2px;
+            font-size: 10px;
+            font-weight: 500;
+            color: #999;
+            font-family: 'Courier New', monospace;
+            z-index: 10;
+        }
+        .ticker-label {
+            color: #888;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        .ticker-content {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .ticker-item {
+            font-size: 12px;
+            color: #aaa;
+            padding: 4px 8px;
+            background: #0f0f0f;
+            border-radius: 3px;
+            border-left: 2px solid #BB0000;
+            white-space: nowrap;
+            animation: slideIn 0.3s ease-out;
+        }
+        .ticker-item.milestone {
+            color: #BB0000;
+            font-weight: 600;
+        }
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        .detail-panel h2 {
+            color: #BB0000;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        .detail-panel p {
+            color: #888;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+        .detail-panel .highlight {
+            color: #4CAF50;
+            font-weight: 600;
+        }
+        .connection-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .connection-status.show {
+            opacity: 1;
+        }
+        .connection-status.error {
+            background: rgba(244, 67, 54, 0.9);
+            color: white;
+        }
+        .connection-status.reconnecting {
+            background: rgba(255, 193, 7, 0.9);
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="connection-status" id="connection-status"></div>
+    <div class="container">
+        <div class="top-row">
+            <div class="stream-container">
+                <div id="loading-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #0a0a0a; display: flex; align-items: center; justify-content: center; z-index: 1000;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 48px; margin-bottom: 20px;">📺</div>
+                        <div style="font-size: 24px; color: #e0e0e0; margin-bottom: 20px;">Loading stream...</div>
+                        <div id="buffer-progress" style="font-size: 18px; color: #4A90E2; font-weight: bold;">Buffering 0s / 60s</div>
+                        <div style="width: 300px; height: 8px; background: #333; border-radius: 4px; margin: 20px auto; overflow: hidden;">
+                            <div id="buffer-bar" style="width: 0%; height: 100%; background: #4A90E2; transition: width 0.3s;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="auto-switch-notification" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(255, 107, 53, 0.95); padding: 30px; border-radius: 12px; z-index: 2000; text-align: center; min-width: 400px;">
+                    <div style="font-size: 48px; margin-bottom: 15px;">🚨</div>
+                    <div style="font-size: 24px; color: white; font-weight: bold; margin-bottom: 10px;">UPSET ALERT!</div>
+                    <div id="switch-game-info" style="font-size: 18px; color: white; margin-bottom: 15px;"></div>
+                    <div id="switch-countdown" style="font-size: 48px; color: white; font-weight: bold; margin-bottom: 15px;">3</div>
+                    <button onclick="cancelAutoSwitch()" style="padding: 10px 20px; background: white; color: #FF6B35; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer;">Cancel</button>
+                </div>
+                
+                <video id="video" controls playsinline muted allow="autoplay"></video>
+                <div id="current-channel-display" style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.8); padding: 8px 12px; border-radius: 6px; font-size: 14px; font-weight: bold; color: #4A90E2; border: 1px solid #4A90E2; z-index: 100;">
+                    Channel: <span id="channel-number">--</span>
+                </div>
+                <div class="excitement-overlay" id="excitement-score">
+                    <span id="excitement-value">--</span>
+                    <div class="control-panel">
+                        <button onclick="showESPN()" style="padding: 4px 8px; background: #1a1a1a; color: #e0e0e0; border: 1px solid #333; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 6px;" title="Show ESPN">📺</button>
+                        <button onclick="showStreamers()" style="padding: 4px 8px; background: #1a1a1a; color: #e0e0e0; border: 1px solid #333; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 6px;" title="Streamer Feed">🎮</button>
+                        <button onclick="showPersonalized()" style="padding: 4px 8px; background: #1a1a1a; color: #e0e0e0; border: 1px solid #333; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 6px;" title="For You">✨</button>
+                        <button onclick="switchToChannel(119)" style="padding: 4px 8px; background: #4A90E2; color: #fff; border: 1px solid #4A90E2; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 6px;" title="Today Show">☀️ Today</button>
+                        <button onclick="showMarchMadness()" style="padding: 4px 8px; background: #FF6B35; color: #fff; border: 1px solid #FF6B35; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 6px;" title="March Madness">🏀 Bracket</button>
+                        <button id="auto-switch-toggle" onclick="toggleAutoSwitch()" style="padding: 4px 8px; background: #666; color: #fff; border: 1px solid #666; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 6px;" title="Auto-Switch Disabled">🤖 Auto: OFF</button>
+                        <button onclick="saveClip()" style="padding: 4px 8px; background: #E74C3C; color: #fff; border: 1px solid #E74C3C; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 6px;" title="Save Last 5 Minutes">💾 Save</button>
+                        <button onclick="showESPNGuide()" style="padding: 4px 8px; background: #BB0000; color: #fff; border: 1px solid #BB0000; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 6px;" title="ESPN Guide">📡 ESPN</button>
+                        <select id="sport-selector" title="Select Sport">
+                            <option value="ncaa-basketball">🏀 NCAA</option>
+                            <option value="nba">🏀 NBA</option>
+                            <option value="mlb">⚾ MLB</option>
+                            <option value="nhl">🏒 NHL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="switch-alert" id="switch-alert">⚠️ Switch to Channel XXX</div>
+                <div id="espn-guide" style="display: none; position: absolute; top: 50px; right: 10px; background: #1a1a1a; border: 2px solid #BB0000; border-radius: 8px; padding: 15px; max-width: 400px; z-index: 1000;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h3 style="margin: 0; color: #BB0000;">📺 ESPN Guide</h3>
+                        <button onclick="closeESPNGuide()" style="background: none; border: none; color: #e0e0e0; font-size: 20px; cursor: pointer;">×</button>
+                    </div>
+                    <div id="espn-programs" style="max-height: 400px; overflow-y: auto;">
+                        Loading...
+                    </div>
+                </div>
+            </div>
+            <div class="detail-panel" id="detail-panel">
+                <div class="live-score-overlay" id="live-score">--</div>
+                <div class="player-column" id="away-players">
+                    <h3 id="away-team-name">ESPN</h3>
+                    <div id="away-player-list" class="player-list"></div>
+                </div>
+                <div class="player-column" id="home-players">
+                    <h3 id="home-team-name">Live Ticker</h3>
+                    <div id="home-player-list" class="player-list">📰 Fetching latest news...</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="games-bar" id="games-bar">
+            <p style="color: #666; font-size: 12px;">Loading games...</p>
+        </div>
+    </div>
+
+    <script>
+        let selectedGames = new Set();
+        let previousStats = {}; // Track stat changes for ticker
+        let currentSport = localStorage.getItem('selectedSport') || 'ncaa-basketball';
+        let currentGameId = null; // Track which game is being viewed
+        // State is now managed by appState object
+
+        // Set dropdown to saved value
+        document.getElementById('sport-selector').value = currentSport;
+
+        // Sport selector
+        document.getElementById('sport-selector').addEventListener('change', (e) => {
+            currentSport = e.target.value;
+            localStorage.setItem('selectedSport', currentSport);
+            
+            // Update icon and panel title
+            const sportIcons = {
+                'ncaa-basketball': '🏀',
+                'nba': '🏀',
+                'mlb': '⚾',
+                'nhl': '🏒'
+            };
+            selectedGames.clear();
+            previousStats = {};
+            loadGames();
+        });
+
+        // Set initial values
+        let currentSelectedGame = null; // Track which game is selected
+        let allGameStats = {}; // Store all game stats for efficiency ranking
+
+        async function loadGames() {
+            try {
+                const games = await safeFetch(`/api/games?sport=${currentSport}`);
+                if (!games) {
+                    showError('games', 'Unable to load games');
+                    appState.setConnectionHealth(false);
+                    return;
+                }
+                
+                if (!Array.isArray(games)) {
+                    console.error('Invalid games data - not an array:', games);
+                    showError('games', 'Invalid game data');
+                    return;
+                }
+                
+                appState.updateGamesTimestamp();
+                appState.setConnectionHealth(true);
+                
+                // Only show LIVE games (margins only matter during the game)
+                const liveGames = games.filter(g => g.state === 'live' || g.state === 'in');
+                const upcomingGames = games.filter(g => g.state === 'pre');
+
+                if (liveGames.length === 0 && upcomingGames.length === 0) {
+                    safeSetHTML('games', '<div class="loading">No games scheduled right now.</div>');
+                    return;
+                }
+
+                // Show live games first, then upcoming (max 16 games for 4x4 grid)
+                const displayGames = [...liveGames, ...upcomingGames].slice(0, 16);
+                displayGames.forEach(g => selectedGames.add(g.id));
+                displayGamesList(displayGames);
+                
+                // Load stats for all games to calculate efficiency
+                loadAllGameStats(liveGames);
+            } catch (err) {
+                console.error('Error loading games:', err);
+                showError('games', 'Error loading games');
+                appState.setConnectionHealth(false);
+            }
+        }
+
+        async function loadAllGameStats(games) {
+            const statsPromises = games.map(async (game) => {
+                try {
+                    const resp = await fetch(`/api/game/${game.id}/stats?sport=${currentSport}`);
+                    const data = await resp.json();
+                    if (data.teams && data.teams.length === 2) {
+                        allGameStats[game.id] = {
+                            away: game.away,
+                            home: game.home,
+                            data: data
+                        };
+                    }
+                } catch (err) {
+                    console.error(`Error loading stats for ${game.id}:`, err);
+                }
+            });
+            
+            await Promise.all(statsPromises);
+            // updateEfficiencyRankings(); // Removed - efficiency panel deleted
+        }
+
+        function updateEfficiencyRankings() {
+            // For NHL, show top players instead of PQD
+            if (currentSport === 'nhl') {
+                displayNHLTopPlayers();
+                return;
+            }
+            
+            // For NBA, show top players if viewing a game
+            if (currentSport === 'nba' && currentGameId && allGameStats[currentGameId]) {
+                displayNBATopPlayers();
+                return;
+            }
+            
+            // For NCAA and NBA (no game selected), show PQD rankings
+            const rankings = [];
+            const alerts = [];
+            
+            for (const [gameId, gameData] of Object.entries(allGameStats)) {
+                const homeData = gameData.data.teams.find(t => t.is_home) || gameData.data.teams[0];
+                const awayData = gameData.data.teams.find(t => !t.is_home) || gameData.data.teams[1];
+                
+                // Calculate PQD (Possession Quality Differential)
+                const calcPQD = (team, opp, teamScore, oppScore) => {
+                    const fga = parseInt(team.fg_att) || 0;
+                    const fta = parseInt(team.three_att) || 0; // Using 3PT att as proxy for FTA
+                    const to = parseInt(team.turnovers) || 0;
+                    const offReb = parseInt(team.rebounds) * 0.3 || 0; // Estimate 30% are offensive
+                    const defReb = parseInt(opp.rebounds) * 0.7 || 0; // Estimate 70% are defensive
+                    
+                    // Points per possession
+                    const possessions = fga + (0.44 * fta) + to;
+                    const ppp = possessions > 0 ? teamScore / possessions : 0;
+                    const oppPpp = possessions > 0 ? oppScore / possessions : 0;
+                    
+                    // Second chance rate (estimated)
+                    const secondChance = (offReb + defReb) > 0 ? offReb / (offReb + defReb) : 0;
+                    const oppSecondChance = (offReb + defReb) > 0 ? defReb / (offReb + defReb) : 0;
+                    
+                    // Turnover conversion (estimated as assists/opp turnovers)
+                    const assists = parseInt(team.assists) || 0;
+                    const oppTo = parseInt(opp.turnovers) || 0;
+                    const toConversion = oppTo > 0 ? assists / oppTo : 0;
+                    
+                    const pqd = (ppp - oppPpp) + (secondChance - oppSecondChance) * 3 + (toConversion * 2);
+                    
+                    return {
+                        pqd: pqd,
+                        ppp: ppp.toFixed(2),
+                        second_chance: (secondChance * 100).toFixed(1),
+                        to_conversion: toConversion.toFixed(2)
+                    };
+                };
+                
+                const awayScore = parseInt(gameData.data.teams.find(t => !t.is_home)?.score || 0);
+                const homeScore = parseInt(gameData.data.teams.find(t => t.is_home)?.score || 0);
+                
+                const awayPQD = calcPQD(awayData, homeData, awayScore, homeScore);
+                const homePQD = calcPQD(homeData, awayData, homeScore, awayScore);
+                
+                rankings.push({
+                    team: gameData.away,
+                    pqd: awayPQD.pqd.toFixed(2),
+                    ppp: awayPQD.ppp,
+                    second_chance: awayPQD.second_chance,
+                    to_conversion: awayPQD.to_conversion
+                });
+                rankings.push({
+                    team: gameData.home,
+                    pqd: homePQD.pqd.toFixed(2),
+                    ppp: homePQD.ppp,
+                    second_chance: homePQD.second_chance,
+                    to_conversion: homePQD.to_conversion
+                });
+                
+                // JARVIS STRATEGY 1: Halftime Adjustment (margin divergence)
+                const period = gameData.data.period || '';
+                if (period.includes('HALF') || period.includes('2ND')) {
+                    const awayFGPct = parseFloat(awayData.fg_pct) || 0;
+                    const homeFGPct = parseFloat(homeData.fg_pct) || 0;
+                    const awayTO = parseInt(awayData.turnovers) || 0;
+                    const homeTO = parseInt(homeData.turnovers) || 0;
+                    const awayReb = parseInt(awayData.rebounds) || 0;
+                    const homeReb = parseInt(homeData.rebounds) || 0;
+                    
+                    // Check margin control
+                    const awayMargins = (awayFGPct > homeFGPct ? 1 : 0) + 
+                                       (parseFloat(awayData.three_pct) > parseFloat(homeData.three_pct) ? 1 : 0) +
+                                       (awayTO < homeTO ? 1 : 0) + 
+                                       (awayReb > homeReb ? 1 : 0);
+                    const homeMargins = 4 - awayMargins;
+                    
+                    // Get scores from game data (need to fetch from games list)
+                    const game = Array.from(selectedGames).find(id => id === gameId);
+                    
+                    if (awayMargins >= 3 && awayEff > homeEff + 5) {
+                        alerts.push({
+                            type: 'strong',
+                            label: 'Halftime Value',
+                            message: `${gameData.away} controls ${awayMargins}/4 margins. 2H spread opportunity if trailing.`
+                        });
+                    }
+                    if (homeMargins >= 3 && homeEff > awayEff + 5) {
+                        alerts.push({
+                            type: 'strong',
+                            label: 'Halftime Value',
+                            message: `${gameData.home} controls ${homeMargins}/4 margins. 2H spread opportunity if trailing.`
+                        });
+                    }
+                }
+                
+                // JARVIS STRATEGY 2: Efficiency regime change
+                if (previousStats[gameId]) {
+                    const prevAwayFG = parseFloat(previousStats[gameId].awayFGPct) || 0;
+                    const prevHomeFG = parseFloat(previousStats[gameId].homeFGPct) || 0;
+                    const currAwayFG = parseFloat(awayData.fg_pct) || 0;
+                    const currHomeFG = parseFloat(homeData.fg_pct) || 0;
+                    
+                    // Detect cooling off (FG% dropping significantly)
+                    if (prevAwayFG > 55 && currAwayFG < prevAwayFG - 3) {
+                        alerts.push({
+                            type: 'warning',
+                            label: 'Cooling Off',
+                            message: `${gameData.away} FG% dropping (${prevAwayFG.toFixed(1)}% → ${currAwayFG.toFixed(1)}%). Live under opportunity.`
+                        });
+                    }
+                    if (prevHomeFG > 55 && currHomeFG < prevHomeFG - 3) {
+                        alerts.push({
+                            type: 'warning',
+                            label: 'Cooling Off',
+                            message: `${gameData.home} FG% dropping (${prevHomeFG.toFixed(1)}% → ${currHomeFG.toFixed(1)}%). Live under opportunity.`
+                        });
+                    }
+                    
+                    // Detect heating up (FG% rising significantly)
+                    if (prevAwayFG < 45 && currAwayFG > prevAwayFG + 3) {
+                        alerts.push({
+                            type: 'warning',
+                            label: 'Heating Up',
+                            message: `${gameData.away} FG% rising (${prevAwayFG.toFixed(1)}% → ${currAwayFG.toFixed(1)}%). Live over opportunity.`
+                        });
+                    }
+                    if (prevHomeFG < 45 && currHomeFG > prevHomeFG + 3) {
+                        alerts.push({
+                            type: 'warning',
+                            label: 'Heating Up',
+                            message: `${gameData.home} FG% rising (${prevHomeFG.toFixed(1)}% → ${currHomeFG.toFixed(1)}%). Live over opportunity.`
+                        });
+                    }
+                }
+            }
+            
+            // Sort by PQD
+            rankings.sort((a, b) => b.pqd - a.pqd);
+            
+            // Display top 10
+            const container = document.getElementById('efficiency-rankings');
+            container.innerHTML = rankings.slice(0, 10).map((item, index) => {
+                const isPositive = item.pqd > 0;
+                const isStrong = Math.abs(item.pqd) > 0.5;
+                const color = isStrong ? (isPositive ? '#4CAF50' : '#f44336') : '#888';
+                const bgColor = isStrong ? (isPositive ? 'rgba(76, 175, 80, 0.1)' : 'rgba(244, 67, 54, 0.1)') : 'transparent';
+                
+                return `
+                    <div class="efficiency-item" style="background: ${bgColor}; border-left: 3px solid ${isStrong ? color : '#333'};">
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; color: ${color};">${item.team}</div>
+                            <div style="font-size: 9px; color: #666; margin-top: 2px;">
+                                PPP: ${item.ppp} | 2nd: ${item.second_chance}% | TO→Pts: ${item.to_conversion}
+                            </div>
+                        </div>
+                        <div style="font-size: 16px; font-weight: 700; color: ${color};">
+                            ${item.pqd > 0 ? '+' : ''}${item.pqd}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Display strategy alerts
+            const alertsContainer = document.getElementById('strategy-alerts');
+            if (alerts.length > 0) {
+                alertsContainer.innerHTML = alerts.slice(0, 3).map(alert => `
+                    <div class="strategy-alert ${alert.type}">
+                        <div class="label">${alert.label}</div>
+                        <div class="message">${alert.message}</div>
+                    </div>
+                `).join('');
+            } else {
+                alertsContainer.innerHTML = '<div style="color: #888; font-size: 11px;">No opportunities detected yet...</div>';
+            }
+        }
+
+        function displayNHLTopPlayers() {
+            const container = document.getElementById('efficiency-rankings');
+            
+            // If viewing a specific game, show who's on ice
+            if (currentGameId && allGameStats[currentGameId]) {
+                const gameData = allGameStats[currentGameId];
+                
+                if (gameData.data.on_ice && gameData.data.on_ice.length === 2) {
+                    const awayOnIce = gameData.data.on_ice[0];
+                    const homeOnIce = gameData.data.on_ice[1];
+                    
+                    // Get ice time for players on ice
+                    const getPlayerIceTime = (playerName, team) => {
+                        if (!gameData.data.top_players) return null;
+                        const player = gameData.data.top_players.find(p => p.name === playerName && p.team === team);
+                        return player ? player.ice_seconds : null;
+                    };
+                    
+                    const renderPlayer = (playerName, team) => {
+                        const iceSeconds = getPlayerIceTime(playerName, team);
+                        let energyBar = '';
+                        
+                        if (iceSeconds) {
+                            // Typical shift: 45 seconds, typical TOI per period: ~5-7 minutes
+                            // Energy = 100% - (ice_seconds / 1200) * 100 (20 min period = 1200 sec)
+                            const fatigue = Math.min((iceSeconds / 1200) * 100, 100);
+                            const energy = 100 - fatigue;
+                            const energyColor = energy > 60 ? '#4CAF50' : (energy > 30 ? '#FFC107' : '#f44336');
+                            
+                            energyBar = `
+                                <div style="width: 100%; height: 3px; background: #333; border-radius: 2px; margin-top: 4px; overflow: hidden;">
+                                    <div style="width: ${energy}%; height: 100%; background: ${energyColor}; transition: width 0.3s ease;"></div>
+                                </div>
+                            `;
+                        }
+                        
+                        return `
+                            <div style="padding: 6px 8px; background: #0f0f0f; border-radius: 3px; margin-bottom: 4px;">
+                                <div style="font-size: 12px; color: #e0e0e0;">${playerName}</div>
+                                ${energyBar}
+                            </div>
+                        `;
+                    };
+                    
+                    const html = `
+                        <div style="margin-bottom: 15px;">
+                            <div style="color: #888; font-size: 10px; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px;">${awayOnIce.team} On Ice</div>
+                            ${awayOnIce.players.map(p => renderPlayer(p, awayOnIce.team)).join('')}
+                        </div>
+                        <div>
+                            <div style="color: #888; font-size: 10px; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px;">${homeOnIce.team} On Ice</div>
+                            ${homeOnIce.players.map(p => renderPlayer(p, homeOnIce.team)).join('')}
+                        </div>
+                    `;
+                    
+                    container.innerHTML = html;
+                    return;
+                }
+            }
+            
+            // Otherwise show league-wide top players by ice time
+            const allPlayers = [];
+            for (const [gameId, gameData] of Object.entries(allGameStats)) {
+                if (gameData.data.top_players) {
+                    allPlayers.push(...gameData.data.top_players);
+                }
+            }
+            
+            if (allPlayers.length === 0) {
+                container.innerHTML = '<div style="color: #666; font-size: 11px; padding: 10px;">Loading player data...</div>';
+                return;
+            }
+            
+            // Sort by ice time
+            allPlayers.sort((a, b) => b.ice_seconds - a.ice_seconds);
+            
+            // Display top 10
+            const html = allPlayers.slice(0, 10).map((p, index) => {
+                const plusMinusColor = parseInt(p.plus_minus) > 0 ? '#4CAF50' : (parseInt(p.plus_minus) < 0 ? '#f44336' : '#888');
+                const isTop = index < 3;
+                
+                return `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px; background: ${isTop ? 'rgba(var(--team-color-rgb), 0.1)' : '#0f0f0f'}; border-radius: 4px; border-left: 3px solid ${isTop ? 'var(--accent-color)' : '#333'}; margin-bottom: 6px;">
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; color: ${isTop ? 'var(--accent-color)' : '#e0e0e0'}; font-size: 12px;">${p.name}</div>
+                            <div style="font-size: 10px; color: #666; margin-top: 2px;">${p.team} • ${p.ice_time} TOI</div>
+                        </div>
+                        <div style="font-size: 16px; font-weight: 700; color: ${plusMinusColor};">
+                            ${p.plus_minus > 0 ? '+' : ''}${p.plus_minus}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            container.innerHTML = html;
+        }
+
+        function displayNBATopPlayers() {
+            const container = document.getElementById('efficiency-rankings');
+            const gameData = allGameStats[currentGameId];
+            
+            if (!gameData || !gameData.data.top_players || gameData.data.top_players.length === 0) {
+                container.innerHTML = '<div style="color: #666; font-size: 11px; padding: 10px;">Loading player data...</div>';
+                return;
+            }
+            
+            const html = gameData.data.top_players.map((p, index) => {
+                const plusMinusColor = parseInt(p.plus_minus) > 0 ? '#4CAF50' : (parseInt(p.plus_minus) < 0 ? '#f44336' : '#888');
+                const isTop = index < 3;
+                const playerName = p.jersey ? `#${p.jersey} ${p.name}` : p.name;
+                
+                return `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px; background: ${isTop ? 'rgba(var(--team-color-rgb), 0.1)' : '#0f0f0f'}; border-radius: 4px; border-left: 3px solid ${isTop ? 'var(--accent-color)' : '#333'}; margin-bottom: 6px;">
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; color: ${isTop ? 'var(--accent-color)' : '#e0e0e0'}; font-size: 12px;">${playerName}</div>
+                            <div style="font-size: 10px; color: #666; margin-top: 2px;">${p.team} • ${p.minutes} MIN • ${p.points} PTS</div>
+                        </div>
+                        <div style="font-size: 16px; font-weight: 700; color: ${plusMinusColor};">
+                            ${p.plus_minus > 0 ? '+' : ''}${p.plus_minus}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            container.innerHTML = html;
+        }
+
+        async function displayGamesList(games) {
+            const container = safeGetElement('games');
+            if (!container) return;
+            
+            // Track which game is currently selected
+            const selectedCard = document.querySelector('.game-card.selected');
+            const selectedGameId = selectedCard ? selectedCard.dataset.gameId : null;
+
+            container.innerHTML = '';
+
+            for (const game of games) {
+                if (!selectedGames.has(game.id)) continue;
+
+                const isSelected = selectedGameId === game.id;
+                const isLive = game.state === 'live' || game.state === 'in';
+                const card = document.createElement('div');
+                card.className = `game-card ${isSelected ? 'selected' : ''}`;
+                card.dataset.gameId = game.id;
+                card.dataset.away = game.away;
+                card.dataset.home = game.home;
+                card.dataset.status = game.status;
+                card.dataset.clock = game.clock;
+                
+                // Format matchup based on sport
+                const matchupText = currentSport === 'nba' ? 
+                    `${game.away} @ ${game.home}` : 
+                    `${game.away} @ ${game.home}`;
+                
+                // Style upcoming games differently
+                const statusStyle = isLive ? 'color: #4CAF50;' : 'color: #888;';
+                const scoreStyle = isLive ? '' : 'opacity: 0.5;';
+                
+                card.innerHTML = `
+                    <div class="game-summary">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div class="teams-compact">${matchupText}</div>
+                            <button onclick="togglePin('${game.id}', event)" style="background: none; border: none; cursor: pointer; font-size: 14px; padding: 0 4px;">📌</button>
+                        </div>
+                        <div class="scores-compact" style="${scoreStyle}">
+                            <span>${game.away_score}</span>
+                            <span>-</span>
+                            <span>${game.home_score}</span>
+                        </div>
+                        <div class="clock-compact" style="${statusStyle}">${game.status}</div>
+                    </div>
+                `;
+                
+                card.onclick = function() {
+                    selectGame(this.dataset.gameId, this.dataset.away, this.dataset.home, this.dataset.status, this.dataset.clock);
+                };
+                
+                container.appendChild(card);
+
+                // Update detail panel if this game is selected
+                if (isSelected && currentSelectedGame && currentSelectedGame.gameId === game.id) {
+                    // Update header with new scores
+                    updateDetailPanelHeader(game.away, game.home, game.away_score, game.home_score, game.status, game.clock);
+                    // Reload stats
+                    loadGameStats(game.id, game.away, game.home);
+                }
+            }
+        }
+
+        function selectGame(gameId, awayTeam, homeTeam, status, clock) {
+            // Store selected game info
+            currentSelectedGame = { gameId, awayTeam, homeTeam, status, clock };
+            
+            // Get scores from the card
+            const card = document.querySelector(`[data-game-id="${gameId}"]`);
+            const scores = card.querySelectorAll('.scores-compact span');
+            const awayScore = scores[0]?.textContent || '0';
+            const homeScore = scores[2]?.textContent || '0';
+            
+            // Update selected card
+            document.querySelectorAll('.game-card').forEach(c => c.classList.remove('selected'));
+            if (card) {
+                card.classList.add('selected');
+            }
+            
+            // Update detail panel header with scores
+            updateDetailPanelHeader(awayTeam, homeTeam, awayScore, homeScore, status, clock);
+            
+            // Load detailed stats
+            loadGameStats(gameId, awayTeam, homeTeam);
+        }
+
+        function updateDetailPanelHeader(awayTeam, homeTeam, awayScore, homeScore, status, clock) {
+            // Check if detail panel structure exists
+            let detailContent = document.getElementById('detail-content');
+            let tickerContent = document.getElementById('ticker-content');
+            
+            if (!detailContent || !tickerContent) {
+                // First time - create full structure
+                const detailPanel = document.getElementById('detail-panel');
+                detailPanel.innerHTML = `
+                    <div class="detail-content-wrapper">
+                        <h2 id="detail-header" style="color: var(--accent-color); transition: color 0.5s ease;">${awayTeam} @ ${homeTeam}</h2>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <div id="detail-score" style="font-size: 32px; font-weight: 700; color: var(--accent-color); transition: color 0.5s ease;">
+                                ${awayScore} - ${homeScore}
+                            </div>
+                            <div id="detail-clock" style="color: #888; font-size: 13px;">${status} - ${clock}</div>
+                        </div>
+                        <div id="detail-content">
+                            <p style="color: #888;">Loading margins...</p>
+                        </div>
+                    </div>
+                    <div class="live-ticker">
+                        <div class="ticker-label">📊 Live Stats Feed</div>
+                        <div id="ticker-content" class="ticker-content"></div>
+                    </div>
+                `;
+            } else {
+                // Update only - don't recreate
+                safeSetText('detail-header', `${awayTeam} @ ${homeTeam}`);
+                safeSetText('detail-score', `${awayScore} - ${homeScore}`);
+                safeSetText('detail-clock', `${status} - ${clock}`);
+            }
+        }
+
+        async function loadGameStats(gameId, awayTeam, homeTeam) {
+            currentGameId = gameId; // Track current game
+            
+            try {
+                const resp = await fetch(`/api/game/${gameId}/stats?sport=${currentSport}`);
+                const data = await resp.json();
+                
+                if (data.teams && data.teams.length === 2) {
+                    // Generate ticker events from stat changes
+                    updateTicker(gameId, data, awayTeam, homeTeam);
+                    
+                    displayDetailedMargins(data, awayTeam, homeTeam);
+                }
+            } catch (err) {
+                console.error(`Error loading stats for game ${gameId}:`, err);
+            }
+        }
+
+        function updateTicker(gameId, data, awayTeam, homeTeam) {
+            const tickerContent = document.getElementById('ticker-content');
+            if (!tickerContent) return;
+
+            const homeData = data.teams.find(t => t.is_home) || data.teams[0];
+            const awayData = data.teams.find(t => !t.is_home) || data.teams[1];
+            
+            const events = [];
+            const now = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+            // Check for stat changes
+            if (previousStats[gameId]) {
+                const prev = previousStats[gameId];
+                
+                // Field goals
+                const awayFGDiff = parseInt(awayData.fg_made) - parseInt(prev.awayFG);
+                const homeFGDiff = parseInt(homeData.fg_made) - parseInt(prev.homeFG);
+                if (awayFGDiff > 0) events.push(`${now} - ${awayTeam}: +${awayFGDiff} FG`);
+                if (homeFGDiff > 0) events.push(`${now} - ${homeTeam}: +${homeFGDiff} FG`);
+                
+                // Three pointers
+                const away3Diff = parseInt(awayData.three_made) - parseInt(prev.away3PT);
+                const home3Diff = parseInt(homeData.three_made) - parseInt(prev.home3PT);
+                if (away3Diff > 0) events.push(`${now} - ${awayTeam}: 🎯 ${away3Diff} three-pointer${away3Diff > 1 ? 's' : ''}`);
+                if (home3Diff > 0) events.push(`${now} - ${homeTeam}: 🎯 ${home3Diff} three-pointer${home3Diff > 1 ? 's' : ''}`);
+                
+                // Turnovers
+                const awayTODiff = parseInt(awayData.turnovers) - parseInt(prev.awayTO);
+                const homeTODiff = parseInt(homeData.turnovers) - parseInt(prev.homeTO);
+                if (awayTODiff > 0) events.push(`${now} - ${awayTeam}: ⚠️ +${awayTODiff} turnover${awayTODiff > 1 ? 's' : ''}`);
+                if (homeTODiff > 0) events.push(`${now} - ${homeTeam}: ⚠️ +${homeTODiff} turnover${homeTODiff > 1 ? 's' : ''}`);
+                
+                // Efficiency milestones
+                const awayFGPct = parseFloat(awayData.fg_pct);
+                const homeFGPct = parseFloat(homeData.fg_pct);
+                if (awayFGPct >= 60 && parseFloat(prev.awayFGPct) < 60) {
+                    events.push(`${now} - 🔥 ${awayTeam} shooting 60%+ from field`);
+                }
+                if (homeFGPct >= 60 && parseFloat(prev.homeFGPct) < 60) {
+                    events.push(`${now} - 🔥 ${homeTeam} shooting 60%+ from field`);
+                }
+            }
+
+            // Store current stats for next comparison
+            previousStats[gameId] = {
+                awayFG: awayData.fg_made,
+                homeFG: homeData.fg_made,
+                away3PT: awayData.three_made,
+                home3PT: homeData.three_made,
+                awayTO: awayData.turnovers,
+                homeTO: homeData.turnovers,
+                awayFGPct: awayData.fg_pct,
+                homeFGPct: homeData.fg_pct
+            };
+
+            // Add events to ticker (keep last 10)
+            if (events.length > 0) {
+                const existingEvents = Array.from(tickerContent.querySelectorAll('.ticker-item')).map(el => el.textContent);
+                const newEvents = events.filter(e => !existingEvents.includes(e));
+                
+                newEvents.forEach(event => {
+                    const item = document.createElement('div');
+                    item.className = event.includes('🔥') || event.includes('🎯') ? 'ticker-item milestone' : 'ticker-item';
+                    item.textContent = event;
+                    tickerContent.insertBefore(item, tickerContent.firstChild);
+                });
+
+                // Keep only last 10 events
+                while (tickerContent.children.length > 10) {
+                    tickerContent.removeChild(tickerContent.lastChild);
+                }
+            }
+
+            // Add initial placeholder if empty
+            if (tickerContent.children.length === 0) {
+                tickerContent.innerHTML = `
+                    <div class="ticker-item">Watching for live stat changes...</div>
+                    <div class="ticker-item">Updates every 5 seconds</div>
+                `;
+            }
+        }
+
+        function displayDetailedMargins(data, awayTeam, homeTeam) {
+            // Check if NHL, NBA, or NCAA
+            const homeData = data.teams.find(t => t.is_home) || data.teams[0];
+            const awayData = data.teams.find(t => !t.is_home) || data.teams[1];
+            
+            if (currentSport === 'nhl') {
+                displayNHLMargins(data, awayTeam, homeTeam, awayData, homeData);
+            } else {
+                // NBA and NCAA use same margin display (basketball stats)
+                displayNCAAMargins(data, awayTeam, homeTeam, awayData, homeData);
+            }
+        }
+
+        function displayNHLMargins(data, awayTeam, homeTeam, awayData, homeData) {
+            const shotsAway = parseInt(awayData.shots) || 0;
+            const shotsHome = parseInt(homeData.shots) || 0;
+            const faceoffAway = parseFloat(awayData.faceoff_pct) || 0;
+            const faceoffHome = parseFloat(homeData.faceoff_pct) || 0;
+            const hitsAway = parseInt(awayData.hits) || 0;
+            const hitsHome = parseInt(homeData.hits) || 0;
+            const blockedAway = parseInt(awayData.blocked_shots) || 0;
+            const blockedHome = parseInt(homeData.blocked_shots) || 0;
+            const pimAway = parseInt(awayData.penalty_minutes) || 0;
+            const pimHome = parseInt(homeData.penalty_minutes) || 0;
+
+            const shotsWinner = shotsAway > shotsHome ? 'away' : (shotsAway < shotsHome ? 'home' : 'tie');
+            const faceoffWinner = faceoffAway > faceoffHome ? 'away' : (faceoffAway < faceoffHome ? 'home' : 'tie');
+            const hitsWinner = hitsAway > hitsHome ? 'away' : (hitsAway < hitsHome ? 'home' : 'tie');
+            const blockedWinner = blockedAway > blockedHome ? 'away' : (blockedAway < blockedHome ? 'home' : 'tie');
+
+            const margins = [shotsWinner, faceoffWinner, hitsWinner, blockedWinner].filter(w => w !== 'tie');
+            const awayAdvantages = margins.filter(w => w === 'away').length;
+            const homeAdvantages = margins.filter(w => w === 'home').length;
+            const leader = awayAdvantages > homeAdvantages ? awayTeam : homeTeam;
+            const count = Math.max(awayAdvantages, homeAdvantages);
+
+            // NHL team colors
+            const nhlColors = {
+                'CBJ': { primary: '#002654', dim: 'rgba(0, 38, 84, 0.03)', rgb: '0, 38, 84' },
+                'BOS': { primary: '#FFB81C', dim: 'rgba(255, 184, 28, 0.03)', rgb: '255, 184, 28' },
+                'TOR': { primary: '#003E7E', dim: 'rgba(0, 62, 126, 0.03)', rgb: '0, 62, 126' },
+                'MTL': { primary: '#AF1E2D', dim: 'rgba(175, 30, 45, 0.03)', rgb: '175, 30, 45' },
+                'DET': { primary: '#CE1126', dim: 'rgba(206, 17, 38, 0.03)', rgb: '206, 17, 38' },
+                'BUF': { primary: '#002654', dim: 'rgba(0, 38, 84, 0.03)', rgb: '0, 38, 84' },
+                'PIT': { primary: '#FCB514', dim: 'rgba(252, 181, 20, 0.03)', rgb: '252, 181, 20' },
+                'PHI': { primary: '#F74902', dim: 'rgba(247, 73, 2, 0.03)', rgb: '247, 73, 2' },
+                'NYR': { primary: '#0038A8', dim: 'rgba(0, 56, 168, 0.03)', rgb: '0, 56, 168' },
+                'NYI': { primary: '#00539B', dim: 'rgba(0, 83, 155, 0.03)', rgb: '0, 83, 155' },
+                'NJ': { primary: '#CE1126', dim: 'rgba(206, 17, 38, 0.03)', rgb: '206, 17, 38' },
+                'WSH': { primary: '#041E42', dim: 'rgba(4, 30, 66, 0.03)', rgb: '4, 30, 66' },
+                'CAR': { primary: '#CE1126', dim: 'rgba(206, 17, 38, 0.03)', rgb: '206, 17, 38' },
+                'TB': { primary: '#002868', dim: 'rgba(0, 40, 104, 0.03)', rgb: '0, 40, 104' },
+                'FLA': { primary: '#041E42', dim: 'rgba(4, 30, 66, 0.03)', rgb: '4, 30, 66' },
+                'CHI': { primary: '#CF0A2C', dim: 'rgba(207, 10, 44, 0.03)', rgb: '207, 10, 44' },
+                'MIN': { primary: '#154734', dim: 'rgba(21, 71, 52, 0.03)', rgb: '21, 71, 52' },
+                'STL': { primary: '#002F87', dim: 'rgba(0, 47, 135, 0.03)', rgb: '0, 47, 135' },
+                'NSH': { primary: '#FFB81C', dim: 'rgba(255, 184, 28, 0.03)', rgb: '255, 184, 28' },
+                'WPG': { primary: '#041E42', dim: 'rgba(4, 30, 66, 0.03)', rgb: '4, 30, 66' },
+                'DAL': { primary: '#006847', dim: 'rgba(0, 104, 71, 0.03)', rgb: '0, 104, 71' },
+                'COL': { primary: '#6F263D', dim: 'rgba(111, 38, 61, 0.03)', rgb: '111, 38, 61' },
+                'VGK': { primary: '#B4975A', dim: 'rgba(180, 151, 90, 0.03)', rgb: '180, 151, 90' },
+                'SEA': { primary: '#001628', dim: 'rgba(0, 22, 40, 0.03)', rgb: '0, 22, 40' },
+                'VAN': { primary: '#00205B', dim: 'rgba(0, 32, 91, 0.03)', rgb: '0, 32, 91' },
+                'CGY': { primary: '#C8102E', dim: 'rgba(200, 16, 46, 0.03)', rgb: '200, 16, 46' },
+                'EDM': { primary: '#041E42', dim: 'rgba(4, 30, 66, 0.03)', rgb: '4, 30, 66' },
+                'LA': { primary: '#111111', dim: 'rgba(17, 17, 17, 0.03)', rgb: '17, 17, 17' },
+                'ANA': { primary: '#F47A38', dim: 'rgba(244, 122, 56, 0.03)', rgb: '244, 122, 56' },
+                'SJ': { primary: '#006D75', dim: 'rgba(0, 109, 117, 0.03)', rgb: '0, 109, 117' },
+                'UTA': { primary: '#69B3E7', dim: 'rgba(105, 179, 231, 0.03)', rgb: '105, 179, 231' }
+            };
+
+            // Set theme based on dominant team (3+ margins)
+            if (count >= 3) {
+                const dominantColor = nhlColors[leader] || { primary: '#BB0000', dim: 'rgba(187, 0, 0, 0.03)', rgb: '187, 0, 0' };
+                document.documentElement.style.setProperty('--accent-color', dominantColor.primary);
+                document.documentElement.style.setProperty('--team-color', dominantColor.primary);
+                document.documentElement.style.setProperty('--team-color-dim', dominantColor.dim);
+                document.documentElement.style.setProperty('--team-color-rgb', dominantColor.rgb);
+                document.body.classList.add('team-dominant');
+                
+                console.log(`🎨 Theme set to ${leader}: ${dominantColor.primary}`);
+            } else {
+                // Reset to default Buckeye scarlet
+                document.documentElement.style.setProperty('--accent-color', '#BB0000');
+                document.documentElement.style.setProperty('--team-color', '#BB0000');
+                document.documentElement.style.setProperty('--team-color-dim', 'rgba(187, 0, 0, 0.03)');
+                document.documentElement.style.setProperty('--team-color-rgb', '187, 0, 0');
+                document.body.classList.remove('team-dominant');
+                
+                console.log('🎨 Theme reset to default Buckeye scarlet');
+            }
+
+            let insightMessage = '';
+            if (count >= 3) {
+                insightMessage = `<strong>${leader}</strong> controls ${count}/4 key margins. Pressure predicts they extend/maintain lead.`;
+            } else {
+                insightMessage = `Margins are split (${awayAdvantages}-${homeAdvantages}). Close game, outcome uncertain.`;
+            }
+
+            const shotsDiff = Math.abs(shotsAway - shotsHome);
+            const faceoffDiff = Math.abs(faceoffAway - faceoffHome);
+            const hitsDiff = Math.abs(hitsAway - hitsHome);
+            const blockedDiff = Math.abs(blockedAway - blockedHome);
+
+            const detailContent = document.getElementById('detail-content');
+            detailContent.innerHTML = `
+                <div style="display: flex; justify-content: space-between; margin-bottom: 20px; padding: 12px; background: #0f0f0f; border-radius: 6px;">
+                    <div style="text-align: center; flex: 1;">
+                        <div style="color: #888; font-size: 10px; margin-bottom: 4px;">PIM</div>
+                        <div style="font-size: 18px; font-weight: 700; color: ${pimAway >= 10 ? '#FFC107' : '#e0e0e0'};">${pimAway}</div>
+                        <div style="font-size: 11px; color: #666;">${awayTeam}</div>
+                    </div>
+                    <div style="text-align: center; flex: 1;">
+                        <div style="color: #888; font-size: 10px; margin-bottom: 4px;">PIM</div>
+                        <div style="font-size: 18px; font-weight: 700; color: ${pimHome >= 10 ? '#FFC107' : '#e0e0e0'};">${pimHome}</div>
+                        <div style="font-size: 11px; color: #666;">${homeTeam}</div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #888; font-size: 11px; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 1px;">The Margins</h3>
+                    
+                    <div style="margin-bottom: 15px; position: relative;">
+                        <div style="position: absolute; left: -8px; top: 0; bottom: 0; width: 3px; background: ${shotsWinner === 'away' ? 'var(--accent-color)' : (shotsWinner === 'home' ? 'var(--accent-color)' : '#333')}; opacity: ${shotsWinner === 'tie' ? 0 : shotsDiff / 20};"></div>
+                        <div style="color: #888; font-size: 11px; margin-bottom: 5px;">Shots on Goal</div>
+                        <div style="display: flex; justify-content: space-between; font-size: 14px;">
+                            <span style="color: ${shotsWinner === 'away' ? 'var(--accent-color)' : '#666'}; font-weight: 600;">${awayTeam}: ${shotsAway}</span>
+                            <span style="color: ${shotsWinner === 'home' ? 'var(--accent-color)' : '#666'}; font-weight: 600;">${homeTeam}: ${shotsHome}</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px; position: relative;">
+                        <div style="position: absolute; left: -8px; top: 0; bottom: 0; width: 3px; background: ${faceoffWinner === 'away' ? 'var(--accent-color)' : (faceoffWinner === 'home' ? 'var(--accent-color)' : '#333')}; opacity: ${faceoffWinner === 'tie' ? 0 : faceoffDiff / 100};"></div>
+                        <div style="color: #888; font-size: 11px; margin-bottom: 5px;">Faceoff %</div>
+                        <div style="display: flex; justify-content: space-between; font-size: 14px;">
+                            <span style="color: ${faceoffWinner === 'away' ? 'var(--accent-color)' : '#666'}; font-weight: 600;">${awayTeam}: ${awayData.faceoff_pct}</span>
+                            <span style="color: ${faceoffWinner === 'home' ? 'var(--accent-color)' : '#666'}; font-weight: 600;">${homeTeam}: ${homeData.faceoff_pct}</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px; position: relative;">
+                        <div style="position: absolute; left: -8px; top: 0; bottom: 0; width: 3px; background: ${hitsWinner === 'away' ? 'var(--accent-color)' : (hitsWinner === 'home' ? 'var(--accent-color)' : '#333')}; opacity: ${hitsWinner === 'tie' ? 0 : hitsDiff / 30};"></div>
+                        <div style="color: #888; font-size: 11px; margin-bottom: 5px;">Hits</div>
+                        <div style="display: flex; justify-content: space-between; font-size: 14px;">
+                            <span style="color: ${hitsWinner === 'away' ? 'var(--accent-color)' : '#666'}; font-weight: 600;">${awayTeam}: ${hitsAway}</span>
+                            <span style="color: ${hitsWinner === 'home' ? 'var(--accent-color)' : '#666'}; font-weight: 600;">${homeTeam}: ${hitsHome}</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px; position: relative;">
+                        <div style="position: absolute; left: -8px; top: 0; bottom: 0; width: 3px; background: ${blockedWinner === 'away' ? 'var(--accent-color)' : (blockedWinner === 'home' ? 'var(--accent-color)' : '#333')}; opacity: ${blockedWinner === 'tie' ? 0 : blockedDiff / 15};"></div>
+                        <div style="color: #888; font-size: 11px; margin-bottom: 5px;">Blocked Shots</div>
+                        <div style="display: flex; justify-content: space-between; font-size: 14px;">
+                            <span style="color: ${blockedWinner === 'away' ? 'var(--accent-color)' : '#666'}; font-weight: 600;">${awayTeam}: ${blockedAway}</span>
+                            <span style="color: ${blockedWinner === 'home' ? 'var(--accent-color)' : '#666'}; font-weight: 600;">${homeTeam}: ${blockedHome}</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <div style="color: #888; font-size: 11px; margin-bottom: 5px;">Power Play</div>
+                        <div style="display: flex; justify-content: space-between; font-size: 14px;">
+                            <span style="color: #666;">${awayTeam}: ${awayData.powerplay}</span>
+                            <span style="color: #666;">${homeTeam}: ${homeData.powerplay}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="padding: 12px; background: ${count >= 3 ? 'rgba(187, 0, 0, 0.1)' : 'rgba(187, 0, 0, 0.1)'}; border-left: 3px solid var(--accent-color); border-radius: 4px; margin-bottom: 15px; transition: all 0.5s ease;">
+                    <div style="font-size: 12px; color: #aaa; line-height: 1.5;">${insightMessage}</div>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <h3 style="color: #888; font-size: 11px; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px;">Top Players (Ice Time)</h3>
+                    <div id="top-players-nhl" style="font-size: 11px;">
+                        <div style="color: #666;">Loading...</div>
+                    </div>
+                </div>
+            `;
+            
+            // Display top players if available
+            if (data.top_players && data.top_players.length > 0) {
+                const playersHtml = data.top_players.map(p => {
+                    const plusMinusColor = parseInt(p.plus_minus) > 0 ? '#4CAF50' : (parseInt(p.plus_minus) < 0 ? '#f44336' : '#888');
+                    return `
+                        <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #1a1a1a;">
+                            <div>
+                                <span style="color: #e0e0e0; font-weight: 600;">${p.name}</span>
+                                <span style="color: #666; font-size: 10px; margin-left: 6px;">${p.team}</span>
+                            </div>
+                            <div style="display: flex; gap: 12px; align-items: center;">
+                                <span style="color: #888;">${p.ice_time}</span>
+                                <span style="color: ${plusMinusColor}; font-weight: 600; min-width: 30px; text-align: right;">${p.plus_minus > 0 ? '+' : ''}${p.plus_minus}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                safeSetHTML('top-players-nhl', playersHtml);
+            } else {
+                safeSetHTML('top-players-nhl', '<div style="color: #666;">No player data available</div>');
+            }
+        }
+
+        function displayNCAAMargins(data, awayTeam, homeTeam, awayData, homeData) {
+
+            const fgPctAway = parseFloat(awayData.fg_pct) || 0;
+            const fgPctHome = parseFloat(homeData.fg_pct) || 0;
+            const threePctAway = parseFloat(awayData.three_pct) || 0;
+            const threePctHome = parseFloat(homeData.three_pct) || 0;
+            const toAway = parseInt(awayData.turnovers) || 0;
+            const toHome = parseInt(homeData.turnovers) || 0;
+            const rebAway = parseInt(awayData.rebounds) || 0;
+            const rebHome = parseInt(homeData.rebounds) || 0;
+            const foulsAway = parseInt(awayData.personalFouls) || 0;
+            const foulsHome = parseInt(homeData.personalFouls) || 0;
+
+            const fgWinner = fgPctAway > fgPctHome ? 'away' : 'home';
+            const threeWinner = threePctAway > threePctHome ? 'away' : 'home';
+            const toWinner = toAway < toHome ? 'away' : 'home';
+            const rebWinner = rebAway > rebHome ? 'away' : 'home';
+
+            const margins = [fgWinner, threeWinner, toWinner, rebWinner];
+            const awayAdvantages = margins.filter(w => w === 'away').length;
+            const homeAdvantages = margins.filter(w => w === 'home').length;
+            const leader = awayAdvantages > homeAdvantages ? awayTeam : homeTeam;
+            const count = Math.max(awayAdvantages, homeAdvantages);
+
+            // Team colors (NCAA + NBA)
+            const teamColors = {
+                // NCAA
+                'Ohio St.': { primary: '#BB0000', dim: 'rgba(187, 0, 0, 0.03)', rgb: '187, 0, 0' },
+                'Indiana': { primary: '#990000', dim: 'rgba(153, 0, 0, 0.03)', rgb: '153, 0, 0' },
+                'Michigan': { primary: '#00274C', dim: 'rgba(0, 39, 76, 0.03)', rgb: '0, 39, 76' },
+                'Purdue': { primary: '#CFB991', dim: 'rgba(207, 185, 145, 0.03)', rgb: '207, 185, 145' },
+                'Wisconsin': { primary: '#C5050C', dim: 'rgba(197, 5, 12, 0.03)', rgb: '197, 5, 12' },
+                'Kentucky': { primary: '#0033A0', dim: 'rgba(0, 51, 160, 0.03)', rgb: '0, 51, 160' },
+                'Duke': { primary: '#003087', dim: 'rgba(0, 48, 135, 0.03)', rgb: '0, 48, 135' },
+                'North Carolina': { primary: '#7BAFD4', dim: 'rgba(123, 175, 212, 0.03)', rgb: '123, 175, 212' },
+                // NBA
+                'ATL': { primary: '#E03A3E', dim: 'rgba(224, 58, 62, 0.03)', rgb: '224, 58, 62' },
+                'BOS': { primary: '#007A33', dim: 'rgba(0, 122, 51, 0.03)', rgb: '0, 122, 51' },
+                'BKN': { primary: '#000000', dim: 'rgba(0, 0, 0, 0.03)', rgb: '0, 0, 0' },
+                'CHA': { primary: '#1D1160', dim: 'rgba(29, 17, 96, 0.03)', rgb: '29, 17, 96' },
+                'CHI': { primary: '#CE1141', dim: 'rgba(206, 17, 65, 0.03)', rgb: '206, 17, 65' },
+                'CLE': { primary: '#860038', dim: 'rgba(134, 0, 56, 0.03)', rgb: '134, 0, 56' },
+                'DAL': { primary: '#00538C', dim: 'rgba(0, 83, 140, 0.03)', rgb: '0, 83, 140' },
+                'DEN': { primary: '#0E2240', dim: 'rgba(14, 34, 64, 0.03)', rgb: '14, 34, 64' },
+                'DET': { primary: '#C8102E', dim: 'rgba(200, 16, 46, 0.03)', rgb: '200, 16, 46' },
+                'GSW': { primary: '#1D428A', dim: 'rgba(29, 66, 138, 0.03)', rgb: '29, 66, 138' },
+                'HOU': { primary: '#CE1141', dim: 'rgba(206, 17, 65, 0.03)', rgb: '206, 17, 65' },
+                'IND': { primary: '#002D62', dim: 'rgba(0, 45, 98, 0.03)', rgb: '0, 45, 98' },
+                'LAC': { primary: '#C8102E', dim: 'rgba(200, 16, 46, 0.03)', rgb: '200, 16, 46' },
+                'LAL': { primary: '#552583', dim: 'rgba(85, 37, 131, 0.03)', rgb: '85, 37, 131' },
+                'MEM': { primary: '#5D76A9', dim: 'rgba(93, 118, 169, 0.03)', rgb: '93, 118, 169' },
+                'MIA': { primary: '#98002E', dim: 'rgba(152, 0, 46, 0.03)', rgb: '152, 0, 46' },
+                'MIL': { primary: '#00471B', dim: 'rgba(0, 71, 27, 0.03)', rgb: '0, 71, 27' },
+                'MIN': { primary: '#0C2340', dim: 'rgba(12, 35, 64, 0.03)', rgb: '12, 35, 64' },
+                'NOP': { primary: '#0C2340', dim: 'rgba(12, 35, 64, 0.03)', rgb: '12, 35, 64' },
+                'NYK': { primary: '#006BB6', dim: 'rgba(0, 107, 182, 0.03)', rgb: '0, 107, 182' },
+                'OKC': { primary: '#007AC1', dim: 'rgba(0, 122, 193, 0.03)', rgb: '0, 122, 193' },
+                'ORL': { primary: '#0077C0', dim: 'rgba(0, 119, 192, 0.03)', rgb: '0, 119, 192' },
+                'PHI': { primary: '#006BB6', dim: 'rgba(0, 107, 182, 0.03)', rgb: '0, 107, 182' },
+                'PHX': { primary: '#1D1160', dim: 'rgba(29, 17, 96, 0.03)', rgb: '29, 17, 96' },
+                'POR': { primary: '#E03A3E', dim: 'rgba(224, 58, 62, 0.03)', rgb: '224, 58, 62' },
+                'SAC': { primary: '#5A2D81', dim: 'rgba(90, 45, 129, 0.03)', rgb: '90, 45, 129' },
+                'SAS': { primary: '#C4CED4', dim: 'rgba(196, 206, 212, 0.03)', rgb: '196, 206, 212' },
+                'TOR': { primary: '#CE1141', dim: 'rgba(206, 17, 65, 0.03)', rgb: '206, 17, 65' },
+                'UTA': { primary: '#002B5C', dim: 'rgba(0, 43, 92, 0.03)', rgb: '0, 43, 92' },
+                'WAS': { primary: '#002B5C', dim: 'rgba(0, 43, 92, 0.03)', rgb: '0, 43, 92' }
+            };
+
+            // Set theme based on dominant team (3+ margins)
+            if (count >= 3) {
+                const dominantColor = teamColors[leader] || { primary: '#4CAF50', dim: 'rgba(76, 175, 80, 0.03)', rgb: '76, 175, 80' };
+                document.documentElement.style.setProperty('--accent-color', dominantColor.primary);
+                document.documentElement.style.setProperty('--team-color', dominantColor.primary);
+                document.documentElement.style.setProperty('--team-color-dim', dominantColor.dim);
+                document.documentElement.style.setProperty('--team-color-rgb', dominantColor.rgb);
+                document.body.classList.add('team-dominant');
+                
+                console.log(`🎨 Theme set to ${leader}: ${dominantColor.primary}`);
+            } else {
+                // Reset to default Buckeye scarlet
+                document.documentElement.style.setProperty('--accent-color', '#BB0000');
+                document.documentElement.style.setProperty('--team-color', '#BB0000');
+                document.documentElement.style.setProperty('--team-color-dim', 'rgba(187, 0, 0, 0.03)');
+                document.documentElement.style.setProperty('--team-color-rgb', '187, 0, 0');
+                document.body.classList.remove('team-dominant');
+                
+                console.log('🎨 Theme reset to default Buckeye scarlet');
+            }
+
+            let insightMessage = '';
+            if (count >= 3) {
+                insightMessage = `<strong>${leader}</strong> controls ${count}/4 key margins. Efficiency predicts they extend/maintain lead.`;
+            } else {
+                insightMessage = `Margins are split (${awayAdvantages}-${homeAdvantages}). Close game, outcome uncertain.`;
+            }
+
+            // Calculate margin advantage percentages for bars
+            const fgDiff = Math.abs(fgPctAway - fgPctHome);
+            const threeDiff = Math.abs(threePctAway - threePctHome);
+            const toDiff = Math.abs(toAway - toHome);
+            const rebDiff = Math.abs(rebAway - rebHome);
+
+            const detailContent = document.getElementById('detail-content');
+            detailContent.innerHTML = `
+                <div style="display: flex; justify-content: space-between; margin-bottom: 20px; padding: 12px; background: #0f0f0f; border-radius: 6px;">
+                    <div style="text-align: center; flex: 1;">
+                        <div style="color: #888; font-size: 10px; margin-bottom: 4px;">FOULS</div>
+                        <div style="font-size: 18px; font-weight: 700; color: ${foulsAway >= 7 ? '#FFC107' : '#e0e0e0'};">${foulsAway}</div>
+                        <div style="font-size: 11px; color: #666;">${awayTeam}</div>
+                    </div>
+                    <div style="text-align: center; flex: 1;">
+                        <div style="color: #888; font-size: 10px; margin-bottom: 4px;">FOULS</div>
+                        <div style="font-size: 18px; font-weight: 700; color: ${foulsHome >= 7 ? '#FFC107' : '#e0e0e0'};">${foulsHome}</div>
+                        <div style="font-size: 11px; color: #666;">${homeTeam}</div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #888; font-size: 11px; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 1px;">The Margins</h3>
+                    
+                    <div style="margin-bottom: 15px; position: relative;">
+                        <div style="position: absolute; left: -8px; top: 0; bottom: 0; width: 3px; background: ${fgWinner === 'away' ? 'var(--accent-color)' : '#333'}; opacity: ${fgDiff / 100};"></div>
+                        <div style="color: #888; font-size: 11px; margin-bottom: 5px;">Field Goal %</div>
+                        <div style="display: flex; justify-content: space-between; font-size: 14px;">
+                            <span style="color: ${fgWinner === 'away' ? 'var(--accent-color)' : '#666'}; font-weight: 600;">${awayTeam}: ${awayData.fg_pct}</span>
+                            <span style="color: ${fgWinner === 'home' ? 'var(--accent-color)' : '#666'}; font-weight: 600;">${homeTeam}: ${homeData.fg_pct}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 11px; color: #666;">
+                            <span>${awayData.fg_made}/${awayData.fg_att}</span>
+                            <span>${homeData.fg_made}/${homeData.fg_att}</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px; position: relative;">
+                        <div style="position: absolute; left: -8px; top: 0; bottom: 0; width: 3px; background: ${threeWinner === 'away' ? 'var(--accent-color)' : '#333'}; opacity: ${threeDiff / 100};"></div>
+                        <div style="color: #888; font-size: 11px; margin-bottom: 5px;">3-Point %</div>
+                        <div style="display: flex; justify-content: space-between; font-size: 14px;">
+                            <span style="color: ${threeWinner === 'away' ? 'var(--accent-color)' : '#666'}; font-weight: 600;">${awayTeam}: ${awayData.three_pct}</span>
+                            <span style="color: ${threeWinner === 'home' ? 'var(--accent-color)' : '#666'}; font-weight: 600;">${homeTeam}: ${homeData.three_pct}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 11px; color: #666;">
+                            <span>${awayData.three_made}/${awayData.three_att}</span>
+                            <span>${homeData.three_made}/${homeData.three_att}</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px; position: relative;">
+                        <div style="position: absolute; left: -8px; top: 0; bottom: 0; width: 3px; background: ${toWinner === 'away' ? 'var(--accent-color)' : '#333'}; opacity: ${toDiff / 20};"></div>
+                        <div style="color: #888; font-size: 11px; margin-bottom: 5px;">Turnovers</div>
+                        <div style="display: flex; justify-content: space-between; font-size: 14px;">
+                            <span style="color: ${toWinner === 'away' ? 'var(--accent-color)' : '#666'}; font-weight: 600;">${awayTeam}: ${awayData.turnovers}</span>
+                            <span style="color: ${toWinner === 'home' ? 'var(--accent-color)' : '#666'}; font-weight: 600;">${homeTeam}: ${homeData.turnovers}</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px; position: relative;">
+                        <div style="position: absolute; left: -8px; top: 0; bottom: 0; width: 3px; background: ${rebWinner === 'away' ? 'var(--accent-color)' : '#333'}; opacity: ${rebDiff / 30};"></div>
+                        <div style="color: #888; font-size: 11px; margin-bottom: 5px;">Rebounds</div>
+                        <div style="display: flex; justify-content: space-between; font-size: 14px;">
+                            <span style="color: ${rebWinner === 'away' ? 'var(--accent-color)' : '#666'}; font-weight: 600;">${awayTeam}: ${awayData.rebounds}</span>
+                            <span style="color: ${rebWinner === 'home' ? 'var(--accent-color)' : '#666'}; font-weight: 600;">${homeTeam}: ${homeData.rebounds}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="padding: 12px; background: ${count >= 3 ? 'rgba(var(--team-color-rgb), 0.1)' : 'rgba(187, 0, 0, 0.1)'}; border-left: 3px solid var(--accent-color); border-radius: 4px; margin-bottom: 15px; transition: all 0.5s ease;">
+                    <div style="font-size: 12px; color: #aaa; line-height: 1.5;">${insightMessage}</div>
+                </div>
+
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn" onclick="alert('Betting odds coming soon!')">📊 Odds</button>
+                    <button class="btn" onclick="alert('Historical analysis coming soon!')">📈 History</button>
+                </div>
+            `;
+        }
+
+        function generateInsight(away, home, fgWinner, threeWinner, toWinner, rebWinner) {
+            const margins = [fgWinner, threeWinner, toWinner, rebWinner];
+            const awayAdvantages = margins.filter(w => w === 'away').length;
+            const homeAdvantages = margins.filter(w => w === 'home').length;
+
+            const leader = awayAdvantages > homeAdvantages ? away.name : home.name;
+            const count = Math.max(awayAdvantages, homeAdvantages);
+
+            let insightClass = '';
+            let message = '';
+
+            if (count >= 3) {
+                insightClass = '';
+                message = `<strong>${leader}</strong> controls ${count}/4 key margins. Efficiency predicts they extend/maintain lead.`;
+            } else {
+                insightClass = 'warning';
+                message = `Margins are split (${awayAdvantages}-${homeAdvantages}). Close game, outcome uncertain.`;
+            }
+
+            return { message, insightClass };
+        }
+
+        // Update VSeeBox channel
+        // Pin/unpin games
+        let pinnedGames = new Set();
+        
+        async function loadPinnedGames() {
+            try {
+                const pinned = await safeFetch('/api/pinned_games');
+                if (!pinned) return;
+                pinnedGames = new Set(pinned.map(g => g.id));
+                displayPinnedGames(pinned);
+            } catch (e) {
+                console.error('Error loading pinned games:', e);
+            }
+        }
+        
+        async function togglePin(gameId, event) {
+            event.stopPropagation();
+            
+            if (pinnedGames.has(gameId)) {
+                // Unpin
+                await fetch(`/api/pinned_games?id=${gameId}`, { method: 'DELETE' });
+                pinnedGames.delete(gameId);
+            } else {
+                // Pin - find game data
+                const card = document.querySelector(`[data-game-id="${gameId}"]`);
+                const game = {
+                    id: gameId,
+                    away: card.dataset.away,
+                    home: card.dataset.home,
+                    sport: currentSport
+                };
+                await fetch('/api/pinned_games', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(game)
+                });
+                pinnedGames.add(gameId);
+            }
+            
+            loadPinnedGames();
+        }
+        
+        function displayPinnedGames(pinned) {
+            const container = safeGetElement('pinned-games');
+            if (!container) return;
+            
+            if (pinned.length === 0) {
+                container.style.display = 'none';
+                return;
+            }
+            
+            container.style.display = 'grid';
+            container.innerHTML = '<h3 style="grid-column: 1/-1; margin: 0 0 10px 0; font-size: 14px; color: #888;">📌 Pinned Games</h3>';
+            
+            pinned.forEach(game => {
+                const card = document.createElement('div');
+                card.className = 'game-card';
+                card.innerHTML = `
+                    <div class="game-summary">
+                        <div style="display: flex; justify-content: space-between;">
+                            <div class="teams-compact">${game.away} @ ${game.home}</div>
+                            <button onclick="togglePin('${game.id}', event)" style="background: none; border: none; cursor: pointer; font-size: 14px;">❌</button>
+                        </div>
+                        <div style="font-size: 10px; color: #666;">${game.sport.toUpperCase()}</div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Headline ticker storage
+        let headlines = [];
+        const MAX_HEADLINES = 9;
+        
+        // Load stored headlines on startup
+        async function loadStoredHeadlines() {
+            try {
+                const response = await fetch('/api/headlines?limit=9');
+                const stored = await response.json();
+                if (stored && stored.length > 0) {
+                    headlines = stored.map(h => h.text);
+                    updateHeadlineTicker();
+                }
+            } catch (error) {
+                console.log('No stored headlines:', error);
+            }
+        }
+        
+        // ===== SAFE DOM HELPERS =====
+        // Prevent "null is not an object" errors
+        function safeGetElement(id) {
+            const el = document.getElementById(id);
+            if (!el) console.warn(`Element not found: ${id}`);
+            return el;
+        }
+
+        function safeSetHTML(id, html) {
+            const el = safeGetElement(id);
+            if (el) el.innerHTML = html;
+        }
+
+        function safeSetText(id, text) {
+            const el = safeGetElement(id);
+            if (el) el.textContent = text;
+        }
+        // ===== END SAFE DOM HELPERS =====
+        
+        // ===== SAFE FETCH WRAPPER =====
+        async function safeFetch(url, options = {}) {
+            const maxRetries = 3;
+            let lastError;
+            
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, { ...options, timeout: 5000 });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    
+                    // Success - hide any error status
+                    if (i > 0) {
+                        hideConnectionStatus();
+                    }
+                    
+                    return await response.json();
+                } catch (error) {
+                    lastError = error;
+                    
+                    if (i === 0) {
+                        showConnectionStatus('Connection issue, retrying...', 'reconnecting');
+                    }
+                    
+                    if (i < maxRetries - 1) {
+                        await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+                    }
+                }
+            }
+            
+            console.warn(`All fetch attempts failed for ${url}:`, lastError);
+            showConnectionStatus('Unable to connect to server', 'error');
+            return null;
+        }
+        // ===== END SAFE FETCH WRAPPER =====
+        
+        // ===== LOADING STATE HELPERS =====
+        function showLoading(elementId, message = 'Loading...') {
+            safeSetHTML(elementId, `<div style="color: #666; padding: 16px; text-align: center;">${message}</div>`);
+        }
+        
+        function showError(elementId, message = 'Unable to load data') {
+            safeSetHTML(elementId, `<div style="color: #888; padding: 16px; text-align: center;">${message}</div>`);
+        }
+        // ===== END LOADING STATE HELPERS =====
+        
+        // ===== DATA VALIDATORS =====
+        function isValidGame(game) {
+            return game &&
+                   typeof game.game_id === 'string' &&
+                   typeof game.away === 'string' &&
+                   typeof game.home === 'string';
+        }
+        
+        function isValidGameArray(data) {
+            return Array.isArray(data) && data.every(isValidGame);
+        }
+        
+        function isValidPlayer(player) {
+            return typeof player === 'string' && player.length > 0;
+        }
+        // ===== END DATA VALIDATORS =====
+        
+        // ===== INTERVAL MANAGEMENT =====
+        const intervals = {
+            games: null,
+            excitement: null,
+            ocr: null
+        };
+        
+        function startIntervals() {
+            // Clear any existing intervals
+            stopIntervals();
+            
+            // Start new intervals
+            intervals.excitement = setInterval(loadExcitement, 30000);
+            intervals.ocr = setInterval(() => {
+                if (!appState.manualMode) {
+                    updateStreamOCR();
+                }
+            }, 30000);
+            
+            // Update channel display
+            updateChannelDisplay();
+            setInterval(updateChannelDisplay, 5000);
+        }
+        
+        function stopIntervals() {
+            Object.values(intervals).forEach(id => {
+                if (id) clearInterval(id);
+            });
+        }
+        
+        async function updateChannelDisplay() {
+            try {
+                const response = await fetch('/api/current_channel');
+                const data = await response.json();
+                const channelEl = document.getElementById('channel-number');
+                if (channelEl && data.channel) {
+                    channelEl.textContent = data.channel;
+                }
+            } catch (error) {
+                console.error('Error updating channel display:', error);
+            }
+        }
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', stopIntervals);
+        
+        // Toggle control panel with 't' key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 't' || e.key === 'T') {
+                const overlay = document.querySelector('.excitement-overlay');
+                const channelDisplay = document.getElementById('current-channel-display');
+                
+                overlay.classList.toggle('hidden');
+                
+                if (channelDisplay) {
+                    channelDisplay.style.opacity = overlay.classList.contains('hidden') ? '0' : '1';
+                }
+            }
+        });
+        
+        // Pause updates when tab is hidden
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                console.log('Tab hidden, pausing updates');
+                stopIntervals();
+            } else {
+                console.log('Tab visible, resuming updates');
+                startIntervals();
+                // Immediate refresh
+                loadExcitement();
+            }
+        });
+        // ===== END INTERVAL MANAGEMENT =====
+        
+        // ===== STATE MANAGEMENT =====
+        const appState = {
+            selectedGame: null,
+            manualMode: false,
+            lastGamesUpdate: null,
+            lastExcitementUpdate: null,
+            connectionHealthy: true,
+            
+            setSelectedGame(game) {
+                this.selectedGame = game;
+                this.manualMode = true;
+            },
+            
+            setManualMode(enabled) {
+                this.manualMode = enabled;
+                if (!enabled) {
+                    this.selectedGame = null;
+                }
+            },
+            
+            updateGamesTimestamp() {
+                this.lastGamesUpdate = Date.now();
+            },
+            
+            updateExcitementTimestamp() {
+                this.lastExcitementUpdate = Date.now();
+            },
+            
+            setConnectionHealth(healthy) {
+                this.connectionHealthy = healthy;
+            }
+        };
+        // ===== END STATE MANAGEMENT =====
+        
+        // ===== CONNECTION STATUS =====
+        let connectionStatusTimeout = null;
+        
+        function showConnectionStatus(message, type = 'error') {
+            const status = safeGetElement('connection-status');
+            if (!status) return;
+            
+            status.textContent = message;
+            status.className = `connection-status show ${type}`;
+            
+            // Auto-hide after 5 seconds
+            if (connectionStatusTimeout) clearTimeout(connectionStatusTimeout);
+            connectionStatusTimeout = setTimeout(() => {
+                status.classList.remove('show');
+            }, 5000);
+        }
+        
+        function hideConnectionStatus() {
+            const status = safeGetElement('connection-status');
+            if (status) status.classList.remove('show');
+            if (connectionStatusTimeout) clearTimeout(connectionStatusTimeout);
+        }
+        // ===== END CONNECTION STATUS =====
+        
+        // ===== CHANNEL SWITCHING =====
+        async function changeChannel(channel) {
+            try {
+                const response = await fetch('/api/change_channel', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({channel: channel})
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    console.log(`✅ Changed to channel ${channel}`);
+                    return true;
+                } else {
+                    console.error(`❌ Channel change failed: ${result.error}`);
+                    return false;
+                }
+            } catch (error) {
+                console.error('Channel change error:', error);
+                return false;
+            }
+        }
+        
+        function testChannelChange() {
+            const channel = prompt('Enter channel number to test:', '810');
+            if (channel) {
+                changeChannel(channel);
+            }
+        }
+        // ===== END CHANNEL SWITCHING =====
+        
+        // ===== ESPN GUIDE =====
+        async function loadESPNGuide() {
+            try {
+                const response = await fetch('/api/espn_epg');
+                const result = await response.json();
+                
+                if (result.success) {
+                    const container = document.getElementById('espn-programs');
+                    container.innerHTML = result.programs.map(p => `
+                        <div style="background: ${p.is_current ? '#3a1a1a' : '#2a2a2a'}; padding: 10px; margin-bottom: 10px; border-radius: 4px; border-left: 3px solid ${p.is_current ? '#FF0000' : p.is_live ? '#BB0000' : '#666'};">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                                <strong style="color: ${p.is_current ? '#FF0000' : '#BB0000'};">${p.name} ${p.is_current ? '📺' : ''}</strong>
+                                <button onclick="switchToChannel(${p.channel})" style="padding: 3px 8px; background: ${p.is_current ? '#FF0000' : '#BB0000'}; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;">
+                                    Ch ${p.channel}
+                                </button>
+                            </div>
+                            <div style="font-size: 11px; color: #999; margin-bottom: 5px;">${p.start} - ${p.end}</div>
+                            <div style="font-size: 12px; color: #e0e0e0; margin-bottom: 3px;">${p.title}</div>
+                            ${p.description ? `<div style="font-size: 10px; color: #888;">${p.description.substring(0, 100)}...</div>` : ''}
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Failed to load ESPN guide:', error);
+            }
+        }
+        
+        function showESPNGuide() {
+            document.getElementById('espn-guide').style.display = 'block';
+            loadESPNGuide();
+        }
+        
+        function closeESPNGuide() {
+            document.getElementById('espn-guide').style.display = 'none';
+        }
+        
+        async function switchToChannel(channel) {
+            try {
+                const response = await fetch('/api/change_channel', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({channel: channel})
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    console.log(`✅ Switched to channel ${channel}`);
+                    closeESPNGuide();
+                    
+                    // Auto-switch sport based on channel
+                    const channelSportMap = {
+                        809: 'nba', 810: 'nba',
+                        811: 'ncaa-basketball', 812: 'ncaa-basketball', 814: 'ncaa-basketball',
+                        813: 'nba', 815: 'mlb'
+                    };
+                    
+                    const sport = channelSportMap[channel] || 'ncaa-basketball';
+                    document.getElementById('sport-selector').value = sport;
+                    
+                    // Trigger sport change
+                    const event = new Event('change');
+                    document.getElementById('sport-selector').dispatchEvent(event);
+                } else {
+                    console.error(`❌ Failed to switch: ${result.error}`);
+                }
+            } catch (error) {
+                console.error('Channel switch error:', error);
+            }
+        }
+        async function saveClip() {
+            try {
+                const response = await fetch('/api/save_clip', {method: 'POST'});
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(`✅ Saved ${result.segments} segments (${result.duration} min)`);
+                } else {
+                    alert(`❌ Failed: ${result.error}`);
+                }
+            } catch (error) {
+                alert('❌ Save failed');
+            }
+        }
+        // ===== END ESPN GUIDE =====
+
+        // ===== MARCH MADNESS =====
+        function showMarchMadness() {
+            loadMarchMadness();
+        }
+        
+        function closeMarchMadness() {
+            // Return to normal game view
+            if (currentGameId) {
+                selectGame(currentGameId);
+            }
+        }
+        
+        async function loadMarchMadness() {
+            try {
+                const data = await fetch('/api/march_madness').then(r => r.json());
+                
+                // Replace sidebar content
+                document.getElementById('away-team-name').textContent = '🏀 March Madness';
+                document.getElementById('home-team-name').textContent = 'Tournament Intel';
+                
+                let awayHtml = '<div style="color: #e0e0e0; font-size: 12px;">';
+                awayHtml += '<h4 style="color: #FF6B35; margin-top: 0;">🚨 Upset Alerts</h4>';
+                
+                if (data.upsets && data.upsets.length > 0) {
+                    data.upsets.forEach(upset => {
+                        awayHtml += `<div style="background: #2a2a2a; padding: 8px; margin-bottom: 8px; border-radius: 4px; border-left: 3px solid #FF6B35;">`;
+                        awayHtml += `<div style="font-weight: bold; margin-bottom: 4px;">${upset.Matchup}</div>`;
+                        awayHtml += `<div style="color: #888; font-size: 10px;">Score: ${upset.Upset_Score}</div>`;
+                        awayHtml += `<div style="color: #888; font-size: 10px;">${upset.Flags}</div>`;
+                        if (upset.channel) {
+                            awayHtml += `<button onclick="switchToChannel(${upset.channel})" style="margin-top: 5px; padding: 3px 8px; background: #FF6B35; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;">📺 CH${upset.channel}</button>`;
+                        }
+                        awayHtml += `</div>`;
+                    });
+                } else {
+                    awayHtml += '<p style="color: #666;">No major upset alerts</p>';
+                }
+                awayHtml += '</div>';
+                
+                let homeHtml = '<div style="color: #e0e0e0; font-size: 12px;">';
+                homeHtml += '<h4 style="color: #FF6B35; margin-top: 0;">⚕️ Injury Watch</h4>';
+                homeHtml += '<p style="font-size: 10px; color: #888; margin-bottom: 10px;">Monitor before bracket:</p>';
+                
+                data.injury_watch.forEach(team => {
+                    homeHtml += `<div style="background: #2a2a2a; padding: 5px; margin-bottom: 5px; border-radius: 3px; font-size: 11px;">📋 ${team}</div>`;
+                });
+                
+                homeHtml += '</div>';
+                
+                document.getElementById('away-player-list').innerHTML = awayHtml;
+                document.getElementById('home-player-list').innerHTML = homeHtml;
+                
+            } catch (error) {
+                document.getElementById('away-player-list').innerHTML = 
+                    '<p style="color: #FF6B35;">Error loading March Madness data</p>';
+            }
+        }
+        // ===== END MARCH MADNESS =====
+        
+        // ===== AUTO-SWITCHING =====
+        let autoSwitchEnabled = localStorage.getItem('autoSwitchEnabled') === 'true';
+        let autoSwitchTimer = null;
+        let switchCountdownInterval = null;
+        
+        function toggleAutoSwitch() {
+            autoSwitchEnabled = !autoSwitchEnabled;
+            localStorage.setItem('autoSwitchEnabled', autoSwitchEnabled);
+            
+            const btn = document.getElementById('auto-switch-toggle');
+            if (autoSwitchEnabled) {
+                btn.style.background = '#4CAF50';
+                btn.style.borderColor = '#4CAF50';
+                btn.textContent = '🤖 Auto: ON';
+                btn.title = 'Auto-Switch Enabled';
+            } else {
+                btn.style.background = '#666';
+                btn.style.borderColor = '#666';
+                btn.textContent = '🤖 Auto: OFF';
+                btn.title = 'Auto-Switch Disabled';
+            }
+        }
+        
+        function checkAutoSwitch() {
+            if (!autoSwitchEnabled) return;
+            
+            fetch(`/api/auto_switch_check?enabled=true`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.switched) {
+                        showSwitchNotification(data);
+                    }
+                });
+        }
+        
+        function showSwitchNotification(data) {
+            const notification = document.getElementById('auto-switch-notification');
+            document.getElementById('switch-game-info').textContent = 
+                `${data.game} (Score: ${data.upset_score}) on CH${data.to_channel}`;
+            
+            notification.style.display = 'block';
+            
+            let countdown = 3;
+            document.getElementById('switch-countdown').textContent = countdown;
+            
+            switchCountdownInterval = setInterval(() => {
+                countdown--;
+                if (countdown > 0) {
+                    document.getElementById('switch-countdown').textContent = countdown;
+                } else {
+                    clearInterval(switchCountdownInterval);
+                    notification.style.display = 'none';
+                    switchToChannel(data.to_channel);
+                }
+            }, 1000);
+        }
+        
+        function cancelAutoSwitch() {
+            if (switchCountdownInterval) {
+                clearInterval(switchCountdownInterval);
+            }
+            document.getElementById('auto-switch-notification').style.display = 'none';
+        }
+        
+        // Check every 30 seconds
+        setInterval(checkAutoSwitch, 30000);
+        // ===== END AUTO-SWITCHING =====
+        
+        // ===== LIVE SCORE OVERLAY =====
+        async function updateLiveScore() {
+            try {
+                // Get current channel
+                const channelResp = await fetch('/api/current_channel');
+                const channelData = await channelResp.json();
+                const currentChannel = channelData.channel;
+                
+                // Get live scores from ESPN (including Big Ten conference tournament)
+                const resp = await fetch('http://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard?groups=7&limit=100', {timeout: 5000});
+                const data = await resp.json();
+                const games = data.events || [];
+                
+                // Try to match via EPG first
+                if (currentChannel) {
+                    const epgResp = await fetch('/api/espn_epg');
+                    const epgData = await epgResp.json();
+                    
+                    if (epgData.success) {
+                        const currentProgram = epgData.programs.find(p => p.channel === currentChannel);
+                        if (currentProgram && currentProgram.title) {
+                            const vsMatch = currentProgram.title.match(/(.+?)\s+(?:vs\.?|@)\s+(.+)/i);
+                            if (vsMatch) {
+                                const awayTeam = vsMatch[1].trim();
+                                const homeTeam = vsMatch[2].trim();
+                                
+                                for (const game of games) {
+                                    const comp = game.competitions?.[0];
+                                    const teams = comp?.competitors || [];
+                                    if (teams.length !== 2) continue;
+                                    
+                                    const away = teams.find(t => t.homeAway === 'away');
+                                    const home = teams.find(t => t.homeAway === 'home');
+                                    
+                                    const awayName = away?.team?.displayName || '';
+                                    const homeName = home?.team?.displayName || '';
+                                    
+                                    const awayFirst = awayTeam.split(' ')[0].toLowerCase();
+                                    const homeFirst = homeTeam.split(' ')[0].toLowerCase();
+                                    
+                                    if (awayName.toLowerCase().includes(awayFirst) &&
+                                        homeName.toLowerCase().includes(homeFirst)) {
+                                        const awayScore = away?.score || '0';
+                                        const homeScore = home?.score || '0';
+                                        const scoreDisplay = `${awayScore}${homeScore}K`;
+                                        document.getElementById('live-score').textContent = scoreDisplay;
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // Fallback: show first live game
+                for (const game of games) {
+                    const comp = game.competitions?.[0];
+                    if (comp?.status?.type?.state !== 'in') continue; // Only in-progress games
+                    
+                    const teams = comp?.competitors || [];
+                    if (teams.length !== 2) continue;
+                    
+                    const away = teams.find(t => t.homeAway === 'away');
+                    const home = teams.find(t => t.homeAway === 'home');
+                    
+                    const awayScore = away?.score || '0';
+                    const homeScore = home?.score || '0';
+                    const scoreDisplay = `${awayScore}${homeScore}K`;
+                    document.getElementById('live-score').textContent = scoreDisplay;
+                    return;
+                }
+                
+                // No live games found
+                document.getElementById('live-score').textContent = '--';
+            } catch (error) {
+                console.log('Live score update failed:', error);
+            }
+        }
+        // ===== END LIVE SCORE OVERLAY =====
+        
+        // Load games immediately
+        loadExcitement();
+        loadStoredHeadlines();
+        
+        // Load OCR data immediately on startup
+        updateStreamOCR();
+        // autoSelectESPNGame(); // Disabled - manual control only
+
+        // Start refresh intervals
+        startIntervals();
+        
+        // Start live score polling
+        setInterval(updateLiveScore, 5000);
+        updateLiveScore();
+        
+        async function autoSelectESPNGame() {
+            if (appState.manualMode) return; // Don't override manual selection
+            
+            try {
+                const espnGame = await safeFetch('/api/espn_game');
+                
+                if (espnGame && espnGame.id) {
+                    // Auto-select this game
+                    selectGame(espnGame.id);
+                }
+            } catch (err) {
+                console.error('Error finding ESPN game:', err);
+            }
+        }
+        
+        async function updateStreamOCR() {
+            if (appState.manualMode) return; // Don't update if in manual mode
+            
+            try {
+                const data = await safeFetch('/api/stream_ocr');
+                
+                if (data && data.success && data.game_info) {
+                    const info = data.game_info;
+                    const current = info.current_game;
+                    
+                    // Add new headline to ticker
+                    if (info.next_game) {
+                        const cleanHeadline = info.next_game.replace('📰 ', '');
+                        // Check for similar headlines (fuzzy match)
+                        const isDuplicate = headlines.some(h => {
+                            const similarity = h.toLowerCase().includes(cleanHeadline.toLowerCase().substring(0, 20)) ||
+                                             cleanHeadline.toLowerCase().includes(h.toLowerCase().substring(0, 20));
+                            return similarity;
+                        });
+                        
+                        if (!isDuplicate) {
+                            headlines.unshift(cleanHeadline);
+                            if (headlines.length > MAX_HEADLINES) {
+                                headlines.pop();
+                            }
+                            updateHeadlineTicker();
+                        }
+                    }
+                    
+                    if (current && current.away_team) {
+                        // Update sidebar with game data
+                        safeSetText('away-team-name', `${current.away_team} ${current.away_score}`);
+                        safeSetText('home-team-name', `${current.home_team} ${current.home_score}`);
+                        
+                        safeSetHTML('away-player-list', `<div style="color: #888; font-size: 12px;">${current.status.replace(/mm$/i, '').trim()}</div>`);
+                        
+                        if (current.top_performers && current.top_performers.length > 0) {
+                            awayList.innerHTML += current.top_performers.map(p => `
+                                <div style="margin-top: 8px; font-size: 13px;">${p}</div>
+                            `).join('');
+                        }
+                    }
+                }
+            } catch (error) {
+                console.log('OCR update skipped:', error);
+            }
+        }
+        
+        function updateHeadlineTicker() {
+            const homeList = document.getElementById('home-player-list');
+            homeList.innerHTML = headlines.map((h, i) => `
+                <div style="font-size: ${i === 0 ? '13px' : '12px'}; color: ${i === 0 ? '#fff' : '#888'}; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #333; cursor: pointer;" onclick="checkHeadlineForGame('${h.replace(/'/g, "\\'")}')">
+                    📰 ${h}
+                </div>
+            `).join('');
+        }
+        
+        async function checkHeadlineForGame(headline) {
+            // Parse headline for game info (e.g., "Wright State leads Detroit Mercy 21-16")
+            const gameMatch = headline.match(/(.+?)\s+(leads|trails|defeats|beats|ties)\s+(.+?)\s+(\d+)-(\d+)/i);
+            
+            if (gameMatch) {
+                const [_, team1, action, team2, score1, score2] = gameMatch;
+                
+                // Show game details in away panel
+                safeSetText('away-team-name', team1.trim());
+                safeSetText('home-team-name', team2.trim());
+                
+                safeSetHTML('away-player-list', `
+                    <div style="padding: 16px;">
+                        <div style="font-size: 32px; color: #4CAF50; margin-bottom: 16px; font-weight: 600;">
+                            ${score1}
+                        </div>
+                        <div style="font-size: 12px; color: #888;">
+                            Top Players (Season Leaders)
+                        </div>
+                    </div>
+                `);
+                
+                safeSetHTML('home-player-list', `
+                    <div style="padding: 16px;">
+                        <div style="font-size: 32px; color: #4CAF50; margin-bottom: 16px; font-weight: 600;">
+                            ${score2}
+                        </div>
+                        <div style="font-size: 12px; color: #888;">
+                            Top Players (Season Leaders)
+                        </div>
+                    </div>
+                `);
+                
+                safeSetText('excitement-value', '🏀');
+            }
+        }
+        
+        // Load excitement rankings
+        async function loadExcitement() {
+            const gamesBar = safeGetElement('games-bar');
+            if (!gamesBar) return;
+            
+            try {
+                const sport = document.getElementById('sport-selector')?.value || 'ncaa-basketball';
+                const games = await safeFetch(`/api/excitement?sport=${sport}`);
+                
+                if (!games || !Array.isArray(games) || games.length === 0) {
+                    // Show upcoming games instead
+                    const sport = document.getElementById('sport-selector')?.value || 'nba';
+                    const upcoming = await safeFetch(`/api/upcoming_games?sport=${sport}`);
+                    
+                    if (upcoming && Array.isArray(upcoming) && upcoming.length > 0) {
+                        const upcomingHTML = upcoming.map(game => `
+                            <div class="game-bar-item" style="opacity: 0.7; cursor: pointer;" onclick="showUpcomingGameDetails('${game.id}', '${game.away_team.replace(/'/g, "\\'")}', '${game.home_team.replace(/'/g, "\\'")}', '${game.start_time}', '${game.away_record}', '${game.home_record}', ${game.excitement})">
+                                <div style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${game.away_team} @ ${game.home_team}</div>
+                                <div style="font-size: 10px; color: #888; margin-bottom: 4px;">${game.start_time}</div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div style="font-size: 9px; color: #666;">${game.away_record} vs ${game.home_record}</div>
+                                    <div style="font-size: 14px; font-weight: bold; color: #FFC107;">⚡${game.excitement}</div>
+                                </div>
+                            </div>
+                        `).join('');
+                        
+                        // Duplicate for seamless scroll
+                        gamesBar.innerHTML = `<div class="games-bar-scroll">${upcomingHTML}${upcomingHTML}</div>`;
+                        
+                        // Animate upcoming games
+                        setTimeout(() => {
+                            const scrollContainer = gamesBar.querySelector('.games-bar-scroll');
+                            if (!scrollContainer) return;
+                            
+                            const allTiles = scrollContainer.querySelectorAll('.game-bar-item');
+                            if (allTiles.length === 0) return;
+                            
+                            const firstTile = allTiles[0];
+                            const tileWidth = firstTile.offsetWidth;
+                            const computedStyle = window.getComputedStyle(scrollContainer);
+                            const gap = parseInt(computedStyle.gap) || 10;
+                            const resetPoint = (tileWidth + gap) * upcoming.length;
+                            
+                            let position = 0;
+                            const speed = 0.5;
+                            let animationId = null;
+                            
+                            function animate() {
+                                position += speed;
+                                if (position >= resetPoint) position = 0;
+                                scrollContainer.style.transform = `translateX(-${position}px)`;
+                                animationId = requestAnimationFrame(animate);
+                            }
+                            
+                            // Store animation ID globally
+                            if (window.gamesScrollAnimation) {
+                                cancelAnimationFrame(window.gamesScrollAnimation);
+                            }
+                            window.gamesScrollAnimation = animationId;
+                            
+                            animate();
+                        }, 100);
+                    } else {
+                        // Show recent completed games
+                        const recentGames = await safeFetch(`/api/recent_games?sport=${sport}`);
+                        
+                        console.log(`[SCROLL DEBUG] Fetched ${recentGames ? recentGames.length : 0} recent games`);
+                        
+                        if (recentGames && Array.isArray(recentGames) && recentGames.length > 0) {
+                            const gamesHTML = recentGames.map(game => `
+                                <div class="game-bar-item" style="opacity: 0.6;">
+                                    <div style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${game.away_team} @ ${game.home_team}</div>
+                                    <div style="font-size: 13px; color: #e0e0e0; margin-bottom: 4px;">${game.away_score} - ${game.home_score}</div>
+                                    <div style="font-size: 9px; color: #666;">FINAL • ${game.sport}</div>
+                                </div>
+                            `).join('');
+                            
+                            console.log(`[SCROLL DEBUG] Generated HTML for ${recentGames.length} games`);
+                            
+                            // Duplicate games for seamless loop
+                            gamesBar.innerHTML = `<div class="games-bar-scroll">${gamesHTML}${gamesHTML}</div>`;
+                            
+                            console.log(`[SCROLL DEBUG] Duplicated content (${recentGames.length} x 2 = ${recentGames.length * 2} total tiles)`);
+                            
+                            // Use JavaScript for truly seamless scrolling
+                            setTimeout(() => {
+                                const scrollContainer = gamesBar.querySelector('.games-bar-scroll');
+                                if (!scrollContainer) return;
+                                
+                                const allTiles = scrollContainer.querySelectorAll('.game-bar-item');
+                                if (allTiles.length === 0) return;
+                                
+                                const firstTile = allTiles[0];
+                                const tileWidth = firstTile.offsetWidth;
+                                const computedStyle = window.getComputedStyle(scrollContainer);
+                                const gap = parseInt(computedStyle.gap) || 10;
+                                const resetPoint = (tileWidth + gap) * recentGames.length;
+                                
+                                console.log(`[SCROLL DEBUG] Reset point: ${resetPoint}px (${recentGames.length} tiles)`);
+                                
+                                let position = 0;
+                                const speed = 0.5; // pixels per frame
+                                let animationId = null;
+                                
+                                function animate() {
+                                    position += speed;
+                                    
+                                    // Reset seamlessly when we've scrolled one full set
+                                    if (position >= resetPoint) {
+                                        position = 0;
+                                    }
+                                    
+                                    scrollContainer.style.transform = `translateX(-${position}px)`;
+                                    animationId = requestAnimationFrame(animate);
+                                }
+                                
+                                // Store animation ID globally to prevent garbage collection
+                                if (window.gamesScrollAnimation) {
+                                    cancelAnimationFrame(window.gamesScrollAnimation);
+                                }
+                                window.gamesScrollAnimation = animationId;
+                                
+                                animate();
+                                console.log(`[SCROLL DEBUG] JavaScript animation started!`);
+                            }, 100);
+                        } else {
+                            // Fallback message
+                            const now = new Date();
+                            const hour = now.getHours();
+                            let message = '🏀 No live games right now';
+                            
+                            if (hour < 17) {
+                                message += '<br><span style="font-size: 10px; color: #666;">Games typically start around 7 PM ET</span>';
+                            } else if (hour >= 17 && hour < 19) {
+                                message += '<br><span style="font-size: 10px; color: #666;">Games starting soon - check back in a few minutes</span>';
+                            } else {
+                                message += '<br><span style="font-size: 10px; color: #666;">Check back tomorrow for more games</span>';
+                            }
+                            
+                            gamesBar.innerHTML = `<p style="color: #666; font-size: 12px; text-align: center; padding: 20px;">${message}</p>`;
+                        }
+                    }
+                    return;
+                }
+                
+                // Validate game data
+                if (!isValidGameArray(games)) {
+                    console.error('Invalid excitement data:', games);
+                    return; // Keep last known data
+                }
+                
+                // If user manually selected ESPN, don't auto-update player columns
+                if (appState.manualMode) {
+                    // Still update the games bar
+                    gamesBar.innerHTML = games.map((game, i) => `
+                        <div class="game-bar-item ${i === 0 ? 'top' : ''}" onclick="selectGame('${game.game_id}')">
+                            <div style="font-weight: 600; font-size: 13px; margin-bottom: 4px;">${game.away} @ ${game.home}</div>
+                            <div style="font-size: 11px; color: #888; margin-bottom: 4px;">${game.away_score}-${game.home_score} • ${game.status}</div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="font-size: 10px; color: #666;">${game.sport}</div>
+                                <div style="font-size: 16px; font-weight: bold; color: ${i === 0 ? '#FFC107' : '#4CAF50'};">${game.excitement}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                    return;
+                }
+                
+                // Show top game excitement on video overlay
+                safeSetText('excitement-value', games[0].excitement);
+                
+                // Update player columns with top game
+                safeSetText('away-team-name', `${games[0].away} (${games[0].away_score})`);
+                safeSetText('home-team-name', `${games[0].home} (${games[0].home_score})`);
+                
+                if (games[0].players && games[0].players.away.length > 0) {
+                    safeSetHTML('away-player-list', games[0].players.away.map(p => `<div>${p}</div>`).join(''));
+                } else {
+                    safeSetHTML('away-player-list', '<div style="color: #666;">No player data</div>');
+                }
+                
+                if (games[0].players && games[0].players.home.length > 0) {
+                    safeSetHTML('home-player-list', games[0].players.home.map(p => `<div>${p}</div>`).join(''));
+                } else {
+                    safeSetHTML('home-player-list', '<div style="color: #666;">No player data</div>');
+                }
+                
+                // Display all games in horizontal bar
+                gamesBar.innerHTML = games.map((game, i) => `
+                    <div class="game-bar-item ${i === 0 ? 'top' : ''}" onclick="selectGame('${game.game_id}')">
+                        <div style="font-weight: 600; font-size: 13px; margin-bottom: 4px;">${game.away} @ ${game.home}</div>
+                        <div style="font-size: 11px; color: #888; margin-bottom: 4px;">${game.away_score}-${game.home_score} • ${game.status}</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="font-size: 10px; color: #666;">${game.sport}</div>
+                            <div style="font-size: 16px; font-weight: bold; color: ${i === 0 ? '#FFC107' : '#4CAF50'};">${game.excitement}</div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                appState.updateExcitementTimestamp();
+            } catch (error) {
+                console.error('Error loading excitement:', error);
+                // Keep last known data - don't clear the games bar
+            }
+        }
+        
+        async function showESPN() {
+            appState.setManualMode(true);
+            safeSetText('away-team-name', 'ESPN');
+            safeSetText('home-team-name', '');
+            safeSetHTML('away-player-list', '<div style="color: #666;">Loading headlines...</div>');
+            safeSetHTML('home-player-list', '');
+            safeSetText('excitement-value', '--');
+            
+            // Remove selected highlight
+            document.querySelectorAll('.game-bar-item').forEach(item => item.classList.remove('selected'));
+            
+            // Fetch ESPN headlines
+            try {
+                const headlines = await safeFetch('/api/espn_headlines');
+                
+                if (headlines && headlines.length > 0) {
+                    safeSetHTML('away-player-list', headlines.map(h => `
+                        <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #333;">
+                            <div style="font-size: 13px; color: #e0e0e0; margin-bottom: 4px;">${h.headline}</div>
+                            <div style="font-size: 10px; color: #666;">${h.description || ''}</div>
+                        </div>
+                    `).join(''));
+                } else {
+                    safeSetHTML('away-player-list', '<div style="color: #666;">No headlines available</div>');
+                }
+            } catch (error) {
+                safeSetHTML('away-player-list', '<div style="color: #666;">Error loading headlines</div>');
+            }
+        }
+        
+        
+        function loadTwitchStream(channel) {
+            console.log('Loading Twitch stream:', channel);
+            appState.setManualMode(true);  // Prevent auto-switching back to ESPN
+            
+            // Check if we're on localhost - Twitch only works with localhost parent
+            if (window.location.hostname !== 'localhost') {
+                alert('Twitch streams only work when accessing via http://localhost:5001\n\nCurrent URL: ' + window.location.hostname);
+                return;
+            }
+            
+            const videoContainer = document.querySelector('.stream-container');
+            videoContainer.innerHTML = `
+                <iframe width="100%" height="100%" 
+                    src="https://player.twitch.tv/?channel=${channel}&parent=localhost&autoplay=true&muted=false" 
+                    frameborder="0" 
+                    allowfullscreen>
+                </iframe>
+                <div class="excitement-overlay" id="excitement-score">
+                    <span id="excitement-value">🔴</span>
+                    <div class="control-panel">
+                        <button onclick="showESPN()" style="padding: 4px 8px; background: #1a1a1a; color: #e0e0e0; border: 1px solid #333; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 6px;" title="Show ESPN">📺</button>
+                        <button onclick="showStreamers()" style="padding: 4px 8px; background: #1a1a1a; color: #e0e0e0; border: 1px solid #333; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 6px;" title="Streamer Feed">🎮</button>
+                        <button onclick="showPersonalized()" style="padding: 4px 8px; background: #1a1a1a; color: #e0e0e0; border: 1px solid #333; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 6px;" title="For You">✨</button>
+                        <select id="sport-selector" title="Select Sport">
+                            <option value="ncaa-basketball">🏀 NCAA</option>
+                            <option value="nba">🏀 NBA</option>
+                            <option value="mlb">⚾ MLB</option>
+                            <option value="nhl">🏒 NHL</option>
+                            <option value="nfl">🏈 NFL</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+        }
+        
+        async function showStreamers() {
+            console.log('showStreamers called');
+            appState.setManualMode(true);
+            safeSetText('away-team-name', 'Streamers');
+            safeSetText('home-team-name', '');
+            safeSetHTML('away-player-list', '<div style="color: #666;">Loading streamer feed via Grok...</div>');
+            safeSetHTML('home-player-list', '');
+            safeSetText('excitement-value', '--');
+            
+            // Remove selected highlight
+            document.querySelectorAll('.game-bar-item').forEach(item => item.classList.remove('selected'));
+            
+            // Fetch streamer feed
+            try {
+                const items = await safeFetch('/api/streamer_feed');
+                console.log('Streamer feed items:', items);
+                
+                if (items && items.length > 0) {
+                    // Load top streamer's video (first item is highest viewer count)
+                    const topStreamer = items[0].headline.match(/^(.+?) is LIVE$/);
+                    console.log('Top streamer match:', topStreamer);
+                    if (topStreamer) {
+                        const streamerName = topStreamer[1].toLowerCase().replace(/\s*\(.+?\)\s*/g, '').replace(/\s+/g, '');
+                        console.log('Extracted streamer name:', streamerName);
+                        loadTwitchStream(streamerName);
+                    }
+                    
+                    safeSetHTML('away-player-list', items.map(item => {
+                        const match = item.headline.match(/^(.+?) is LIVE$/);
+                        if (match) {
+                            const channel = match[1].toLowerCase().replace(/\s*\(.+?\)\s*/g, '').replace(/\s+/g, '');
+                            return `
+                                <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #333; cursor: pointer;" onclick="loadTwitchStream('${channel}')">
+                                    <div style="font-size: 13px; color: #e0e0e0; margin-bottom: 4px;">${item.headline}</div>
+                                    <div style="font-size: 10px; color: #666;">${item.description || ''}</div>
+                                </div>
+                            `;
+                        }
+                        return `
+                            <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #333;">
+                                <div style="font-size: 13px; color: #e0e0e0; margin-bottom: 4px;">${item.headline}</div>
+                                <div style="font-size: 10px; color: #666;">${item.description || ''}</div>
+                            </div>
+                        `;
+                    }).join(''));
+                } else {
+                    safeSetHTML('away-player-list', '<div style="color: #666;">No streamer activity found</div>');
+                }
+            } catch (error) {
+                safeSetHTML('away-player-list', '<div style="color: #666;">Error loading streamer feed</div>');
+            }
+        }
+        
+        
+        function showUpcomingGameDetails(id, awayTeam, homeTeam, startTime, awayRecord, homeRecord, excitement) {
+            appState.setManualMode(true);
+            document.getElementById('away-team-name').textContent = 'Game Preview';
+            safeSetText('away-team-name', 'Game Preview');
+            safeSetText('home-team-name', '');
+            safeSetText('excitement-value', '⚡' + excitement);
+            
+            safeSetHTML('away-player-list', `
+                <div style="padding: 16px;">
+                    <div style="font-size: 16px; font-weight: 600; color: #e0e0e0; margin-bottom: 16px;">
+                        ${awayTeam}<br>@<br>${homeTeam}
+                    </div>
+                    <div style="font-size: 14px; color: #888; margin-bottom: 12px;">
+                        🕐 ${startTime}
+                    </div>
+                    <div style="font-size: 12px; color: #666; margin-bottom: 16px;">
+                        ${awayTeam}: ${awayRecord}<br>
+                        ${homeTeam}: ${homeRecord}
+                    </div>
+                    <div style="font-size: 14px; color: #FFC107; font-weight: 600; margin-bottom: 8px;">
+                        Excitement Score: ${excitement}
+                    </div>
+                    <div style="font-size: 11px; color: #888; line-height: 1.6;">
+                        ${excitement >= 90 ? '🔥 Must-watch matchup! Both teams are elite and evenly matched.' : 
+                          excitement >= 75 ? '⭐ High-quality game with playoff implications.' :
+                          excitement >= 60 ? '📊 Solid matchup between competitive teams.' :
+                          '📺 Good game to catch if you have time.'}
+                    </div>
+                </div>
+            `);
+            
+            safeSetHTML('home-player-list', '');
+            
+            // Remove selected highlight
+            document.querySelectorAll('.game-bar-item').forEach(item => item.classList.remove('selected'));
+        }
+        
+        async function showPersonalized() {
+            appState.setManualMode(true);
+            safeSetText('away-team-name', 'For You');
+            safeSetText('home-team-name', '');
+            safeSetHTML('away-player-list', '<div style="color: #666;">Loading your algorithm...</div>');
+            safeSetHTML('home-player-list', '');
+            safeSetText('excitement-value', '✨');
+            
+            // Remove selected highlight
+            document.querySelectorAll('.game-bar-item').forEach(item => item.classList.remove('selected'));
+            
+            // Fetch viral videos
+            try {
+                const response = await fetch('/api/viral_videos');
+                const videos = await response.json();
+                const list = document.getElementById('away-player-list');
+                
+                if (videos && videos.length > 0) {
+                    // Show first video in player
+                    const firstVideo = videos[0];
+                    if (firstVideo.youtube_handle && firstVideo.youtube_handle.includes('youtube')) {
+                        const videoId = extractYouTubeId(firstVideo.youtube_handle);
+                        if (videoId) {
+                            const videoContainer = document.querySelector('.stream-container');
+                            videoContainer.innerHTML = `
+                                <iframe width="100%" height="100%" 
+                                    src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowfullscreen>
+                                </iframe>
+                                <div class="excitement-overlay" id="excitement-score">
+                                    <span id="excitement-value">✨</span>
+                                    <div class="control-panel">
+                                        <button onclick="showESPN()" style="padding: 4px 8px; background: #1a1a1a; color: #e0e0e0; border: 1px solid #333; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 6px;" title="Show ESPN">📺</button>
+                                        <button onclick="showStreamers()" style="padding: 4px 8px; background: #1a1a1a; color: #e0e0e0; border: 1px solid #333; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 6px;" title="Streamer Feed">🎮</button>
+                                        <button onclick="showPersonalized()" style="padding: 4px 8px; background: #1a1a1a; color: #e0e0e0; border: 1px solid #333; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 6px;" title="For You">✨</button>
+                                        <select id="sport-selector" title="Select Sport">
+                                            <option value="ncaa-basketball">🏀 NCAA</option>
+                                            <option value="nba">🏀 NBA</option>
+                                            <option value="mlb">⚾ MLB</option>
+                                            <option value="nhl">🏒 NHL</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                    
+                    // Show video list with click handlers
+                    list.innerHTML = videos.map((video, i) => `
+                        <div onclick="playVideo('${video.youtube_handle}', '${video.title.replace(/'/g, "\\'")}', '${video.creator}')" 
+                             style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #333; cursor: pointer; transition: background 0.2s;"
+                             onmouseover="this.style.background='#1a1a1a'" 
+                             onmouseout="this.style.background='transparent'">
+                            <div style="font-size: 13px; color: #e0e0e0; margin-bottom: 4px;">${i === 0 ? '▶️ ' : ''}${video.title}</div>
+                            <div style="font-size: 10px; color: #666;">${video.creator} • ${video.views} • ${video.uploaded}</div>
+                        </div>
+                    `).join('');
+                } else {
+                    list.innerHTML = '<div style="color: #666;">No videos available</div>';
+                }
+            } catch (error) {
+                document.getElementById('away-player-list').innerHTML = '<div style="color: #666;">Error loading feed</div>';
+            }
+        }
+        
+        function extractYouTubeId(url) {
+            const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
+        
+        function playVideo(url, title, creator) {
+            const videoId = extractYouTubeId(url);
+            if (videoId) {
+                const videoContainer = document.querySelector('.stream-container');
+                videoContainer.innerHTML = `
+                    <iframe width="100%" height="100%" 
+                        src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                    <div class="excitement-overlay" id="excitement-score">
+                        <span id="excitement-value">✨</span>
+                        <div class="control-panel">
+                            <button onclick="showESPN()" style="padding: 4px 8px; background: #1a1a1a; color: #e0e0e0; border: 1px solid #333; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 6px;" title="Show ESPN">📺</button>
+                            <button onclick="showStreamers()" style="padding: 4px 8px; background: #1a1a1a; color: #e0e0e0; border: 1px solid #333; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 6px;" title="Streamer Feed">🎮</button>
+                            <button onclick="showPersonalized()" style="padding: 4px 8px; background: #1a1a1a; color: #e0e0e0; border: 1px solid #333; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 6px;" title="For You">✨</button>
+                            <select id="sport-selector" title="Select Sport">
+                                <option value="ncaa-basketball">🏀 NCAA</option>
+                                <option value="nba">🏀 NBA</option>
+                                <option value="mlb">⚾ MLB</option>
+                                <option value="nhl">🏒 NHL</option>
+                            </select>
+                        </div>
+                    </div>
+                `;
+                
+                // Update player info
+                document.getElementById('away-team-name').textContent = creator;
+                document.getElementById('away-player-list').scrollTop = 0;
+            }
+        }
+        
+        async function selectGame(gameId) {
+            try {
+                const games = await safeFetch('/api/excitement');
+                if (!games || !Array.isArray(games)) {
+                    console.error('Invalid games data');
+                    return;
+                }
+                
+                const game = games.find(g => g.game_id === gameId);
+                if (!game) {
+                    console.error('Game not found:', gameId);
+                    return;
+                }
+                
+                // Update state
+                appState.setSelectedGame(game);
+                
+                // Update player columns
+                safeSetText('away-team-name', `${game.away} (${game.away_score})`);
+                safeSetText('home-team-name', `${game.home} (${game.home_score})`);
+                safeSetText('excitement-value', game.excitement);
+                
+                if (game.players && Array.isArray(game.players.away) && game.players.away.length > 0) {
+                    safeSetHTML('away-player-list', game.players.away.filter(isValidPlayer).map(p => `<div style="padding: 4px 0; color: #e0e0e0;">${p}</div>`).join(''));
+                } else {
+                    safeSetHTML('away-player-list', '<div style="color: #666; padding: 16px;">Loading players...</div>');
+                }
+                
+                if (game.players && Array.isArray(game.players.home) && game.players.home.length > 0) {
+                    safeSetHTML('home-player-list', game.players.home.filter(isValidPlayer).map(p => `<div style="padding: 4px 0; color: #e0e0e0;">${p}</div>`).join(''));
+                } else {
+                    safeSetHTML('home-player-list', '<div style="color: #666; padding: 16px;">Loading players...</div>');
+                }
+                
+                // Highlight selected game
+                document.querySelectorAll('.game-bar-item').forEach(item => item.classList.remove('selected'));
+            } catch (err) {
+                console.error('Error selecting game:', err);
+            }
+        }
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script>
+        // Initialize HLS video stream
+        var video = document.getElementById('video');
+        var streamUrl = window.location.origin + '/stream.m3u8?t=' + Date.now();
+        
+        console.log('Attempting to load stream from:', streamUrl);
+            
+        if (Hls.isSupported()) {
+            var hls = new Hls({
+                liveSyncDurationCount: 2,
+                liveMaxLatencyDurationCount: 4,
+                maxBufferLength: 6,
+                maxMaxBufferLength: 12,
+                enableWorker: true,
+                maxBufferSize: 10 * 1000 * 1000,
+                maxBufferHole: 0.5,
+                highBufferWatchdogPeriod: 1,
+                manifestLoadingTimeOut: 10000,
+                manifestLoadingMaxRetry: 10,
+                levelLoadingTimeOut: 10000,
+                levelLoadingMaxRetry: 10,
+                fragLoadingTimeOut: 10000,
+                fragLoadingMaxRetry: 10
+            });
+            // Check if stream exists before loading
+            fetch(streamUrl, {method: 'HEAD'}).then(r => {
+                if (!r.ok && !r.redirected) {
+                    document.getElementById('buffer-progress').textContent = 'No stream available — start recording to begin';
+                    document.getElementById('buffer-bar').style.width = '0%';
+                }
+            }).catch(() => {});
+
+            hls.loadSource(streamUrl);
+            hls.attachMedia(video);
+            
+            hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                console.log('HLS manifest parsed successfully');
+                video.play().catch(e => console.log('Play blocked', e));
+                document.getElementById('loading-overlay').style.display = 'none';
+                console.log('Live stream started at live edge');
+            });
+            
+            // Unmute on any click
+            document.body.addEventListener('click', function unmute() {
+                video.muted = false;
+                document.body.removeEventListener('click', unmute);
+            }, {once: true});
+            
+            // Comprehensive error recovery
+            hls.on(Hls.Events.ERROR, function(event, data) {
+                console.error('HLS error:', data.type, data.details);
+                
+                if (data.fatal) {
+                    switch(data.type) {
+                        case Hls.ErrorTypes.NETWORK_ERROR:
+                            console.log('Network error, attempting recovery...');
+                            hls.startLoad();
+                            break;
+                        case Hls.ErrorTypes.MEDIA_ERROR:
+                            console.log('Media error, attempting recovery...');
+                            hls.recoverMediaError();
+                            break;
+                        default:
+                            console.log('Fatal error, stream unavailable');
+                            hls.destroy();
+                            document.getElementById('buffer-progress').textContent = 'No stream available — start recording to begin';
+                            document.getElementById('buffer-bar').style.width = '0%';
+                            break;
+                    }
+                } else {
+                    // Non-fatal, just retry
+                    console.log('Non-fatal error, continuing...');
+                }
+            });
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = streamUrl;
+            video.addEventListener('loadedmetadata', function() {
+                console.log('Video metadata loaded');
+                video.muted = false;
+                video.play().catch(e => {
+                    console.log('Autoplay blocked, user interaction needed', e);
+                });
+            });
+            video.addEventListener('error', function(e) {
+                console.error('Video error:', e);
+            });
+        }
+        
+        // Add click-to-unmute if needed
+        document.body.addEventListener('click', function() {
+            if (video.paused) {
+                video.play();
+            }
+        }, { once: true });
+    </script>
+</body>
+</html>

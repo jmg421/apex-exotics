@@ -126,6 +126,8 @@ def get_excitement_rankings():
                     'players': players,
                     'home_full': home.get('displayName', home['abbreviation']),
                     'away_full': away.get('displayName', away['abbreviation']),
+                    'home_id': home.get('id'),
+                    'away_id': away.get('id'),
                 })
     except Exception as e:
         print(f"Error fetching NCAA: {e}")
@@ -154,7 +156,9 @@ def get_excitement_rankings():
                     'status': event['status']['type']['detail'],
                     'sport': 'NHL',
                     'channel': None,
-                    'players': players
+                    'players': players,
+                    'home_id': home.get('id'),
+                    'away_id': away.get('id'),
                 })
     except Exception as e:
         print(f"Error fetching NHL: {e}")
@@ -183,7 +187,9 @@ def get_excitement_rankings():
                     'status': event['status']['type']['detail'],
                     'sport': 'NBA',
                     'channel': None,
-                    'players': players
+                    'players': players,
+                    'home_id': home.get('id'),
+                    'away_id': away.get('id'),
                 })
     except Exception as e:
         print(f"Error fetching NBA: {e}")

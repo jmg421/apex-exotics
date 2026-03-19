@@ -32,6 +32,12 @@ CHANNEL_MAP = {
     'FS2': 834,
     'CBS Sports Network': 827,
     'Golf Channel': 835,
+    
+    # March Madness
+    'truTV': 166,
+    'TBS': 139,
+    'TNT': 138,
+    'CBS': 102,
 }
 
 def get_channel(network_name):

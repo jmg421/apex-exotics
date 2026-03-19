@@ -54,7 +54,7 @@ def _load_token() -> str:
                 return stripped
     raise RuntimeError("No Jarvis token found. Set JARVIS_TOKEN env var or check jarvis.txt")
 
-BASE_URL = os.environ.get("JARVIS_URL", "https://staging.nodes.bio/api/jarvis")
+BASE_URL = os.environ.get("JARVIS_URL", "https://nodes.bio/api/jarvis")
 DEFAULT_MODELS = ["openai_gpt", "anthropic_claude", "perplexity", "xai_grok"]
 POLL_INTERVAL = 2
 TIMEOUT = 90

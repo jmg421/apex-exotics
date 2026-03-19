@@ -1476,6 +1476,8 @@ def get_ncaa_stats(game_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+_player_cache = {}  # game_id -> last good player list
+
 @app.route('/api/game/<game_id>/players')
 def get_game_players(game_id):
     """Get per-player shooting stats for overlay"""
@@ -1513,9 +1515,16 @@ def get_game_players(game_id):
                         'fg_made': int(fgm) if fgm.isdigit() else 0,
                         'fg_att': int(fga) if fga.isdigit() else 0,
                     })
-        players.sort(key=lambda p: p['three_made'], reverse=True)
-        return jsonify({'players': players})
+        good = [p for p in players if p['fg_att'] > 0 or int(p['pts'] or 0) > 0]
+        if good:
+            _player_cache[game_id] = good
+        players_out = good or _player_cache.get(game_id, [])
+        players_out.sort(key=lambda p: p['three_made'], reverse=True)
+        return jsonify({'players': players_out})
     except Exception as e:
+        cached = _player_cache.get(game_id, [])
+        if cached:
+            return jsonify({'players': cached})
         return jsonify({'error': str(e), 'players': []}), 500
 
 

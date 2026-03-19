@@ -36,6 +36,11 @@ ROTATION_SECONDS = 60  # Time on each game before rotating
 PREGAME_MINUTES = 5  # Switch this many minutes before tip-off
 CLOCK_STALL_SECONDS = 25  # If game clock unchanged this long, likely commercial
 
+# Pinned teams get excitement boost + longer rotation time
+PINNED_TEAMS = {'OSU'}
+PINNED_BOOST = 30
+PINNED_ROTATION_SECONDS = 120
+
 # Track game clocks for stall detection
 _clock_history = {}  # game_id -> (clock_str, timestamp_of_last_change)
 
@@ -118,13 +123,19 @@ def is_clock_stalled(game):
 
 def run():
     """Main loop with round-robin rotation across exciting games."""
-    current_channel = None
-    last_switch = 0
-    rotation_index = 0
+    # Read current channel from disk so we don't switch on startup
+    try:
+        import json as _json
+        with open('data/current_channel.json') as f:
+            current_channel = _json.load(f).get('channel')
+    except Exception:
+        current_channel = None
+    last_switch = time.time()
+    rotation_index = -1
 
     print(f"🎯 Auto-Switcher started at {datetime.now().strftime('%H:%M:%S')}")
     print(f"   Networks mapped: {len([v for v in NETWORK_CHANNELS.values() if v])}")
-    print(f"   Rotation: {ROTATION_SECONDS}s per game, cooldown: {COOLDOWN}s")
+    print(f"   Rotation: {ROTATION_SECONDS}s per game, cooldown: {COOLDOWN}s, pinned: {PINNED_TEAMS} ({PINNED_ROTATION_SECONDS}s +{PINNED_BOOST})")
 
     while True:
         now = time.time()
@@ -150,6 +161,13 @@ def run():
             g['channel'] = resolve_channel(nets)
 
         switchable = [g for g in games if g['channel'] and g['excitement'] >= MIN_EXCITEMENT]
+        # Boost pinned teams
+        for g in switchable:
+            if g.get('home') in PINNED_TEAMS or g.get('away') in PINNED_TEAMS:
+                g['excitement'] = min(g['excitement'] + PINNED_BOOST, 100)
+                g['pinned'] = True
+            else:
+                g['pinned'] = False
         switchable.sort(key=lambda g: g['excitement'], reverse=True)
 
         # Log top games
@@ -169,24 +187,31 @@ def run():
 
         current_game = next((g for g in switchable if g['channel'] == current_channel), None)
         current_stalled = current_game['stalled'] if current_game else False
+        current_pinned = current_game.get('pinned', False) if current_game else False
+        rot_time = PINNED_ROTATION_SECONDS if current_pinned else ROTATION_SECONDS
         time_on_current = now - last_switch
 
-        if current_stalled and len(switchable) >= 2:
-            # Commercial/timeout — immediately jump to next live game
+        if current_stalled and not current_pinned and len(switchable) >= 2:
+            # Commercial/timeout — jump to next live game after broadcast delay
             live_games = [g for g in switchable if not g['stalled'] and g['channel'] != current_channel]
             if live_games:
                 target = live_games[0]
                 print(f"\n📺 COMMERCIAL SKIP → ch {target['channel']}: "
-                      f"{target['away']} vs {target['home']} ({target['away_score']}-{target['home_score']}) — excitement {target['excitement']}")
+                      f"{target['away']} vs {target['home']} ({target['away_score']}-{target['home_score']}) — excitement {target['excitement']}"
+                      f" (waiting 20s for broadcast)")
+                time.sleep(20)  # let broadcast catch up to API
                 change_channel(target['channel'])
                 current_channel = target['channel']
                 last_switch = now
                 rotation_index = switchable.index(target) if target in switchable else 0
-        elif len(switchable) >= 2 and time_on_current >= ROTATION_SECONDS:
-            # Rotate through exciting games
+        elif len(switchable) >= 2 and time_on_current >= rot_time:
+            # Rotate — but only to a game worth switching to
             rotation_index = (rotation_index + 1) % len(switchable)
             target = switchable[rotation_index]
-            if target['channel'] != current_channel:
+            current_exc = current_game['excitement'] if current_game else 0
+            if (target['channel'] != current_channel
+                    and not target['stalled']
+                    and target['excitement'] >= current_exc - 20):
                 print(f"\n🔄 ROTATE [{rotation_index+1}/{len(switchable)}] → ch {target['channel']}: "
                       f"{target['away']} vs {target['home']} ({target['away_score']}-{target['home_score']}) — excitement {target['excitement']}")
                 change_channel(target['channel'])

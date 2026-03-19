@@ -110,6 +110,9 @@ def get_upcoming_tips():
 def resolve_channel(networks):
     """Find the best HEAT channel from a list of broadcast networks."""
     for net in networks:
+        # Skip streaming-only services that don't have a cable channel
+        if net.strip() in ('ESPN+', 'Peacock', 'Paramount+'):
+            continue
         for name, ch in NETWORK_CHANNELS.items():
             if ch and name.lower() in net.lower():
                 return ch

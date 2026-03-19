@@ -346,6 +346,18 @@ def get_excitement():
     except Exception as e:
         return jsonify([])
 
+@app.route('/api/dad_jokes')
+def get_dad_jokes():
+    """Fetch fresh dad jokes from icanhazdadjoke.com"""
+    jokes = []
+    try:
+        for _ in range(5):
+            r = requests.get('https://icanhazdadjoke.com/', headers={'Accept': 'application/json'}, timeout=3)
+            jokes.append(r.json().get('joke', ''))
+    except:
+        pass
+    return jsonify(jokes)
+
 @app.route('/api/final_scores')
 def get_final_scores():
     """Get today's final scores across sports"""

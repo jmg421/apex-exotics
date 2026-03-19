@@ -142,11 +142,7 @@
         .ticker-items {
             display: flex;
             white-space: nowrap;
-            animation: tickerScroll var(--ticker-duration, 30s) linear infinite;
-        }
-        @keyframes tickerScroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+            will-change: transform;
         }
         .ticker-item {
             flex-shrink: 0;
@@ -352,6 +348,23 @@
             hls.on(Hls.Events.MANIFEST_PARSED, () => {
                 video.play().catch(() => {});
             });
+            hls.on(Hls.Events.ERROR, (event, data) => {
+                if (data.fatal) {
+                    console.warn('HLS fatal error, recovering...', data.type);
+                    if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
+                        hls.recoverMediaError();
+                    } else {
+                        hls.destroy();
+                        setTimeout(() => location.reload(), 3000);
+                    }
+                }
+            });
+            // Watchdog: if video stalls for 10s, force recovery
+            setInterval(() => {
+                if (video.paused && video.readyState > 0 && !video.ended) {
+                    video.play().catch(() => {});
+                }
+            }, 10000);
           })();
         }
         document.body.addEventListener('click', () => { video.muted = false; }, {once: true});
@@ -438,6 +451,8 @@
         }
 
         // === SMART TICKER ===
+        let tickerPos = 0;
+        let tickerWidth = 0;
         function showTicker(items) {
             const container = document.getElementById('ticker-items');
             const html = items.map(item => {
@@ -449,13 +464,18 @@
                     <span class="ticker-text">${item.text}<span class="ticker-score">${item.score}</span></span>
                 </div>`;
             }).join('<span class="ticker-sep">◆</span>');
-            // Duplicate for seamless loop
-            container.innerHTML = html + '<span class="ticker-sep">◆</span>' + html + '<span class="ticker-sep">◆</span>';
-            // Adjust speed based on content width
-            const halfWidth = container.scrollWidth / 2;
-            const duration = Math.max(20, halfWidth / 50); // ~50px/sec
-            container.style.setProperty('--ticker-duration', duration + 's');
+            container.innerHTML = html + '<span class="ticker-sep">◆</span>' + html;
+            tickerWidth = container.scrollWidth / 2;
         }
+        // Lightweight scroll via rAF
+        function tickerFrame() {
+            tickerPos -= 0.8;
+            if (tickerPos <= -tickerWidth) tickerPos += tickerWidth;
+            const el = document.getElementById('ticker-items');
+            if (el) el.style.transform = `translate3d(${tickerPos}px,0,0)`;
+            requestAnimationFrame(tickerFrame);
+        }
+        requestAnimationFrame(tickerFrame);
 
         // === PARTICLES on scoring runs ===
         function spawnParticles(color, count) {
@@ -647,18 +667,34 @@
             ["Why did the basketball player bring a ladder?", "His coach told him to shoot for the stars."],
             ["What's a basketball player's favorite kind of cheese?", "Swish cheese."],
             ["Why are basketball players messy eaters?", "They're always dribbling."],
-            ["What do you call a basketball game with no ball?", "A running contest."],
             ["Why did the basketball player sit on the sideline and sketch?", "He was trying to draw a foul."],
-            ["What's a basketball player's favorite thing about astronomy?", "The shooting stars."],
             ["Why can't basketball players go on vacation?", "They'd get called for traveling."],
             ["What did March say to Madness?", "You complete me."],
             ["Why did the bracket cry?", "Too many upsets."],
             ["What do you call a Cinderella team at midnight?", "Eliminated."],
-            ["Why do basketball courts get wet?", "The players dribble all over them."],
-            ["What did the basketball say to the hoop?", "You're my goal."],
-            ["Why was the basketball court so slippery?", "The players kept breaking out in cold sweats."],
+            ["Why was Cinderella so bad at basketball?", "She had a pumpkin for a coach."],
+            ["What do you call a ref who works at a bakery?", "A roll model."],
+            ["Why did the hockey player bring string?", "He wanted to tie the game."],
+            ["What's a hockey player's favorite meal?", "Icing."],
+            ["Why do hockey players make great musicians?", "They know how to hit the right notes."],
+            ["What did the baseball glove say to the ball?", "Catch you later!"],
+            ["Why was the stadium so hot?", "All the fans left."],
+            ["What lights up a soccer stadium?", "A soccer match."],
+            ["Why do golfers bring two pairs of pants?", "In case they get a hole in one."],
+            ["What do you call a boomerang that doesn't come back?", "A stick."],
+            ["Why don't football players ever get cold?", "They're surrounded by fans."],
+            ["What's a boxer's favorite drink?", "Punch."],
+            ["Why did the scarecrow win an award?", "He was outstanding in his field."],
+            ["What do sprinters eat before a race?", "Nothing — they fast."],
+            ["Why did the golfer wear two pairs of socks?", "In case he got a hole in one."],
+            ["What do you call a sleeping dinosaur at a basketball game?", "A dino-snore."],
+            ["Why did the coach go to the bank?", "To get his quarterback."],
+            ["What has 18 legs and catches flies?", "A baseball team."],
+            ["Why are basketball players so good at solving problems?", "They always find a way around the screen."],
+            ["What do you call cheese that isn't yours at a tailgate?", "Nacho cheese."],
         ];
 
+        let dadJokesCache = [];
         let jokeIndex = 0;
         let jokeUntil = 0;
         let jokePhase = 0;
@@ -672,26 +708,27 @@
         let finalScoresCache = [];
         async function fetchTickerContent() {
             try {
-                const [headlines, mm, scores, finals] = await Promise.all([
+                const [headlines, mm, scores, finals, jokes] = await Promise.all([
                     fetch('/api/espn_headlines').then(r => r.json()).catch(() => []),
                     fetch('/api/march_madness').then(r => r.json()).catch(() => ({})),
                     fetch('/api/excitement?sport=all').then(r => r.json()).catch(() => []),
-                    fetch('/api/final_scores').then(r => r.json()).catch(() => [])
+                    fetch('/api/final_scores').then(r => r.json()).catch(() => []),
+                    fetch('/api/dad_jokes').then(r => r.json()).catch(() => [])
                 ]);
                 headlinesCache = headlines.filter(h => h.headline && h.headline !== 'Error loading headlines');
                 upsetCache = (mm.upsets || []).filter(u => u.Upset_Score >= 4 && !u.Matchup?.includes('TBA'));
                 otherScoresCache = scores.filter(g => g.sport !== 'NCAA Basketball');
                 finalScoresCache = finals;
+                if (jokes.length) dadJokesCache = jokes;
             } catch(e) {}
         }
 
         function smartTicker() {
             const items = [];
 
-            // Dad joke
-            const joke = dadJokes[jokeIndex % dadJokes.length];
-            items.push({ badge: '🤔', text: joke[0], score: '', margin: 99, upset: false });
-            items.push({ badge: '😂', text: joke[1], score: '', margin: 99, upset: false });
+            // Dad jokes from API
+            const jokes = dadJokesCache.length ? dadJokesCache : dadJokes.map(j => j[0] + ' ' + j[1]);
+            items.push({ badge: '😂', text: jokes[jokeIndex % jokes.length], score: '', margin: 99, upset: false });
             jokeIndex++;
 
             // ESPN headlines
@@ -729,9 +766,11 @@
 
         // === BOOT ===
         updateChannel();
-        updateDashboard();
+        Promise.all([
+            updateDashboard(),
+            fetchTickerContent().then(() => smartTicker())
+        ]);
         checkTipOff();
-        fetchTickerContent().then(() => smartTicker());
         setInterval(updateDashboard, 5000);
         setInterval(updateChannel, 10000);
         setInterval(checkTipOff, 30000);

@@ -10,6 +10,7 @@
             overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             color: #fff;
+            cursor: none;
         }
 
         /* === FULLSCREEN VIDEO === */
@@ -255,6 +256,50 @@
         #notification .notif-icon { font-size: 48px; margin-bottom: 12px; }
         #notification .notif-title { font-size: 22px; font-weight: 300; letter-spacing: 2px; margin-bottom: 6px; }
         #notification .notif-detail { font-size: 14px; opacity: 0.6; }
+        /* === PLAYER STATS OVERLAY === */
+        #player-stats {
+            position: fixed;
+            top: 10px; right: 10px;
+            z-index: 100;
+            background: linear-gradient(135deg, rgba(10,10,30,0.82) 0%, rgba(20,20,50,0.6) 100%);
+            backdrop-filter: blur(20px) saturate(1.5);
+            -webkit-backdrop-filter: blur(20px) saturate(1.5);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 8px 12px;
+            min-width: 480px;
+            opacity: 0;
+            transform: translateX(20px);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+        #player-stats::before {
+            content: '';
+            position: absolute;
+            top: -1px; left: -1px; right: -1px; bottom: -1px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 50%, rgba(255,255,255,0.05) 100%);
+            pointer-events: none;
+        }
+        #player-stats.visible { opacity: 1; transform: translateX(0); }
+        .ps-r1 { display: flex; justify-content: space-between; align-items: center; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.5; margin-bottom: 4px; }
+        .ps-r2 { display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 4px; }
+        .ps-r2 img { width: 18px; height: 18px; object-fit: contain; filter: drop-shadow(0 0 3px rgba(255,255,255,0.3)); }
+        .ps-r2 span { font-size: 12px; font-weight: 600; letter-spacing: 1px; }
+        .ps-vs { opacity: 0.3; font-size: 10px; }
+        .ps-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0; font-size: 11px; }
+        .ps-grid-header { font-size: 9px; opacity: 0.3; letter-spacing: 1px; padding: 2px 0; }
+        .ps-left { text-align: right; padding-right: 6px; }
+        .ps-center { text-align: center; opacity: 0.2; font-size: 9px; padding: 2px 4px; }
+        .ps-right { text-align: left; padding-left: 6px; }
+        .ps-player-row { padding: 2px 0; display: flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
+        .ps-left .ps-player-row { justify-content: flex-end; }
+        .ps-right .ps-player-row { justify-content: flex-start; }
+        .ps-val { display: inline-block; width: 28px; text-align: center; }
+        .ps-three { color: #ffcc00; font-weight: 600; }
+        .ps-three.cold { color: rgba(255,255,255,0.3); font-weight: normal; }
+        .ps-pts { font-weight: 600; }
+        .ps-name { opacity: 0.7; font-size: 10px; white-space: nowrap; }
     </style>
 </head>
 <body>
@@ -267,8 +312,8 @@
     <!-- Tension arc -->
     <div id="tension-bar"></div>
 
-    <!-- Score bug — hidden by default -->
-    <div id="score-bug" style="display:none">>
+    <!-- Score bug — hidden, replaced by live stats bug -->
+    <div id="score-bug" style="display:none">
         <div class="score-teams">
             <div class="score-team">
                 <img class="score-team-logo" id="away-logo" src="" alt="">
@@ -290,9 +335,23 @@
         <div class="ticker-items" id="ticker-items"></div>
     </div>
 
-    <!-- Channel info -->
-    <div id="channel-info">
+    <!-- Channel info (hidden, data still used by live stats bug) -->
+    <div id="channel-info" style="display:none">
         CH <span id="channel-number">--</span>
+    </div>
+
+    <!-- Live stats bug — combined matchup overlay -->
+    <div id="player-stats">
+        <div class="ps-r1">
+            <span>📡 LIVE STATS · <span id="ps-clock"></span></span>
+            <span id="ps-channel"></span>
+        </div>
+        <div class="ps-r2">
+            <img id="ps-away-logo" src="" alt=""><span id="ps-away-name"></span>
+            <span class="ps-vs">vs</span>
+            <span id="ps-home-name"></span><img id="ps-home-logo" src="" alt="">
+        </div>
+        <div id="ps-grid" class="ps-grid"></div>
     </div>
 
     <!-- Center notification -->
@@ -427,8 +486,8 @@
         function updateScoreBug(away, home, awayScore, homeScore, clock, gameId, awayId, homeId, sport) {
             document.getElementById('away-name').textContent = away;
             document.getElementById('home-name').textContent = home;
-            document.getElementById('away-score').textContent = awayScore;
-            document.getElementById('home-score').textContent = homeScore;
+            document.getElementById('away-score').textContent = '';
+            document.getElementById('home-score').textContent = '';
             document.getElementById('game-clock').textContent = clock;
             const logoBase = {
                 'NCAA Basketball': 'https://a.espncdn.com/i/teamlogos/ncaa/500/',
@@ -525,10 +584,17 @@
         }
 
         // === CHANNEL ===
+        let lastKnownChannel = null;
         async function updateChannel() {
             try {
                 const data = await (await fetch('/api/current_channel')).json();
-                document.getElementById('channel-number').textContent = data.channel || '--';
+                const ch = data.channel || '--';
+                document.getElementById('channel-number').textContent = ch;
+                if (lastKnownChannel !== null && ch !== lastKnownChannel) {
+                    selectedGameId = null; // force re-pick on channel change
+                    updatePlayerStats();
+                }
+                lastKnownChannel = ch;
             } catch(e) {}
         }
 
@@ -584,9 +650,10 @@
                 games.sort((a, b) => (b.excitement || 0) - (a.excitement || 0));
                 const top = games[0];
 
-                // Auto-select most exciting game if none selected
-                if (!selectedGameId) selectedGameId = top.id;
-                const current = games.find(g => g.id === selectedGameId) || top;
+                // Always match game to current channel
+                const ch = document.getElementById('channel-number')?.textContent;
+                const chMatch = ch && ch !== '--' ? games.find(g => String(g.channel) === ch) : null;
+                const current = chMatch || games[0];
 
                 // Score bug
                 const clock = current.clock || current.status || '';
@@ -748,6 +815,13 @@
         function smartTicker() {
             const items = [];
 
+            // Morning greetings
+            const hour = new Date().getHours();
+            if (hour >= 5 && hour < 9) {
+                items.push({ badge: '☀️', text: 'Good morning Weston & Christina! Hope you have an awesome day!', score: '', margin: 99, upset: false });
+                items.push({ badge: '☕', text: 'Coffee fact: The average American drinks 3.1 cups of coffee per day', score: '', margin: 99, upset: false });
+            }
+
             // Dad jokes + trivia from API
             const jokes = dadJokesCache.length ? dadJokesCache : dadJokes.map(j => '😂 ' + j[0] + ' ' + j[1]);
             jokes.forEach(j => {
@@ -805,10 +879,134 @@
             fetchTickerContent(true).then(() => smartTicker()),
             updateTensionFromAPI()
         ]);
+        // === SCHEDULE-BASED CHANNEL SWITCHING ===
+        let lastScheduleSwitch = 0;
+        async function checkSchedule() {
+            const hour = new Date().getHours();
+            const now = Date.now();
+            if (now - lastScheduleSwitch < 300000) return; // 5min cooldown
+            try {
+                const cur = parseInt(document.getElementById('channel-number')?.textContent);
+                let target = null;
+                if (hour >= 6 && hour < 9) {
+                    target = 119; // NBC Today Show
+                } else if (hour >= 9) {
+                    // Check if any NCAA games are live
+                    const exc = await (await fetch(`/api/excitement?sport=ncaa-basketball${remoteParam}`)).json();
+                    const live = exc.filter(g => g.excitement > 30 && g.channel);
+                    if (live.length) {
+                        target = live[0].channel;
+                    }
+                    // No fallback — stay on current channel during March Madness
+                }
+                if (target && target !== cur) {
+                    lastScheduleSwitch = now;
+                    await fetch('/api/change_channel', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({channel: target})
+                    });
+                }
+            } catch(e) {}
+        }
+
+        // === PLAYER SHOOTING STATS OVERLAY ===
+        let psGameId = null;
+        let psSport = null;
+        let prevPlayerPts = {}; // track previous points per player for recency
+
+        async function updatePlayerStats() {
+            if (!psGameId) return;
+            try {
+                const resp = await fetch(`/api/game/${psGameId}/players?sport=${psSport || 'basketball/mens-college-basketball'}`);
+                const data = await resp.json();
+                const players = data.players || [];
+                const overlay = document.getElementById('player-stats');
+                const grid = document.getElementById('ps-grid');
+                if (!players.length) { overlay.classList.remove('visible'); return; }
+
+                // Detect who just scored by diffing points
+                const now = Date.now();
+                players.forEach(p => {
+                    const key = p.team + p.jersey;
+                    const prev = prevPlayerPts[key];
+                    const pts = parseInt(p.pts) || 0;
+                    if (prev !== undefined && pts > prev) {
+                        p._scoredAt = now;
+                    } else {
+                        p._scoredAt = prevPlayerPts[key + '_t'] || 0;
+                    }
+                    prevPlayerPts[key] = pts;
+                    prevPlayerPts[key + '_t'] = p._scoredAt;
+                });
+
+                // Split by team, match to away/home from header
+                const awayName = document.getElementById('ps-away-name')?.textContent || '';
+                const homeName = document.getElementById('ps-home-name')?.textContent || '';
+                const teams = {};
+                players.forEach(p => { (teams[p.team] = teams[p.team] || []).push(p); });
+                const teamNames = Object.keys(teams);
+                if (teamNames.length < 2) { overlay.classList.remove('visible'); return; }
+                // Match left=away, right=home
+                const t1 = teamNames.find(t => t === awayName) || teamNames[0];
+                const t2 = teamNames.find(t => t === homeName) || teamNames.find(t => t !== t1) || teamNames[1];
+                const sortFn = (a,b) => (b._scoredAt - a._scoredAt) || (parseInt(b.pts||0) - parseInt(a.pts||0));
+                const p1 = teams[t1].sort(sortFn).slice(0,4);
+                const p2 = teams[t2].sort(sortFn).slice(0,4);
+
+                const statLine = p => `<span class="ps-val">${p.fg}</span><span class="ps-val ps-three ${p.three_made===0?'cold':''}">${p.three}</span><span class="ps-val" style="opacity:0.5">${p.ft}</span><span class="ps-val ps-pts">${p.pts}</span>`;
+                const nameTag = p => `<span class="ps-name">#${p.jersey} ${p.name}</span>`;
+
+                let html = `<div class="ps-left ps-grid-header"><div class="ps-player-row"><span class="ps-val">FG</span><span class="ps-val">3PT</span><span class="ps-val">FT</span><span class="ps-val">PTS</span></div></div><div class="ps-center"></div><div class="ps-right ps-grid-header"><div class="ps-player-row"><span class="ps-val">FG</span><span class="ps-val">3PT</span><span class="ps-val">FT</span><span class="ps-val">PTS</span></div></div>`;
+                for (let i = 0; i < 4; i++) {
+                    const l = p1[i], r = p2[i];
+                    html += `<div class="ps-left"><div class="ps-player-row">${l ? nameTag(l)+statLine(l) : ''}</div></div>`;
+                    html += `<div class="ps-center">·</div>`;
+                    html += `<div class="ps-right"><div class="ps-player-row">${r ? statLine(r)+nameTag(r) : ''}</div></div>`;
+                }
+                grid.innerHTML = html;
+                overlay.classList.add('visible');
+            } catch(e) {}
+        }
+
+        // Hook into score bug updates to track current game
+        const _origUpdateScoreBug = updateScoreBug;
+        updateScoreBug = function(away, home, awayScore, homeScore, clock, gameId, awayId, homeId, sport) {
+            _origUpdateScoreBug(away, home, awayScore, homeScore, clock, gameId, awayId, homeId, sport);
+            const clockEl = document.getElementById('ps-clock');
+            if (clockEl && clock) clockEl.textContent = clock;
+            // Update matchup header
+            document.getElementById('ps-away-name').textContent = away;
+            document.getElementById('ps-home-name').textContent = home;
+            const logoBase = {
+                'NCAA Basketball': 'https://a.espncdn.com/i/teamlogos/ncaa/500/',
+                'NBA': 'https://a.espncdn.com/i/teamlogos/nba/500/',
+                'NHL': 'https://a.espncdn.com/i/teamlogos/nhl/500/',
+            };
+            const base = logoBase[sport] || logoBase['NCAA Basketball'];
+            const al = document.getElementById('ps-away-logo');
+            const hl = document.getElementById('ps-home-logo');
+            if (awayId) { al.src = base + awayId + '.png'; al.style.display = ''; al.onerror = function(){ this.style.display='none'; }; }
+            if (homeId) { hl.src = base + homeId + '.png'; hl.style.display = ''; hl.onerror = function(){ this.style.display='none'; }; }
+            // Update channel
+            const chNum = document.getElementById('channel-number');
+            if (chNum) document.getElementById('ps-channel').textContent = 'CH ' + chNum.textContent;
+            // Show the combined bug
+            document.getElementById('player-stats').classList.add('visible');
+            if (gameId && gameId !== psGameId) {
+                psGameId = gameId;
+                psSport = sport === 'NBA' ? 'basketball/nba' : sport === 'NHL' ? 'hockey/nhl' : 'basketball/mens-college-basketball';
+                prevPlayerPts = {};
+                updatePlayerStats();
+            }
+        };
+
+        setInterval(updatePlayerStats, 15000);
+
         // checkTipOff(); // DISABLED — switching to hockey
         setInterval(updateDashboard, 5000);
-        setInterval(updateChannel, 10000);
-        // setInterval(checkTipOff, 30000); // DISABLED
+        setInterval(updateChannel, 3000);
+        setInterval(checkSchedule, 300000); // check every 5min
         setInterval(updateTensionFromAPI, 10000);
         setInterval(() => fetchTickerContent().then(() => smartTicker()), 120000);
     </script>

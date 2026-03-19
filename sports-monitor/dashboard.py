@@ -1476,6 +1476,49 @@ def get_ncaa_stats(game_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/game/<game_id>/players')
+def get_game_players(game_id):
+    """Get per-player shooting stats for overlay"""
+    sport = request.args.get('sport', 'basketball/mens-college-basketball')
+    try:
+        resp = requests.get(f'{ESPN_API}/{sport}/summary?event={game_id}', timeout=5)
+        data = resp.json()
+        players = []
+        for team in data.get('boxscore', {}).get('players', []):
+            abbr = team.get('team', {}).get('abbreviation', '')
+            for cat in team.get('statistics', []):
+                labels = [l.lower() for l in cat.get('labels', [])]
+                i3 = labels.index('3pt') if '3pt' in labels else None
+                ipts = labels.index('pts') if 'pts' in labels else None
+                ifg = labels.index('fg') if 'fg' in labels else None
+                ift = labels.index('ft') if 'ft' in labels else None
+                for a in cat.get('athletes', []):
+                    s = a.get('stats', [])
+                    three = s[i3] if i3 is not None and i3 < len(s) else '0-0'
+                    pts = s[ipts] if ipts is not None and ipts < len(s) else '0'
+                    fg = s[ifg] if ifg is not None and ifg < len(s) else '0-0'
+                    ft = s[ift] if ift is not None and ift < len(s) else '0-0'
+                    t3m, t3a = (three.split('-') + ['0'])[:2]
+                    fgm, fga = (fg.split('-') + ['0'])[:2]
+                    players.append({
+                        'name': a.get('athlete', {}).get('displayName', ''),
+                        'jersey': a.get('athlete', {}).get('jersey', ''),
+                        'team': abbr,
+                        'pts': pts,
+                        'fg': fg,
+                        'ft': ft,
+                        'three': three,
+                        'three_made': int(t3m) if t3m.isdigit() else 0,
+                        'three_att': int(t3a) if t3a.isdigit() else 0,
+                        'fg_made': int(fgm) if fgm.isdigit() else 0,
+                        'fg_att': int(fga) if fga.isdigit() else 0,
+                    })
+        players.sort(key=lambda p: p['three_made'], reverse=True)
+        return jsonify({'players': players})
+    except Exception as e:
+        return jsonify({'error': str(e), 'players': []}), 500
+
+
 @app.route('/api/change_channel', methods=['POST'])
 def change_channel():
     """Change TV channel via Broadlink IR"""

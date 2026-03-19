@@ -30,9 +30,14 @@ SPORT_PATHS = {
 
 # State
 MIN_EXCITEMENT = 40
-COOLDOWN = 120
-STICKINESS = 10
+COOLDOWN = 45
+STICKINESS = 5
+ROTATION_SECONDS = 60  # Time on each game before rotating
 PREGAME_MINUTES = 5  # Switch this many minutes before tip-off
+CLOCK_STALL_SECONDS = 25  # If game clock unchanged this long, likely commercial
+
+# Track game clocks for stall detection
+_clock_history = {}  # game_id -> (clock_str, timestamp_of_last_change)
 
 def get_broadcasts():
     """Fetch broadcast info for all live games from ESPN."""
@@ -99,13 +104,27 @@ def resolve_channel(networks):
                 return ch
     return None
 
+def is_clock_stalled(game):
+    """Detect if a game's clock has stalled (likely commercial/timeout)."""
+    gid = game.get('game_id')
+    clock = game.get('status', '')
+    now = time.time()
+    prev = _clock_history.get(gid)
+    if prev is None or prev[0] != clock:
+        _clock_history[gid] = (clock, now)
+        return False
+    return (now - prev[1]) >= CLOCK_STALL_SECONDS
+
+
 def run():
-    """Main loop."""
+    """Main loop with round-robin rotation across exciting games."""
     current_channel = None
     last_switch = 0
+    rotation_index = 0
 
     print(f"🎯 Auto-Switcher started at {datetime.now().strftime('%H:%M:%S')}")
     print(f"   Networks mapped: {len([v for v in NETWORK_CHANNELS.values() if v])}")
+    print(f"   Rotation: {ROTATION_SECONDS}s per game, cooldown: {COOLDOWN}s")
 
     while True:
         now = time.time()
@@ -121,7 +140,7 @@ def run():
                 change_channel(tip['channel'])
                 current_channel = tip['channel']
                 last_switch = now
-                time.sleep(30)
+                time.sleep(15)
                 continue
 
         # Attach channel info
@@ -129,33 +148,61 @@ def run():
             nets = broadcasts.get(g['game_id'], [])
             g['networks'] = nets
             g['channel'] = resolve_channel(nets)
-            # Stickiness bonus
-            if g['channel'] == current_channel:
-                g['excitement'] = min(g['excitement'] + STICKINESS, 100)
 
         switchable = [g for g in games if g['channel'] and g['excitement'] >= MIN_EXCITEMENT]
         switchable.sort(key=lambda g: g['excitement'], reverse=True)
 
         # Log top games
         ts = datetime.now().strftime('%H:%M:%S')
-        for g in switchable[:5]:
-            stick = ' ★' if g['channel'] == current_channel else ''
-            print(f"  [{ts}] {g['excitement']:3d} {g['away']:5} vs {g['home']:5} | {g['status'][:25]:25} | ch:{g['channel']} {g['networks'][:2]}{stick}")
+        for g in switchable[:6]:
+            marker = '★' if g['channel'] == current_channel else ' '
+            print(f"  [{ts}] {marker} {g['excitement']:3d} {g['away']:5} vs {g['home']:5} | {g['status'][:25]:25} | ch:{g['channel']} {g['networks'][:2]}")
 
         if not switchable:
             print(f"  [{ts}] No switchable games above {MIN_EXCITEMENT}")
-            time.sleep(30)
+            time.sleep(15)
             continue
 
-        best = switchable[0]
-        if best['channel'] != current_channel and (now - last_switch) > COOLDOWN:
-            print(f"\n🔄 SWITCHING to ch {best['channel']}: {best['away']} vs {best['home']} ({best['away_score']}-{best['home_score']}) — excitement {best['excitement']}")
-            change_channel(best['channel'])
-            current_channel = best['channel']
-            last_switch = now
-            print()
+        # Tag stalled games
+        for g in switchable:
+            g['stalled'] = is_clock_stalled(g)
 
-        time.sleep(30)
+        current_game = next((g for g in switchable if g['channel'] == current_channel), None)
+        current_stalled = current_game['stalled'] if current_game else False
+        time_on_current = now - last_switch
+
+        if current_stalled and len(switchable) >= 2:
+            # Commercial/timeout — immediately jump to next live game
+            live_games = [g for g in switchable if not g['stalled'] and g['channel'] != current_channel]
+            if live_games:
+                target = live_games[0]
+                print(f"\n📺 COMMERCIAL SKIP → ch {target['channel']}: "
+                      f"{target['away']} vs {target['home']} ({target['away_score']}-{target['home_score']}) — excitement {target['excitement']}")
+                change_channel(target['channel'])
+                current_channel = target['channel']
+                last_switch = now
+                rotation_index = switchable.index(target) if target in switchable else 0
+        elif len(switchable) >= 2 and time_on_current >= ROTATION_SECONDS:
+            # Rotate through exciting games
+            rotation_index = (rotation_index + 1) % len(switchable)
+            target = switchable[rotation_index]
+            if target['channel'] != current_channel:
+                print(f"\n🔄 ROTATE [{rotation_index+1}/{len(switchable)}] → ch {target['channel']}: "
+                      f"{target['away']} vs {target['home']} ({target['away_score']}-{target['home_score']}) — excitement {target['excitement']}")
+                change_channel(target['channel'])
+                current_channel = target['channel']
+                last_switch = now
+        elif len(switchable) == 1:
+            # Only one game — just switch to it
+            best = switchable[0]
+            if best['channel'] != current_channel and time_on_current > COOLDOWN:
+                print(f"\n🔄 SWITCHING to ch {best['channel']}: {best['away']} vs {best['home']} ({best['away_score']}-{best['home_score']}) — excitement {best['excitement']}")
+                change_channel(best['channel'])
+                current_channel = best['channel']
+                last_switch = now
+                rotation_index = 0
+
+        time.sleep(15)
 
 if __name__ == '__main__':
     run()

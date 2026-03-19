@@ -1,24 +1,21 @@
 #!/bin/bash
-# Auto-restarting ffmpeg transcoder for CloudFront streaming
+# Auto-restarting ffmpeg transcoder for CloudFront streaming (macOS compatible)
 REMOTE_DIR="$HOME/Movies/remote"
 SOURCE="http://localhost:8081"
-LOG="/tmp/ffmpeg_remote.log"
-
-get_source() {
-    # Find the latest active m3u8
-    curl -s "$SOURCE/" | grep -oP '[^"]+\.m3u8' | tail -1
-}
 
 while true; do
-    M3U8=$(get_source)
+    # Find latest active m3u8
+    M3U8=$(ls -t ~/Movies/*.m3u8 2>/dev/null | head -1)
     if [ -z "$M3U8" ]; then
         echo "$(date): No m3u8 found, retrying in 5s..."
         sleep 5
         continue
     fi
-    echo "$(date): Starting transcode from $M3U8"
+    BASENAME=$(basename "$M3U8")
+    ENCODED=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$BASENAME'))")
+    echo "$(date): Starting transcode from $BASENAME"
     cd "$REMOTE_DIR" && rm -f *.ts stream.m3u8
-    ffmpeg -i "$SOURCE/$M3U8" \
+    ffmpeg -i "$SOURCE/$ENCODED" \
         -c:v libx264 -preset veryfast -b:v 800k -maxrate 900k -bufsize 1200k \
         -vf scale=854:480 -r 30 -g 30 -keyint_min 30 \
         -c:a aac -b:a 96k \

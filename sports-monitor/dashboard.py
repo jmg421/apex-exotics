@@ -362,66 +362,61 @@ def get_excitement():
 
 _jokes_cache = {'data': [], 'ts': 0}
 
-@app.route('/api/dad_jokes')
-def get_dad_jokes():
-    """Fetch dad jokes, sports trivia, and context-aware game facts (cached 2min)"""
+def _refresh_jokes_background():
+    """Background thread that refreshes jokes/trivia every 2 minutes"""
     import html as htmlmod
-    now = time.time()
-    if _jokes_cache['data'] and now - _jokes_cache['ts'] < 120:
-        return jsonify(_jokes_cache['data'])
-    items = []
-    try:
-        # Dad jokes
-        for _ in range(1):
+    while True:
+        items = []
+        try:
             r = requests.get('https://icanhazdadjoke.com/', headers={'Accept': 'application/json'}, timeout=3)
             items.append('😂 ' + r.json().get('joke', ''))
-    except:
-        pass
-    try:
-        # Context-aware: facts about teams currently playing
-        data = requests.get('http://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard', timeout=5).json()
-        for e in data.get('events', []):
-            if e['status']['type'].get('state') != 'in':
-                continue
-            for c in e['competitions'][0]['competitors']:
-                t = c['team']
-                records = [r['summary'] for r in c.get('records', [])]
-                record = records[0] if records else ''
-                seed = c.get('curatedRank', {}).get('current', 0)
-                name = t['displayName']
-                facts = []
-                if record:
-                    facts.append(f'{name} are {record} this season')
-                if seed and seed <= 16:
-                    facts.append(f'{name} are a #{seed} seed in the tournament')
-                if int(c.get('score', 0)) > 0:
-                    leader = c.get('leaders', [])
-                    if leader:
-                        for l in leader[:1]:
+        except:
+            pass
+        try:
+            data = requests.get('http://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard', timeout=5).json()
+            for e in data.get('events', []):
+                if e['status']['type'].get('state') != 'in':
+                    continue
+                for c in e['competitions'][0]['competitors']:
+                    t = c['team']
+                    records = [r['summary'] for r in c.get('records', [])]
+                    record = records[0] if records else ''
+                    seed = c.get('curatedRank', {}).get('current', 0)
+                    name = t['displayName']
+                    if record:
+                        items.append(f'🏀 {name} are {record} this season')
+                    if seed and seed <= 16:
+                        items.append(f'🏀 {name} are a #{seed} seed in the tournament')
+                    if int(c.get('score', 0)) > 0:
+                        for l in c.get('leaders', [])[:1]:
                             for a in l.get('leaders', [])[:1]:
                                 stat = l.get('displayName', 'points').lower()
                                 ath = a['athlete']
                                 jersey = ath.get('jersey', '')
-                                name = ath.get('displayName', '?')
                                 num = f'#{jersey} ' if jersey else ''
-                                facts.append(f'{num}{name} leads {t["shortDisplayName"]} with {a["displayValue"]} {stat}')
-                for f in facts:
-                    items.append(f'🏀 {f}')
-    except:
-        pass
-    try:
-        # General sports trivia
-        r = requests.get('https://opentdb.com/api.php?amount=2&category=21&type=multiple', timeout=3)
-        for q in r.json().get('results', []):
-            question = htmlmod.unescape(q['question'])
-            answer = htmlmod.unescape(q['correct_answer'])
-            items.append(f'🧠 {question} → {answer}')
-    except:
-        pass
-    if items:
-        _jokes_cache['data'] = items
-        _jokes_cache['ts'] = now
-    return jsonify(items)
+                                items.append(f'🏀 {num}{ath.get("displayName","?")} leads {t["shortDisplayName"]} with {a["displayValue"]} {stat}')
+        except:
+            pass
+        try:
+            r = requests.get('https://opentdb.com/api.php?amount=2&category=21&type=multiple', timeout=3)
+            for q in r.json().get('results', []):
+                question = htmlmod.unescape(q['question'])
+                answer = htmlmod.unescape(q['correct_answer'])
+                items.append(f'🧠 {question} → {answer}')
+        except:
+            pass
+        if items:
+            _jokes_cache['data'] = items
+            _jokes_cache['ts'] = time.time()
+        time.sleep(120)
+
+import threading
+threading.Thread(target=_refresh_jokes_background, daemon=True).start()
+
+@app.route('/api/dad_jokes')
+def get_dad_jokes():
+    """Return pre-computed jokes/trivia — instant response"""
+    return jsonify(_jokes_cache['data'])
 
 @app.route('/api/tension')
 def get_tension():

@@ -311,6 +311,9 @@
         let tickerTimeout = null;
         let selectedGameId = null;
 
+        const isRemote = window.location.hostname !== 'localhost' && window.location.hostname !== '192.168.0.180';
+        const remoteParam = isRemote ? '&remote=true' : '';
+
         // === HLS STREAM ===
         const video = document.getElementById('video');
         if (Hls.isSupported()) {
@@ -331,18 +334,8 @@
                 fragLoadingTimeOut: 10000,
                 fragLoadingMaxRetry: 10
             });
-            const isRemote = window.location.hostname !== 'localhost' && window.location.hostname !== '192.168.0.180';
-            const remoteParam = isRemote ? '&remote=true' : '';
-            let streamUrl;
-            if (isRemote) {
-                streamUrl = window.location.origin + '/stream.m3u8?t=' + Date.now() + '&quality=remote';
-            } else {
-                // LAN: go direct to HLS server, bypass Flask to avoid saturating gunicorn
-                const hlsPort = 8081;
-                const resp = await fetch('/api/stream_source');
-                const src = await resp.json();
-                streamUrl = `http://${window.location.hostname}:${hlsPort}/${encodeURIComponent(src.filename)}`;
-            }
+            // Always use transcoded 480p — 4K decoding + OBS maxes CPU
+            const streamUrl = window.location.origin + '/stream.m3u8?t=' + Date.now() + '&quality=remote';
             hls.loadSource(streamUrl);
             hls.attachMedia(video);
             hls.on(Hls.Events.MANIFEST_PARSED, () => {
@@ -725,7 +718,7 @@
         let otherScoresCache = [];
 
         let finalScoresCache = [];
-        async function fetchTickerContent() {
+        async function fetchTickerContent(awaitJokes) {
             try {
                 const [headlines, mm, scores, finals] = await Promise.all([
                     fetch('/api/espn_headlines').then(r => r.json()).catch(() => []),
@@ -738,10 +731,10 @@
                 otherScoresCache = scores.filter(g => g.sport !== 'NCAA Basketball');
                 finalScoresCache = finals;
             } catch(e) {}
-            // Jokes/trivia fetched separately to avoid blocking
-            fetch('/api/dad_jokes').then(r => r.json()).then(jokes => {
+            const jokesPromise = fetch('/api/dad_jokes').then(r => r.json()).then(jokes => {
                 if (jokes.length) dadJokesCache = jokes;
             }).catch(() => {});
+            if (awaitJokes) await jokesPromise;
         }
 
         function smartTicker() {
@@ -801,7 +794,7 @@
         updateChannel();
         Promise.all([
             updateDashboard(),
-            fetchTickerContent().then(() => smartTicker()),
+            fetchTickerContent(true).then(() => smartTicker()),
             updateTensionFromAPI()
         ]);
         checkTipOff();

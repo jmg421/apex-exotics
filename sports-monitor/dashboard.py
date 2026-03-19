@@ -13,6 +13,17 @@ from headline_storage import save_headline, get_recent_headlines
 from headline_source import find_source_url
 
 app = Flask(__name__)
+
+# Simple in-memory cache to respect API rate limits
+_api_cache = {}
+def cached(key, ttl):
+    """Return cached data if fresh, else None"""
+    entry = _api_cache.get(key)
+    if entry and time.time() - entry['ts'] < ttl:
+        return entry['data']
+    return None
+def cache_set(key, data):
+    _api_cache[key] = {'data': data, 'ts': time.time()}
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 # Basic auth for private streaming
@@ -301,7 +312,10 @@ def get_excitement():
     
     try:
         from excitement_engine import get_excitement_rankings
-        games = get_excitement_rankings()
+        c = cached('excitement_rankings', 15)
+        games = c if c is not None else get_excitement_rankings()
+        if c is None:
+            cache_set('excitement_rankings', games)
         
         # Map sport names to filter
         sport_map = {
@@ -346,36 +360,102 @@ def get_excitement():
     except Exception as e:
         return jsonify([])
 
+_jokes_cache = {'data': [], 'ts': 0}
+
 @app.route('/api/dad_jokes')
 def get_dad_jokes():
-    """Fetch fresh dad jokes from icanhazdadjoke.com"""
-    jokes = []
+    """Fetch dad jokes, sports trivia, and context-aware game facts (cached 2min)"""
+    import html as htmlmod
+    now = time.time()
+    if _jokes_cache['data'] and now - _jokes_cache['ts'] < 120:
+        return jsonify(_jokes_cache['data'])
+    items = []
     try:
-        for _ in range(5):
+        # Dad jokes
+        for _ in range(1):
             r = requests.get('https://icanhazdadjoke.com/', headers={'Accept': 'application/json'}, timeout=3)
-            jokes.append(r.json().get('joke', ''))
+            items.append('😂 ' + r.json().get('joke', ''))
     except:
         pass
-    return jsonify(jokes)
+    try:
+        # Context-aware: facts about teams currently playing
+        data = requests.get('http://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard', timeout=5).json()
+        for e in data.get('events', []):
+            if e['status']['type'].get('state') != 'in':
+                continue
+            for c in e['competitions'][0]['competitors']:
+                t = c['team']
+                records = [r['summary'] for r in c.get('records', [])]
+                record = records[0] if records else ''
+                seed = c.get('curatedRank', {}).get('current', 0)
+                name = t['displayName']
+                facts = []
+                if record:
+                    facts.append(f'{name} are {record} this season')
+                if seed and seed <= 16:
+                    facts.append(f'{name} are a #{seed} seed in the tournament')
+                if int(c.get('score', 0)) > 0:
+                    leader = c.get('leaders', [])
+                    if leader:
+                        for l in leader[:1]:
+                            for a in l.get('leaders', [])[:1]:
+                                stat = l.get('displayName', 'points').lower()
+                                ath = a['athlete']
+                                jersey = ath.get('jersey', '')
+                                name = ath.get('displayName', '?')
+                                num = f'#{jersey} ' if jersey else ''
+                                facts.append(f'{num}{name} leads {t["shortDisplayName"]} with {a["displayValue"]} {stat}')
+                for f in facts:
+                    items.append(f'🏀 {f}')
+    except:
+        pass
+    try:
+        # General sports trivia
+        r = requests.get('https://opentdb.com/api.php?amount=2&category=21&type=multiple', timeout=3)
+        for q in r.json().get('results', []):
+            question = htmlmod.unescape(q['question'])
+            answer = htmlmod.unescape(q['correct_answer'])
+            items.append(f'🧠 {question} → {answer}')
+    except:
+        pass
+    if items:
+        _jokes_cache['data'] = items
+        _jokes_cache['ts'] = now
+    return jsonify(items)
 
 @app.route('/api/tension')
 def get_tension():
-    """Real-time margin for tension bar — never delayed"""
+    """Real-time margin for tension bar — matches current channel's game"""
     try:
         from excitement_engine import get_excitement_rankings
+        from auto_channel import get_broadcasts, resolve_channel
+        import json as j
         games = get_excitement_rankings()
         if not games:
             return jsonify({'margin': 30})
+        # Match current channel to a game
+        try:
+            with open('data/current_channel.json', 'r') as f:
+                current_ch = j.load(f).get('channel')
+            broadcasts = get_broadcasts()
+            for g in games:
+                nets = broadcasts.get(g['game_id'], [])
+                if resolve_channel(nets) == current_ch:
+                    return jsonify({'margin': abs(int(g.get('home_score', 0)) - int(g.get('away_score', 0)))})
+        except:
+            pass
+        # Fallback: most exciting
         games.sort(key=lambda g: g.get('excitement', 0), reverse=True)
-        top = games[0]
-        margin = abs(int(top.get('home_score', 0)) - int(top.get('away_score', 0)))
-        return jsonify({'margin': margin})
+        return jsonify({'margin': abs(int(games[0].get('home_score', 0)) - int(games[0].get('away_score', 0)))})
     except:
         return jsonify({'margin': 30})
 
 @app.route('/api/final_scores')
 def get_final_scores():
     """Get today's final scores across sports"""
+    c = cached('final_scores', 60)
+    if c is not None:
+        return jsonify(c)
     finals = []
     try:
         for path in ['basketball/mens-college-basketball', 'basketball/nba', 'hockey/nhl']:
@@ -393,6 +473,7 @@ def get_final_scores():
                     })
     except:
         pass
+    cache_set('final_scores', finals)
     return jsonify(finals)
 
 @app.route('/api/espn_headlines')

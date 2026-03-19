@@ -727,31 +727,38 @@
         let finalScoresCache = [];
         async function fetchTickerContent() {
             try {
-                const [headlines, mm, scores, finals, jokes] = await Promise.all([
+                const [headlines, mm, scores, finals] = await Promise.all([
                     fetch('/api/espn_headlines').then(r => r.json()).catch(() => []),
                     fetch('/api/march_madness').then(r => r.json()).catch(() => ({})),
                     fetch('/api/excitement?sport=all').then(r => r.json()).catch(() => []),
-                    fetch('/api/final_scores').then(r => r.json()).catch(() => []),
-                    fetch('/api/dad_jokes').then(r => r.json()).catch(() => [])
+                    fetch('/api/final_scores').then(r => r.json()).catch(() => [])
                 ]);
                 headlinesCache = headlines.filter(h => h.headline && h.headline !== 'Error loading headlines');
                 upsetCache = (mm.upsets || []).filter(u => u.Upset_Score >= 4 && !u.Matchup?.includes('TBA'));
                 otherScoresCache = scores.filter(g => g.sport !== 'NCAA Basketball');
                 finalScoresCache = finals;
-                if (jokes.length) dadJokesCache = jokes;
             } catch(e) {}
+            // Jokes/trivia fetched separately to avoid blocking
+            fetch('/api/dad_jokes').then(r => r.json()).then(jokes => {
+                if (jokes.length) dadJokesCache = jokes;
+            }).catch(() => {});
         }
 
         function smartTicker() {
             const items = [];
 
-            // Dad jokes from API
-            const jokes = dadJokesCache.length ? dadJokesCache : dadJokes.map(j => j[0] + ' ' + j[1]);
-            items.push({ badge: '😂', text: jokes[jokeIndex % jokes.length], score: '', margin: 99, upset: false });
-            jokeIndex++;
+            // Dad jokes + trivia from API
+            const jokes = dadJokesCache.length ? dadJokesCache : dadJokes.map(j => '😂 ' + j[0] + ' ' + j[1]);
+            jokes.forEach(j => {
+                let badge = '😂';
+                if (j.startsWith('🧠')) badge = '🧠';
+                else if (j.startsWith('🏀')) badge = '🏀';
+                const text = j.replace(/^\p{Emoji_Presentation}\s*/u, '');
+                items.push({ badge, text, score: '', margin: 99, upset: false });
+            });
 
             // ESPN headlines
-            headlinesCache.slice(0, 3).forEach(h => {
+            headlinesCache.slice(0, 5).forEach(h => {
                 items.push({ badge: '📰', text: h.headline, score: '', margin: 99, upset: false });
             });
 

@@ -334,8 +334,16 @@
                 fragLoadingTimeOut: 10000,
                 fragLoadingMaxRetry: 10
             });
-            // Always use transcoded 480p — 4K decoding + OBS maxes CPU
-            const streamUrl = window.location.origin + '/stream.m3u8?t=' + Date.now() + '&quality=remote';
+            let streamUrl;
+            if (isRemote) {
+                streamUrl = window.location.origin + '/stream.m3u8?t=' + Date.now() + '&quality=remote';
+            } else {
+                // LAN: direct 4K from HLS server, bypass Flask
+                const hlsPort = 8081;
+                const resp = await fetch('/api/stream_source');
+                const src = await resp.json();
+                streamUrl = `http://${window.location.hostname}:${hlsPort}/${encodeURIComponent(src.filename)}`;
+            }
             hls.loadSource(streamUrl);
             hls.attachMedia(video);
             hls.on(Hls.Events.MANIFEST_PARSED, () => {
@@ -651,9 +659,9 @@
                     }, 2000);
                     return;
                 }
-                // Check live game excitement (2 min cooldown)
+                // Check live game excitement — NCAA basketball only (2 min cooldown)
                 if (Date.now() - lastAutoSwitch < 120000) return;
-                const exc = await (await fetch(`/api/excitement?sport=all${remoteParam}`)).json();
+                const exc = await (await fetch(`/api/excitement?sport=ncaa-basketball${remoteParam}`)).json();
                 if (!exc.length) return;
                 const best = exc[0];
                 if (best.excitement < 40 || !best.channel) return;
@@ -797,10 +805,10 @@
             fetchTickerContent(true).then(() => smartTicker()),
             updateTensionFromAPI()
         ]);
-        checkTipOff();
+        // checkTipOff(); // DISABLED — switching to hockey
         setInterval(updateDashboard, 5000);
         setInterval(updateChannel, 10000);
-        setInterval(checkTipOff, 30000);
+        // setInterval(checkTipOff, 30000); // DISABLED
         setInterval(updateTensionFromAPI, 10000);
         setInterval(() => fetchTickerContent().then(() => smartTicker()), 120000);
     </script>

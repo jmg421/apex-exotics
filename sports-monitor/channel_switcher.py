@@ -36,8 +36,7 @@ def send_ir_code(code_hex):
 
 def change_channel(channel, send_ok=False):
     """Change to specified channel number"""
-    # Pad 3-digit channels with leading 0
-    channel_str = str(channel).zfill(4) if len(str(channel)) == 3 else str(channel)
+    channel_str = str(channel)
     
     print(f"Changing to channel {channel_str}...")
     
@@ -46,7 +45,7 @@ def change_channel(channel, send_ok=False):
         if digit in IR_CODES:
             print(f"  Sending digit: {digit}")
             send_ir_code(IR_CODES[digit])
-            time.sleep(0.4)  # Faster digit entry
+            time.sleep(0.8)  # VseeBox needs time between digits
         else:
             print(f"  ❌ Digit {digit} not in IR_CODES!")
     

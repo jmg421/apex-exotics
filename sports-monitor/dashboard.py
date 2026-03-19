@@ -434,14 +434,15 @@ def get_tension():
                 current_ch = j.load(f).get('channel')
             broadcasts = get_broadcasts()
             for g in games:
+                if g.get('status') in ('Final', 'Final/OT'):
+                    continue
                 nets = broadcasts.get(g['game_id'], [])
                 if resolve_channel(nets) == current_ch:
                     return jsonify({'margin': abs(int(g.get('home_score', 0)) - int(g.get('away_score', 0)))})
         except:
             pass
-        # Fallback: most exciting
-        games.sort(key=lambda g: g.get('excitement', 0), reverse=True)
-        return jsonify({'margin': abs(int(games[0].get('home_score', 0)) - int(games[0].get('away_score', 0)))})
+        # No matching live game — no glow
+        return jsonify({'margin': 30})
     except:
         return jsonify({'margin': 30})
 

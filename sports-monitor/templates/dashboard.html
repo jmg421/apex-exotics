@@ -266,7 +266,7 @@
             -webkit-backdrop-filter: blur(20px) saturate(1.5);
             border: 1px solid rgba(255,255,255,0.08);
             border-radius: 10px;
-            padding: 8px 12px;
+            padding: 6px 10px;
             min-width: 480px;
             opacity: 0;
             transform: translateX(20px);
@@ -282,11 +282,10 @@
             pointer-events: none;
         }
         #player-stats.visible { opacity: 1; transform: translateX(0); }
-        .ps-r1 { display: flex; justify-content: space-between; align-items: center; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.5; margin-bottom: 4px; }
-        .ps-r2 { display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 4px; }
-        .ps-r2 img { width: 18px; height: 18px; object-fit: contain; filter: drop-shadow(0 0 3px rgba(255,255,255,0.3)); }
-        .ps-r2 span { font-size: 12px; font-weight: 600; letter-spacing: 1px; }
-        .ps-vs { opacity: 0.3; font-size: 10px; }
+        .ps-r1 { display: flex; justify-content: center; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; letter-spacing: 1px; margin-bottom: 4px; }
+        .ps-r1 img { width: 16px; height: 16px; object-fit: contain; filter: drop-shadow(0 0 3px rgba(255,255,255,0.3)); }
+        .ps-vs { opacity: 0.3; font-size: 9px; }
+        .ps-meta { opacity: 0.4; font-size: 9px; font-weight: normal; letter-spacing: 1.5px; }
         .ps-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0; font-size: 11px; }
         .ps-grid-header { font-size: 9px; opacity: 0.3; letter-spacing: 1px; padding: 2px 0; }
         .ps-left { text-align: right; padding-right: 6px; }
@@ -295,7 +294,7 @@
         .ps-player-row { padding: 2px 0; display: flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
         .ps-left .ps-player-row { justify-content: flex-end; }
         .ps-right .ps-player-row { justify-content: flex-start; }
-        .ps-val { display: inline-block; width: 28px; text-align: center; }
+        .ps-val { display: inline-block; width: 36px; text-align: center; white-space: nowrap; }
         .ps-three { color: #ffcc00; font-weight: 600; }
         .ps-three.cold { color: rgba(255,255,255,0.3); font-weight: normal; }
         .ps-pts { font-weight: 600; }
@@ -343,13 +342,10 @@
     <!-- Live stats bug — combined matchup overlay -->
     <div id="player-stats">
         <div class="ps-r1">
-            <span>📡 LIVE STATS · <span id="ps-clock"></span></span>
-            <span id="ps-channel"></span>
-        </div>
-        <div class="ps-r2">
             <img id="ps-away-logo" src="" alt=""><span id="ps-away-name"></span>
             <span class="ps-vs">vs</span>
             <span id="ps-home-name"></span><img id="ps-home-logo" src="" alt="">
+            <span class="ps-meta">· <span id="ps-clock"></span> · CH<span id="ps-channel"></span></span>
         </div>
         <div id="ps-grid" class="ps-grid"></div>
     </div>
@@ -926,7 +922,7 @@
             if (homeId) { hl.src = base + homeId + '.png'; hl.style.display = ''; hl.onerror = function(){ this.style.display='none'; }; }
             // Update channel
             const chNum = document.getElementById('channel-number');
-            if (chNum) document.getElementById('ps-channel').textContent = 'CH ' + chNum.textContent;
+            if (chNum) document.getElementById('ps-channel').textContent = chNum.textContent;
             // Show the combined bug
             document.getElementById('player-stats').classList.add('visible');
             if (gameId && gameId !== psGameId) {

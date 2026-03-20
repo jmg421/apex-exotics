@@ -48,7 +48,7 @@ PINNED_ROTATION_SECONDS = 120
 # Track game clocks for stall detection
 _clock_history = {}  # game_id -> (clock_str, timestamp_of_last_change)
 _crunch_lock_until = 0  # timestamp — don't switch until this time
-CRUNCH_HOLDOVER = 30    # seconds to hold after game ends (broadcast delay)
+CRUNCH_HOLDOVER = 60    # seconds to hold after game ends (broadcast delay)
 
 def get_broadcasts():
     """Fetch broadcast info for all live games from ESPN."""
@@ -89,7 +89,7 @@ def get_upcoming_tips():
                 tip_time = dtparser.isoparse(start)
                 now = datetime.now(tip_time.tzinfo)
                 mins_until = (tip_time - now).total_seconds() / 60
-                if 0 < mins_until <= PREGAME_MINUTES:
+                if -2 < mins_until <= PREGAME_MINUTES:
                     networks = []
                     for comp in event.get('competitions', []):
                         for b in comp.get('broadcasts', []):
@@ -134,16 +134,17 @@ def is_crunch_time(game):
     """Detect if game is in crunch time: close game in final minutes."""
     status = game.get('status', '')
     margin = abs(int(game.get('away_score', 0)) - int(game.get('home_score', 0)))
+    import re
+    # Any OT period is always crunch time
+    if re.search(r'\bOT\b', status):
+        return True
     if margin > CRUNCH_MARGIN:
         return False
-    # Parse clock like "2:30 - 2nd Half" or "1:45 - 4th"
-    import re
-    m = re.match(r'(\d+):(\d+)\s*-\s*(2nd Half|4th|OT|2OT|3OT)', status)
+    m = re.match(r'(\d+):(\d+)\s*-\s*(2nd Half|4th)', status)
     if not m:
         return False
     mins, secs = int(m.group(1)), int(m.group(2))
-    remaining = mins + secs / 60.0
-    return remaining <= CRUNCH_MINUTES
+    return (mins + secs / 60.0) <= CRUNCH_MINUTES
 
 
 def run():
@@ -252,7 +253,7 @@ def run():
             current_exc = current_game['excitement'] if current_game else 0
             if (target['channel'] != current_channel
                     and not target['stalled']
-                    and target['excitement'] >= current_exc - 20):
+                    and target['excitement'] >= current_exc - 10):
                 print(f"\n🔄 ROTATE [{rotation_index+1}/{len(switchable)}] → ch {target['channel']}: "
                       f"{target['away']} vs {target['home']} ({target['away_score']}-{target['home_score']}) — excitement {target['excitement']}")
                 change_channel(target['channel'])

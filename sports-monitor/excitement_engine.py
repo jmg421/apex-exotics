@@ -247,3 +247,20 @@ if __name__ == "__main__":
             print(f"{i}. [{game['excitement']:3d}] {game['away']} @ {game['home']} - {game['status']}")
             print(f"   Score: {game['away_score']}-{game['home_score']}")
             print()
+
+        # Cross-system market signals
+        try:
+            import sys, os
+            sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'shared'))
+            from signal_bridge import sports_event_to_market_signal
+            signals = []
+            for game in games:
+                signals.extend(sports_event_to_market_signal(game))
+            if signals:
+                print("📊 MARKET SIGNALS")
+                print("-" * 60)
+                for s in signals:
+                    print(f"  [{s['urgency']}] {s['type']}: {s['reason']}")
+                    print(f"         Tickers: {', '.join(s['tickers'][:5])}")
+        except ImportError:
+            pass

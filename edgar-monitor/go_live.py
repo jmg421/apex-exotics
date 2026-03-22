@@ -26,7 +26,7 @@ def check_prerequisites():
             else:
                 print("   ❌ No Polygon API key")
                 print("   → Sign up: https://polygon.io/dashboard/signup")
-    except:
+    except (FileNotFoundError, OSError):
         print("   ❌ No .env file")
     
     # Check 2: Broker
@@ -39,7 +39,7 @@ def check_prerequisites():
                 checks['broker_connection'] = True
             else:
                 print("   ❌ No Tastytrade credentials")
-    except:
+    except (FileNotFoundError, OSError):
         print("   ❌ No broker credentials")
     
     # Check 3: Risk limits
@@ -51,7 +51,7 @@ def check_prerequisites():
             print(f"   ✅ Max positions: {limits['max_positions']}")
             print(f"   ✅ Max risk per trade: ${limits['max_risk_per_trade']}")
             checks['risk_limits'] = True
-    except:
+    except (FileNotFoundError, json.JSONDecodeError, OSError, KeyError):
         print("   ❌ No risk limits configured")
         print("   → I'll create default config")
         create_default_risk_config()

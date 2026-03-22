@@ -36,7 +36,7 @@ def load_watchlist():
             tickers = [v['ticker'] for v in caps.values() 
                       if v.get('ticker') and v.get('market_cap') and v['market_cap'] < 100_000_000]
             return tickers[:20]
-    except:
+    except (FileNotFoundError, json.JSONDecodeError, OSError, KeyError):
         return ['AFCG', 'CLRB', 'IBCP']
 
 if __name__ == '__main__':

@@ -8,7 +8,7 @@ def load_latest(filename):
     try:
         with open(f'data/{filename}', 'r') as f:
             return json.load(f)
-    except:
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
         return None
 
 def print_section(title):

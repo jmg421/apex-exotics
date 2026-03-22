@@ -38,7 +38,7 @@ def get_article_title(url):
                 # Clean up ESPN suffix
                 title = re.sub(r'\s*-\s*ESPN.*$', '', title)
                 return title
-    except:
+    except (requests.RequestException, ValueError):
         pass
     return None
 
@@ -68,7 +68,7 @@ def scrape_espn_headlines(sport):
                 return [(f"https://www.espn.com{url}", title.strip()) for url, title in headlines]
         
         return []
-    except Exception as e:
+    except (requests.RequestException, ValueError, KeyError) as e:
         print(f"Error scraping ESPN: {e}")
         return []
 
@@ -109,7 +109,7 @@ Return ONLY the number (1-{len(candidates)}) of the best match, or 0 if no good 
                 return candidates[idx][0]
         
         return None
-    except Exception as e:
+    except (subprocess.SubprocessError, OSError, ValueError) as e:
         print(f"Error matching with kiro: {e}")
         return None
 

@@ -43,7 +43,7 @@ def load_historical_prices():
                 
                 if prices_by_cik:
                     return prices_by_cik
-        except:
+        except (FileNotFoundError, json.JSONDecodeError, OSError, KeyError):
             pass
     
     # Fallback to mock data
@@ -95,7 +95,7 @@ def calculate_hit_rate(reports, prices, horizon_days=30):
             start = datetime.fromisoformat(analysis_date)
             end = start + timedelta(days=horizon_days)
             end_date = end.strftime('%Y-%m-%d')
-        except:
+        except (ValueError, TypeError):
             continue
         
         ret = calculate_return(cik, analysis_date, end_date, prices)
@@ -159,7 +159,7 @@ def calculate_alpha(reports, prices, sp500_return=0.08, horizon_days=30):
             start = datetime.fromisoformat(analysis_date)
             end = start + timedelta(days=horizon_days)
             end_date = end.strftime('%Y-%m-%d')
-        except:
+        except (ValueError, TypeError):
             continue
         
         ret = calculate_return(cik, analysis_date, end_date, prices)

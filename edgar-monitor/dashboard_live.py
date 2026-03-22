@@ -26,7 +26,7 @@ def load_news():
     try:
         with open('data/news_context.json', 'r') as f:
             return json.load(f)
-    except:
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
         return None
 
 def load_market_data():
@@ -37,7 +37,7 @@ def load_market_data():
         with open('data/futures_analysis.json', 'r') as f:
             futures = json.load(f)
         return stocks, futures
-    except:
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
         return None, None
 
 def display_dashboard():

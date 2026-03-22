@@ -95,7 +95,7 @@ def fetch_and_cache_prices(tickers, cache_file='data/price_cache.json'):
                 if datetime.now() - cached < timedelta(hours=1):
                     print(f"Using cached data for {ticker}")
                     continue
-            except:
+            except (ValueError, TypeError):
                 pass
         
         print(f"Fetching {ticker}...")
@@ -138,7 +138,7 @@ def get_price_on_date(ticker, date, cache):
             check_date = (target + timedelta(days=i)).strftime('%Y-%m-%d')
             if check_date in prices:
                 return prices[check_date]
-    except:
+    except (ValueError, KeyError, TypeError):
         pass
     
     return None

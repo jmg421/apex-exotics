@@ -9,14 +9,21 @@ while true; do
         sleep 5
         continue
     fi
+
+    # Skip finalized playlists
+    if grep -q "EXT-X-ENDLIST" "$M3U8"; then
+        echo "$(date): Playlist is finalized (not live), waiting..."
+        sleep 5
+        continue
+    fi
+
     BASENAME=$(basename "$M3U8")
     ENCODED=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$BASENAME'))")
-    echo "$(date): Starting transcode from $BASENAME"
+    echo "$(date): Starting passthrough (re-encoding audio) from $BASENAME"
     cd "$REMOTE_DIR" && rm -f *.ts stream.m3u8
-    ffmpeg -i "$SOURCE/$ENCODED" \
-        -c:v libx264 -preset ultrafast -b:v 2500k -maxrate 3000k -bufsize 4000k \
-        -vf scale=1280:720 -r 30 -g 30 -keyint_min 30 \
-        -c:a aac -b:a 128k \
+    ffmpeg -live_start_index -3 -i "$SOURCE/$ENCODED" \
+        -c:v copy \
+        -c:a aac -b:a 192k \
         -f hls -hls_time 2 -hls_list_size 8 -hls_flags delete_segments \
         -hls_segment_filename 'stream%d.ts' stream.m3u8 2>&1 | tail -1
     echo "$(date): ffmpeg exited, restarting in 3s..."

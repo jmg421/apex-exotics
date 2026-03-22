@@ -46,7 +46,7 @@ def load_headlines():
     try:
         with open(HEADLINES_FILE, 'r') as f:
             return json.load(f)
-    except:
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
         return []
 
 def get_recent_headlines(limit=50):

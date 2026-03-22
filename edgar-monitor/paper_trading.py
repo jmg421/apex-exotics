@@ -61,7 +61,7 @@ def get_current_price(ticker):
     try:
         stock = yf.Ticker(ticker)
         return stock.info.get('currentPrice', 0)
-    except:
+    except Exception:
         return 0
 
 def buy(ticker, shares, reason=""):

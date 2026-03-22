@@ -23,7 +23,7 @@ class ChannelMonitor:
         try:
             with open('/Users/apple/apex-exotics/sports-monitor/data/vseebox_channels.json', 'r') as f:
                 return json.load(f)
-        except:
+        except (FileNotFoundError, json.JSONDecodeError, OSError):
             return {}
         
     def get_peer_count(self):
@@ -73,7 +73,7 @@ class ChannelMonitor:
                 channel_name = f"{channel_num} - {channel_info['name']}"
             else:
                 channel_name = str(channel_num)
-        except:
+        except (ValueError, KeyError):
             channel_name = channel_input
         
         data = {

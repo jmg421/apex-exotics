@@ -38,7 +38,7 @@ def build_portfolio():
                 cost = price * shares
                 total_cost += cost
                 print(f"  Allocated: ${cost:,.0f}")
-            except:
+            except Exception:
                 pass
         print()
     

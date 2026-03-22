@@ -44,7 +44,7 @@ def get_ticker_from_cik(cik):
         for idx, company in tickers.items():
             if str(company['cik_str']).zfill(10) == cik:
                 return company.get('ticker', '')
-    except:
+    except (requests.RequestException, ValueError, KeyError, TypeError):
         pass
     
     return None
@@ -55,7 +55,7 @@ def check_market_cap_yfinance(ticker):
         stock = yf.Ticker(ticker)
         info = stock.info
         return info.get('marketCap', None)
-    except:
+    except Exception:
         return None
 
 def batch_check_all():

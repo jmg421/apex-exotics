@@ -121,11 +121,63 @@ def find_support_resistance(pivots):
     return support[:2], resistance[:2]
 
 
-def find_patterns(candles):
+def find_head_and_shoulders(pivots):
+    """Detect head and shoulders (top) or inverse (bottom) from pivots."""
+    patterns = []
+    highs = [p for p in pivots if p["type"] == "HIGH"]
+    lows = [p for p in pivots if p["type"] == "LOW"]
+
+    # H&S top: three highs where middle is highest, outer two at similar level
+    for i in range(len(highs) - 2):
+        ls, head, rs = highs[i], highs[i + 1], highs[i + 2]
+        if head["price"] > ls["price"] and head["price"] > rs["price"]:
+            shoulder_avg = (ls["price"] + rs["price"]) / 2
+            tolerance = (head["price"] - shoulder_avg) * 0.4
+            if abs(ls["price"] - rs["price"]) < tolerance:
+                # Find neckline from lows between shoulders
+                neck_lows = [l for l in lows if ls["index"] < l["index"] < rs["index"]]
+                neckline = round(sum(l["price"] for l in neck_lows) / len(neck_lows), 2) if neck_lows else None
+                patterns.append({
+                    "name": "HEAD_AND_SHOULDERS",
+                    "head": round(head["price"], 2),
+                    "shoulders": round(shoulder_avg, 2),
+                    "neckline": neckline,
+                    "meaning": f"Bearish reversal — head at {head['price']:.0f}, shoulders ~{shoulder_avg:.0f}"
+                        + (f", neckline {neckline}" if neckline else "")
+                        + ". Break below neckline confirms downside."
+                })
+
+    # Inverse H&S: three lows where middle is lowest
+    for i in range(len(lows) - 2):
+        ls, head, rs = lows[i], lows[i + 1], lows[i + 2]
+        if head["price"] < ls["price"] and head["price"] < rs["price"]:
+            shoulder_avg = (ls["price"] + rs["price"]) / 2
+            tolerance = (shoulder_avg - head["price"]) * 0.4
+            if abs(ls["price"] - rs["price"]) < tolerance:
+                neck_highs = [h for h in highs if ls["index"] < h["index"] < rs["index"]]
+                neckline = round(sum(h["price"] for h in neck_highs) / len(neck_highs), 2) if neck_highs else None
+                patterns.append({
+                    "name": "INVERSE_HEAD_AND_SHOULDERS",
+                    "head": round(head["price"], 2),
+                    "shoulders": round(shoulder_avg, 2),
+                    "neckline": neckline,
+                    "meaning": f"Bullish reversal — head at {head['price']:.0f}, shoulders ~{shoulder_avg:.0f}"
+                        + (f", neckline {neckline}" if neckline else "")
+                        + ". Break above neckline confirms upside."
+                })
+
+    return patterns
+
+
+def find_patterns(candles, pivots=None):
     """Detect common chart patterns in recent candles."""
     patterns = []
     if len(candles) < 10:
         return patterns
+
+    # Head and shoulders from pivots (broader pattern)
+    if pivots:
+        patterns.extend(find_head_and_shoulders(pivots))
 
     recent = candles[-10:]
 
@@ -275,6 +327,19 @@ DOUBLE TOP (M shape)
   - Two highs at same level = sellers defending hard
   - Trade: sell on second rejection, stop above the highs
 
+HEAD AND SHOULDERS (bearish reversal)
+  - Three peaks: left shoulder, higher head, right shoulder
+  - Shoulders at roughly the same height, head is the highest
+  - Neckline = line connecting the lows between the shoulders
+  - Trade: short when price breaks below neckline
+  - Target: distance from head to neckline, projected down
+  - The most reliable reversal pattern in charting
+
+INVERSE HEAD AND SHOULDERS (bullish reversal)
+  - Three troughs: left shoulder, lower head, right shoulder
+  - Mirror image of H&S — signals bottom reversal
+  - Trade: buy when price breaks above neckline
+
 INSIDE BAR
   - Bar completely within prior bar's range
   - Means: compression, coiling, about to move
@@ -300,7 +365,7 @@ def learn_mode():
     pivots = find_pivots(candles)
     trend = detect_trend(pivots)
     support, resistance = find_support_resistance(pivots)
-    patterns = find_patterns(candles)
+    patterns = find_patterns(candles, pivots)
 
     # Show chart
     print("\n📊 Current ES (S&P 500 Futures) — 15min candles:\n")
@@ -357,7 +422,7 @@ def quiz_mode():
         pivots = find_pivots(visible)
         trend = detect_trend(pivots)
         support, resistance = find_support_resistance(pivots)
-        patterns = find_patterns(visible)
+        patterns = find_patterns(visible, pivots)
 
         print(f"\n{'─' * 60}")
         print(f"QUESTION {q + 1}/{total}")

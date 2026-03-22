@@ -38,7 +38,7 @@ def api_trainer_chart():
             'trend': detect_trend(pivots),
             'support': support,
             'resistance': resistance,
-            'patterns': find_patterns(candles),
+            'patterns': find_patterns(candles, pivots),
             'pivots': pivots,
         })
 
@@ -50,7 +50,7 @@ def api_trainer_chart():
     pivots = find_pivots(visible)
     trend = detect_trend(pivots)
     support, resistance = find_support_resistance(pivots)
-    patterns = find_patterns(visible)
+    patterns = find_patterns(visible, pivots)
 
     last_price = visible[-1]['close']
     future_close = hidden[-1]['close'] if hidden else last_price

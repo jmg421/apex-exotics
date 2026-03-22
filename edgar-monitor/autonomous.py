@@ -127,7 +127,7 @@ Make the decision. No human approval needed.
             decision = json.loads(json_match.group())
         else:
             decision = {"action": "WAIT", "reasoning": "Could not parse decision"}
-    except:
+    except (json.JSONDecodeError, ValueError, AttributeError):
         decision = {"action": "WAIT", "reasoning": "Parse error"}
     
     log_action(f"📊 DECISION: {decision.get('action', 'UNKNOWN')}")

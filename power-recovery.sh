@@ -78,4 +78,10 @@ end tell
 ' >> "$LOG" 2>&1
 echo "Chrome launched fullscreen" >> "$LOG"
 
+# --- Start audio delay for lip sync ---
+echo "Starting audio delay for lip sync..." >> "$LOG"
+sleep 5
+nohup "$SPORTS_DIR/delay_audio.sh" 5.1 >> "$LOG" 2>&1 &
+echo "Audio delay started (PID: $!)" >> "$LOG"
+
 echo "=== Power Recovery Complete: $(date) ===" >> "$LOG"

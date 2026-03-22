@@ -28,7 +28,7 @@ def get_current_channel():
             return data.get('channel')
     except FileNotFoundError:
         return None
-    except Exception as e:
+    except (json.JSONDecodeError, OSError) as e:
         print(f"Error reading channel state: {e}")
         return None
 
@@ -45,7 +45,7 @@ def get_original_channel():
             # Only return if less than 10 minutes old
             if time.time() - data.get('timestamp', 0) < 600:
                 return data.get('channel')
-    except:
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
         pass
     return None
 
@@ -116,7 +116,7 @@ def detect_break_type(image_path=None):
         else:
             return {'break_type': 'unknown', 'duration_estimate': 120}  # 2 min default
             
-    except Exception as e:
+    except (subprocess.TimeoutExpired, subprocess.SubprocessError, OSError) as e:
         return {'break_type': 'unknown', 'duration_estimate': 120, 'error': str(e)}
 
 def handle_commercial_break():

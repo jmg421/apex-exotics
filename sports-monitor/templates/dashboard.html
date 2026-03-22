@@ -374,31 +374,30 @@
         if (Hls.isSupported()) {
           (async () => {
             const hls = new Hls({
-                liveSyncDurationCount: 2,
-                liveMaxLatencyDurationCount: 4,
-                maxBufferLength: 6,
-                maxMaxBufferLength: 12,
+                liveSyncDurationCount: 3,
+                liveMaxLatencyDurationCount: 6,
+                maxBufferLength: 15,
+                maxMaxBufferLength: 30,
                 enableWorker: true,
-                maxBufferSize: 10 * 1000 * 1000,
+                maxBufferSize: 60 * 1000 * 1000,
                 maxBufferHole: 0.5,
                 highBufferWatchdogPeriod: 1,
-                manifestLoadingTimeOut: 10000,
-                manifestLoadingMaxRetry: 10,
-                levelLoadingTimeOut: 10000,
-                levelLoadingMaxRetry: 10,
-                fragLoadingTimeOut: 10000,
-                fragLoadingMaxRetry: 10
+                nudgeMaxRetry: 10,
+                manifestLoadingTimeOut: 5000,
+                manifestLoadingMaxRetry: Infinity,
+                levelLoadingTimeOut: 5000,
+                levelLoadingMaxRetry: Infinity,
+                fragLoadingTimeOut: 4000,
+                fragLoadingMaxRetry: Infinity,
+                fragLoadingMaxRetryTimeout: 1000,
+                liveBackBufferLength: 30,
+                backBufferLength: 30,
+                emeEnabled: false,
+                abrEwmaDefaultEstimate: 50000000
             });
-            let streamUrl;
-            if (isRemote) {
-                streamUrl = window.location.origin + '/stream.m3u8?t=' + Date.now() + '&quality=remote';
-            } else {
-                // LAN: direct 4K from HLS server, bypass Flask
-                const hlsPort = 8081;
-                const resp = await fetch('/api/stream_source');
-                const src = await resp.json();
-                streamUrl = `http://${window.location.hostname}:${hlsPort}/${encodeURIComponent(src.filename)}`;
-            }
+            video.muted = true;
+            // OBS HLS stream via Flask (finds latest m3u8 automatically)
+            let streamUrl = window.location.origin + '/stream.m3u8?t=' + Date.now();
             hls.loadSource(streamUrl);
             hls.attachMedia(video);
             hls.on(Hls.Events.MANIFEST_PARSED, () => {
@@ -410,17 +409,41 @@
                     if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
                         hls.recoverMediaError();
                     } else {
-                        hls.destroy();
-                        setTimeout(() => location.reload(), 3000);
+                        // Network error — reload source instead of full page reload
+                        hls.stopLoad();
+                        setTimeout(() => {
+                            hls.loadSource(streamUrl);
+                            hls.startLoad();
+                        }, 1000);
                     }
                 }
             });
-            // Watchdog: if video stalls for 10s, force recovery
+            // Stall watchdog: detect buffering and skip ahead to live edge
+            let lastTime = 0;
+            let stallCount = 0;
             setInterval(() => {
+                if (video.readyState > 0 && !video.paused && !video.ended) {
+                    if (Math.abs(video.currentTime - lastTime) < 0.1) {
+                        stallCount++;
+                        if (stallCount >= 3) {
+                            // Stalled 3s — jump to live edge
+                            console.warn('Stall detected, jumping to live edge');
+                            hls.recoverMediaError();
+                            video.currentTime = video.buffered.length
+                                ? video.buffered.end(video.buffered.length - 1) - 0.5
+                                : video.currentTime;
+                            video.play().catch(() => {});
+                            stallCount = 0;
+                        }
+                    } else {
+                        stallCount = 0;
+                    }
+                    lastTime = video.currentTime;
+                }
                 if (video.paused && video.readyState > 0 && !video.ended) {
                     video.play().catch(() => {});
                 }
-            }, 10000);
+            }, 1000);
           })();
         }
         document.body.addEventListener('click', () => { video.muted = false; }, {once: true});

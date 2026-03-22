@@ -20,6 +20,7 @@ from trading_psychology import (
     RiskAcceptance, RuleAdherence, EmotionalStateMonitor,
     ConsistencyMetrics, TradeJournal, ProbabilityFramework, validate_trade
 )
+from integrity_filter import assess_session
 
 DATA_DIR = Path(__file__).parent / "data"
 CONFIG_PATH = Path(__file__).parent / "config" / "zone.json"
@@ -386,6 +387,26 @@ def open_trade(side, entry_price, signal):
         print(f"❌ P1b PROBABILITY: {signal} win_prob={prob_result['win_probability']:.3f} < threshold. PASS.")
         return
     print(f"✓ P1b Probability: {prob_result['win_probability']:.3f} edge={prob_result['edge']:+.3f}")
+
+    # 1c. Integrity check — are market conditions normal?
+    try:
+        prev_path = DATA_DIR / "prev_quotes.json"
+        curr_path = DATA_DIR / "futures_snapshot.json"
+        if prev_path.exists() and curr_path.exists():
+            import json as _json
+            prev_q = _json.loads(prev_path.read_text()).get('quotes', [])
+            curr_q = _json.loads(curr_path.read_text()).get('quotes', [])
+            integrity = assess_session(curr_q, prev_q, stop_price=entry_price - config['stop_points'] if side == 'LONG' else entry_price + config['stop_points'])
+            if integrity['flags']:
+                print(f"⚠️  P1c Integrity: {integrity['flags']} — adjustment {integrity['adjustment']:.0%}")
+            else:
+                print(f"✓ P1c Integrity: CLEAR")
+        else:
+            integrity = {'adjustment': 1.0, 'flags': []}
+            print(f"✓ P1c Integrity: no prior data, skipping")
+    except Exception as e:
+        integrity = {'adjustment': 1.0, 'flags': []}
+        print(f"✓ P1c Integrity: check skipped ({e})")
 
     # 2. Risk
     risk_info = calculate_risk(entry_price, side, config)

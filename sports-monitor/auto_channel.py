@@ -5,7 +5,9 @@ Uses excitement engine + ESPN broadcast data to find the right HEAT channel.
 """
 import time
 import json
+import os
 import requests
+import subprocess
 from datetime import datetime
 from excitement_engine import get_excitement_rankings
 from channel_switcher import change_channel
@@ -45,6 +47,17 @@ PINNED_TEAMS = {'DUKE'}
 PINNED_BOOST = 30
 PINNED_ROTATION_SECONDS = 120
 
+# Dead air: rotate through intel channels and run EDGAR scans
+DEAD_AIR_SCAN_INTERVAL = 300  # Run EDGAR scan every 5 minutes during dead air
+INTEL_CHANNELS = [
+    (193, 'Bloomberg'),  # Bloomberg TV
+    (35, 'CNBC'),        # CNBC
+    (809, 'ESPN'),       # ESPN (scores/highlights)
+]
+INTEL_DWELL_SECONDS = 90  # Time on each intel channel before screenshot + rotate
+_last_edgar_scan = 0
+_intel_index = 0
+
 # Track game clocks for stall detection
 _clock_history = {}  # game_id -> (clock_str, timestamp_of_last_change)
 _crunch_lock_until = 0  # timestamp — don't switch until this time
@@ -66,7 +79,7 @@ def get_broadcasts():
                         networks.extend(b.get('names', []))
                     if networks:
                         broadcasts[game_id] = networks
-        except:
+        except (requests.RequestException, ValueError, KeyError, TypeError):
             pass
     return broadcasts
 
@@ -103,7 +116,7 @@ def get_upcoming_tips():
                             'networks': networks,
                             'mins_until': mins_until,
                         })
-        except:
+        except (requests.RequestException, ValueError, KeyError, TypeError):
             pass
     return tips
 
@@ -204,8 +217,53 @@ def run():
             print(f"  [{ts}] {marker} {g['excitement']:3d} {g['away']:5} vs {g['home']:5} | {g['status'][:25]:25} | ch:{g['channel']} {g['networks'][:2]}")
 
         if not switchable:
-            print(f"  [{ts}] No switchable games above {MIN_EXCITEMENT}")
-            time.sleep(15)
+            global _last_edgar_scan, _intel_index
+            ch_num, ch_name = INTEL_CHANNELS[_intel_index % len(INTEL_CHANNELS)]
+
+            # Rotate intel channels
+            if current_channel != ch_num:
+                print(f"\n📡 INTEL MODE → ch {ch_num} ({ch_name})")
+                change_channel(ch_num)
+                current_channel = ch_num
+                time.sleep(INTEL_DWELL_SECONDS)  # Let broadcast settle
+
+                # Screenshot the current frame from OBS HLS output
+                try:
+                    import glob as _glob
+                    segments = sorted(_glob.glob(os.path.expanduser('~/Movies/*.ts')), key=os.path.getmtime)
+                    if segments:
+                        shot_dir = '/Users/apple/apex-exotics/sports-monitor/data/intel_screenshots'
+                        os.makedirs(shot_dir, exist_ok=True)
+                        shot_path = f"{shot_dir}/{ch_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
+                        subprocess.run([
+                            'ffmpeg', '-y', '-sseof', '-2', '-i', segments[-1],
+                            '-frames:v', '1', '-q:v', '2', shot_path
+                        ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=10)
+                        if os.path.exists(shot_path):
+                            print(f"  [{ts}] 📸 {ch_name} screenshot → {os.path.basename(shot_path)}")
+                except Exception as e:
+                    print(f"  [{ts}] ⚠️  Screenshot failed: {e}")
+
+                _intel_index += 1
+            else:
+                print(f"  [{ts}] 📡 Intel: {ch_name} (ch {ch_num})")
+                time.sleep(INTEL_DWELL_SECONDS)
+                _intel_index += 1
+
+            # Run EDGAR scans periodically
+            if now - _last_edgar_scan >= DEAD_AIR_SCAN_INTERVAL:
+                _last_edgar_scan = now
+                print(f"  [{ts}] 📊 Running EDGAR scan during dead air...")
+                try:
+                    subprocess.Popen(
+                        ['/Users/apple/apex-exotics/edgar-monitor/venv/bin/python3', 'autonomous.py'],
+                        cwd='/Users/apple/apex-exotics/edgar-monitor',
+                        stdout=open('/Users/apple/apex-exotics/edgar-monitor/data/autonomous_log.txt', 'a'),
+                        stderr=subprocess.DEVNULL
+                    )
+                    print(f"  [{ts}] ✅ EDGAR scan launched")
+                except Exception as e:
+                    print(f"  [{ts}] ⚠️  EDGAR scan failed: {e}")
             continue
 
         # Tag stalled games

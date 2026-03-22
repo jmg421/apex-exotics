@@ -314,7 +314,7 @@ async function startLearn() {
     { title: '📏 Support & Resistance', text: srExplain },
     { title: '📈 Trend', text: 'Current: ' + data.trend + '\n\nUptrend = Higher Highs + Higher Lows\nDowntrend = Lower Highs + Lower Lows\nRange = Sideways\n\nTrade WITH the trend, not against it.' },
     { title: '📊 Volume', text: 'Volume bars at bottom.\n\nHigh vol + price move = real (continuation)\nLow vol + price move = fake (reversal likely)\nHigh vol at S/R = strong level' },
-    { title: '🔍 Patterns', text: data.patterns.map(p => p.name + ': ' + (p.meaning || '')).join('\n') || 'No patterns detected right now.' },
+    { title: '🔍 Patterns', text: data.patterns.map(p => p.name + ': ' + (p.meaning || '')).join('\n') || 'No patterns detected right now.\n\nKey patterns to learn:\n• Double Bottom/Top — W or M shape at S/R\n• Head & Shoulders — three peaks, middle highest = bearish reversal\n• Inverse H&S — three troughs, middle lowest = bullish reversal\n• Inside Bar — compression before breakout\n• Doji — indecision candle' },
   ];
 
   document.getElementById('sidebar').innerHTML = lessons.map(l => `

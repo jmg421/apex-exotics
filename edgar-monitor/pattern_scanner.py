@@ -169,7 +169,7 @@ def load_watchlist():
         with open('edgar-monitor/data/companies.json', 'r') as f:
             companies = json.load(f)
             return [c['ticker'] for c in companies if c.get('ticker')]
-    except:
+    except (FileNotFoundError, json.JSONDecodeError, OSError, KeyError):
         # Fallback to demo tickers
         return ['AAPL', 'MSFT', 'GOOGL', 'TSLA', 'NVDA', 'AMD', 'INTC', 'META', 'AMZN', 'NFLX']
 

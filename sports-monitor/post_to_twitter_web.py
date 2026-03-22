@@ -68,10 +68,10 @@ def post_tweet(text):
             # Try to extract tweet ID
             try:
                 tweet_id = data['data']['create_tweet']['tweet_results']['result']['rest_id']
-            except:
+            except (KeyError, TypeError):
                 try:
                     tweet_id = data['data']['create_tweet']['tweet_results']['result']['legacy']['id_str']
-                except:
+                except (KeyError, TypeError):
                     print("Could not extract tweet ID from response")
                     return None
             

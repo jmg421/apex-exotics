@@ -27,7 +27,7 @@ def get_sp500_price():
     try:
         spy = yf.Ticker("SPY")
         return spy.info.get('currentPrice', 0)
-    except:
+    except Exception:
         return 0
 
 def track_portfolio():

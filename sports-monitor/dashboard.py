@@ -270,7 +270,7 @@ def _save_score_snapshot(games):
         try:
             with open(SCORE_CACHE_FILE, 'r') as f:
                 history = json.load(f)
-        except:
+        except (FileNotFoundError, json.JSONDecodeError, OSError):
             history = []
         now = time.time()
         history.append({'t': now, 'games': games})
@@ -278,8 +278,8 @@ def _save_score_snapshot(games):
         history = [h for h in history if h['t'] > now - 180]
         with open(SCORE_CACHE_FILE, 'w') as f:
             json.dump(history, f)
-    except:
-        pass
+    except (OSError, TypeError) as e:
+        import sys; print(f"Warning: score snapshot save failed: {e}", file=sys.stderr)
 
 def _get_delayed_scores(delay_seconds):
     """Get scores from N seconds ago"""
@@ -297,7 +297,7 @@ def _get_delayed_scores(delay_seconds):
             else:
                 break
         return best
-    except:
+    except (FileNotFoundError, json.JSONDecodeError, OSError, KeyError):
         return None
 
 @app.route('/api/excitement')
@@ -340,8 +340,8 @@ def get_excitement():
                 nets = broadcasts.get(g['game_id'], [])
                 g['network'] = ', '.join(nets) if nets else ''
                 g['channel'] = resolve_channel(nets)
-        except:
-            pass
+        except (ImportError, Exception) as e:
+            import sys; print(f"Warning: broadcast lookup failed: {e}", file=sys.stderr)
         
         # Store snapshot for delayed serving
         _save_score_snapshot(filtered_games)
@@ -370,7 +370,7 @@ def _refresh_jokes_background():
         try:
             r = requests.get('https://icanhazdadjoke.com/', headers={'Accept': 'application/json'}, timeout=3)
             items.append('😂 ' + r.json().get('joke', ''))
-        except:
+        except (requests.RequestException, ValueError, KeyError):
             pass
         try:
             data = requests.get('http://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard', timeout=5).json()
@@ -395,7 +395,7 @@ def _refresh_jokes_background():
                                 jersey = ath.get('jersey', '')
                                 num = f'#{jersey} ' if jersey else ''
                                 items.append(f'🏀 {num}{ath.get("displayName","?")} leads {t["shortDisplayName"]} with {a["displayValue"]} {stat}')
-        except:
+        except (requests.RequestException, ValueError, KeyError, TypeError):
             pass
         try:
             r = requests.get('https://opentdb.com/api.php?amount=2&category=21&type=multiple', timeout=3)
@@ -403,7 +403,7 @@ def _refresh_jokes_background():
                 question = htmlmod.unescape(q['question'])
                 answer = htmlmod.unescape(q['correct_answer'])
                 items.append(f'🧠 {question} → {answer}')
-        except:
+        except (requests.RequestException, ValueError, KeyError):
             pass
         if items:
             _jokes_cache['data'] = items
@@ -439,11 +439,11 @@ def get_tension():
                 nets = broadcasts.get(g['game_id'], [])
                 if resolve_channel(nets) == current_ch:
                     return jsonify({'margin': abs(int(g.get('home_score', 0)) - int(g.get('away_score', 0)))})
-        except:
+        except (FileNotFoundError, json.JSONDecodeError, KeyError, ValueError, OSError):
             pass
         # No matching live game — no glow
         return jsonify({'margin': 30})
-    except:
+    except (ImportError, Exception) as e:
         return jsonify({'margin': 30})
 
 @app.route('/api/final_scores')
@@ -467,7 +467,7 @@ def get_final_scores():
                         'away_score': int(away.get('score', 0)),
                         'home_score': int(home.get('score', 0)),
                     })
-    except:
+    except (requests.RequestException, ValueError, KeyError, TypeError):
         pass
     cache_set('final_scores', finals)
     return jsonify(finals)
@@ -587,7 +587,7 @@ def get_streamer_feed():
                         
                         try:
                             viewer_count = int(viewers.replace(',', ''))
-                        except:
+                        except (ValueError, AttributeError):
                             viewer_count = 0
                         
                         items.append({
@@ -595,7 +595,7 @@ def get_streamer_feed():
                             'description': f'Playing {game} • {viewers} viewers • {uptime}',
                             'viewers': viewer_count
                         })
-                except:
+                except (requests.RequestException, KeyError, ValueError, TypeError):
                     continue
             
             # Sort live streams by viewer count (highest first)
@@ -617,7 +617,7 @@ def get_streamer_feed():
                         # Format with commas
                         try:
                             followers_formatted = f"{int(followers):,}"
-                        except:
+                        except (ValueError, TypeError):
                             followers_formatted = followers
                         
                         # Build social links
@@ -633,7 +633,7 @@ def get_streamer_feed():
                             'headline': f'{profile["name"]} - {followers_formatted} followers',
                             'description': f'{profile["bio"]} • {social_str}' if social_str else profile["bio"]
                         })
-                    except:
+                    except (requests.RequestException, KeyError, ValueError, TypeError):
                         continue
             
             return jsonify(items if items else [{'headline': 'No streamer data available', 'description': ''}])
@@ -666,7 +666,7 @@ def get_personalized_feed():
                     'headline': post_data.get('title', 'No title')[:80],
                     'description': f"👍 {post_data.get('ups', 0)} upvotes • r/LivestreamFail"
                 })
-        except:
+        except (requests.RequestException, ValueError, KeyError, TypeError):
             pass
         
         return jsonify(items if items else [{'headline': 'No personalized content available', 'description': ''}])
@@ -740,7 +740,7 @@ def get_viral_videos():
                         'views': f"{post_data.get('ups', 0)} upvotes",
                         'uploaded': 'Trending'
                     })
-        except:
+        except (requests.RequestException, ValueError, KeyError, TypeError):
             pass
         
         return jsonify(videos if videos else [{'creator': 'No videos', 'title': 'Check back later', 'youtube_handle': '', 'views': '', 'uploaded': ''}])
@@ -972,7 +972,7 @@ def get_upcoming_games():
                 
                 excitement = int(quality + closeness + stakes + ranking_bonus)
                 excitement = min(100, max(20, excitement))
-            except:
+            except (ValueError, TypeError, ZeroDivisionError):
                 excitement = 50
             
             # Format team names with rankings
@@ -1046,7 +1046,7 @@ def get_recent_games():
                         'away_score': away.get('score', '0'),
                         'home_score': home.get('score', '0')
                     })
-            except:
+            except (KeyError, ValueError, TypeError, IndexError):
                 continue
         
         return jsonify(all_recent[:15])
@@ -1274,7 +1274,7 @@ def get_nba_stats(game_id):
                                 min_seconds = int(parts[0]) * 60 + int(parts[1])
                             else:
                                 min_seconds = int(float(minutes) * 60)
-                        except:
+                        except (ValueError, TypeError, IndexError):
                             min_seconds = 0
                         
                         result['top_players'].append({
@@ -1402,7 +1402,7 @@ def get_nhl_stats(game_id):
                             try:
                                 parts = ice_time.split(':')
                                 ice_seconds = int(parts[0]) * 60 + int(parts[1])
-                            except:
+                            except (ValueError, TypeError, IndexError):
                                 ice_seconds = 0
                             
                             all_players.append({

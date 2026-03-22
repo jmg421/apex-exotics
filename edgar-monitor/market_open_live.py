@@ -26,7 +26,7 @@ def get_quote(ticker):
                 'volume': int(q.get('06. volume', 0)),
                 'timestamp': datetime.now().isoformat()
             }
-    except:
+    except (requests.RequestException, ValueError, KeyError, TypeError):
         pass
     return None
 
@@ -38,7 +38,7 @@ def load_watchlist():
             tickers = [v['ticker'] for v in caps.values() 
                       if v.get('ticker') and v.get('market_cap') and v['market_cap'] < 100_000_000]
             return tickers[:10]  # Limit to 10 for free tier
-    except:
+    except (FileNotFoundError, json.JSONDecodeError, OSError, KeyError):
         return ['AFCG', 'CLRB', 'IBCP']  # Fallback
 
 if __name__ == '__main__':

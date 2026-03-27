@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-Sports Stats Monitor - Live NCAA game margins
-Shows efficiency stats that predict outcomes before the score does
+Apex Sports Monitor — Live scores, auto-switching, HLS stream dashboard
 """
 from flask import Flask, render_template, jsonify, request, Response
 from functools import wraps
@@ -11,6 +10,16 @@ import os
 import time
 from headline_storage import save_headline, get_recent_headlines
 from headline_source import find_source_url
+
+# Load .env if present (no extra dependency)
+_env_path = os.path.join(os.path.dirname(__file__), '.env')
+if os.path.exists(_env_path):
+    with open(_env_path) as _f:
+        for _line in _f:
+            _line = _line.strip()
+            if _line and not _line.startswith('#') and '=' in _line:
+                _k, _v = _line.split('=', 1)
+                os.environ.setdefault(_k.strip(), _v.strip())
 
 app = Flask(__name__)
 
@@ -27,8 +36,8 @@ def cache_set(key, data):
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 # Basic auth for private streaming
-STREAM_USER = os.getenv('STREAM_USER', 'apex')
-STREAM_PASS = os.getenv('STREAM_PASS', 'sports2026')
+STREAM_USER = os.getenv('STREAM_USER', '')
+STREAM_PASS = os.getenv('STREAM_PASS', '')
 
 def check_auth(username, password):
     return username == STREAM_USER and password == STREAM_PASS
@@ -89,59 +98,36 @@ def get_current_channel():
         print(f"Error reading channel state: {e}")
         return jsonify({'channel': 'ERROR', 'timestamp': None, 'peer_count': 0})
 
+STREAM_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'stream')
+
 @app.route('/api/stream_source')
 def get_stream_source():
     """Return the current active m3u8 filename for direct HLS access"""
     import glob
-    movies_dir = os.path.expanduser('/Users/apple/Movies')
-    m3u8_files = sorted(glob.glob(f'{movies_dir}/*.m3u8'), key=os.path.getmtime, reverse=True)
+    m3u8_files = sorted(glob.glob(f'{STREAM_DIR}/*.m3u8'), key=os.path.getmtime, reverse=True)
     for m in m3u8_files:
         basename = os.path.splitext(os.path.basename(m))[0]
-        if glob.glob(f'{movies_dir}/{basename}*.ts'):
+        if glob.glob(f'{STREAM_DIR}/{basename}*.ts'):
             return jsonify({'filename': os.path.basename(m)})
     return jsonify({'filename': ''})
 
 @app.route('/stream.m3u8')
 @requires_auth
 def get_stream():
-    """Proxy HLS - use remote quality if requested"""
+    """Proxy HLS from local stream/ dir (synced from external drive by stream_sync.py)"""
     import glob
-    import os
     from flask import make_response
 
-    remote = request.args.get('quality') == 'remote'
-    
-    if remote:
-        remote_m3u8 = os.path.expanduser('/Users/apple/Movies/remote/stream.m3u8')
-        if os.path.exists(remote_m3u8):
-            with open(remote_m3u8, 'r') as f:
-                content = f.read()
-            lines = []
-            for line in content.splitlines():
-                if line and not line.startswith('#'):
-                    lines.append(f'/stream/remote/{line}')
-                else:
-                    lines.append(line)
-            response = make_response('\n'.join(lines))
-            response.headers['Content-Type'] = 'application/vnd.apple.mpegurl'
-            response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-            response.headers['Access-Control-Allow-Origin'] = '*'
-            return response
-
-    movies_dir = os.path.expanduser('/Users/apple/Movies')
-    m3u8_files = glob.glob(f'{movies_dir}/*.m3u8')
-
+    m3u8_files = glob.glob(f'{STREAM_DIR}/*.m3u8')
     if not m3u8_files:
         return "No stream available", 404
 
     m3u8_files.sort(key=os.path.getmtime, reverse=True)
     for m3u8 in m3u8_files:
         basename = os.path.splitext(os.path.basename(m3u8))[0]
-        if glob.glob(f'{movies_dir}/{basename}*.ts'):
-            # Read and rewrite m3u8 to use relative /stream/ paths
+        if glob.glob(f'{STREAM_DIR}/{basename}*.ts'):
             with open(m3u8, 'r') as f:
                 content = f.read()
-            # Replace bare filenames with /stream/ prefix
             lines = []
             for line in content.splitlines():
                 if line and not line.startswith('#'):
@@ -162,8 +148,8 @@ def get_stream():
 def get_remote_segment(filename):
     """Serve low-bitrate remote HLS segments"""
     from flask import send_file
-    import os
-    file_path = os.path.join('/Users/apple/Movies/remote', filename)
+    remote_dir = os.path.join(STREAM_DIR, 'remote')
+    file_path = os.path.join(remote_dir, filename)
     if os.path.exists(file_path):
         mimetype = 'application/vnd.apple.mpegurl' if filename.endswith('.m3u8') else 'video/mp2t'
         response = send_file(file_path, mimetype=mimetype)
@@ -175,13 +161,9 @@ def get_remote_segment(filename):
 @app.route('/stream/<path:filename>')
 @requires_auth
 def get_stream_segment(filename):
-    """Serve HLS segments"""
+    """Serve HLS segments from local stream/ dir"""
     from flask import send_file
-    import os
-    
-    movies_dir = os.path.expanduser('/Users/apple/Movies')
-    file_path = os.path.join(movies_dir, filename)
-    
+    file_path = os.path.join(STREAM_DIR, filename)
     if os.path.exists(file_path):
         mimetype = 'application/vnd.apple.mpegurl' if filename.endswith('.m3u8') else 'video/mp2t'
         response = send_file(file_path, mimetype=mimetype)
@@ -425,7 +407,10 @@ def get_tension():
         from excitement_engine import get_excitement_rankings
         from auto_channel import get_broadcasts, resolve_channel
         import json as j
-        games = get_excitement_rankings()
+        games = cached('excitement_rankings', 15)
+        if games is None:
+            games = get_excitement_rankings()
+            cache_set('excitement_rankings', games)
         if not games:
             return jsonify({'margin': 30})
         # Match current channel to a game
@@ -1703,4 +1688,4 @@ def upcoming_tip():
 
 
 if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0', port=5001, use_reloader=True, threaded=True)
+    app.run(debug=False, host='0.0.0.0', port=5001, use_reloader=False, threaded=True)

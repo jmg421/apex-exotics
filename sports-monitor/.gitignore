@@ -19,3 +19,9 @@ current_channel.json
 
 # Logs
 *.log
+
+# Environment secrets
+.env
+
+# Local stream sync dir
+stream/

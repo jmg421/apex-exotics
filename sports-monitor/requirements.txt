@@ -1,0 +1,7 @@
+flask
+flask-cors
+requests
+broadlink
+pillow
+tweepy
+nba_api

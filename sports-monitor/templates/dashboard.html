@@ -403,18 +403,21 @@
             hls.on(Hls.Events.MANIFEST_PARSED, () => {
                 video.play().catch(() => {});
             });
+            let hlsRetryDelay = 1000;
+            hls.on(Hls.Events.MANIFEST_PARSED, () => { hlsRetryDelay = 1000; });
             hls.on(Hls.Events.ERROR, (event, data) => {
                 if (data.fatal) {
-                    console.warn('HLS fatal error, recovering...', data.type);
+                    console.warn('HLS fatal error, recovering in', hlsRetryDelay/1000, 's...', data.type);
                     if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
                         hls.recoverMediaError();
                     } else {
-                        // Network error — reload source instead of full page reload
+                        // Network error — exponential backoff (1s → 2s → 4s → ... → 30s max)
                         hls.stopLoad();
                         setTimeout(() => {
                             hls.loadSource(streamUrl);
                             hls.startLoad();
-                        }, 1000);
+                        }, hlsRetryDelay);
+                        hlsRetryDelay = Math.min(hlsRetryDelay * 2, 30000);
                     }
                 }
             });
